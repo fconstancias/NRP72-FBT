@@ -1,0 +1,638 @@
+---
+title: "NRP72 - linking mobilome - resistome `r Sys.Date()`"
+author: "Florentin CONSTANCIAS"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 4
+---
+
+<style type="text/css">
+div.main-container {
+max-width: 1800px;
+margin-left: auto;
+margin-right: auto;
+}
+.Table-Normal {
+position: relative;
+//display: block;
+margin: 10px auto;
+padding: 0;
+width: 100%;
+height: auto;
+border-collapse: collapse;
+text-align: center;
+}
+</style>
+
+
+```{r setup, include=FALSE}
+rm(list = ls())
+
+knitr::opts_chunk$set(echo = TRUE)
+DT::datatable(matrix())
+# knitr::opts_chunk$set(dev = 'pdf')
+# knitr::purl("Mdown.Rmd")
+
+```
+
+
+```{r packages, results=FALSE, warning=TRUE, include=FALSE}
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+require(tidyverse); packageVersion("tidyverse")
+require(phyloseq); packageVersion("phyloseq")
+require(vegan); packageVersion("vegan")
+
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R")
+```
+
+# Load data in R:
+
+## Import metadata:
+
+
+```{r}
+
+# ps = "~/Documents/GitHub/amchick/data/raw/rgi_CARD/sqm_rgi_chicken.txt"
+#   
+# ps %>% 
+#   # here::here() %>%
+#   read_tsv() -> df
+# 
+# df %>% 
+#   # head() %>% 
+#   DT::datatable()
+# ```
+
+# ```{r}
+# ps = "~/Documents/GitHub/amchick/data/raw/rgi_CARD/sqm_rgi_chicken.txt"
+#   
+# ps %>% 
+#   # here::here() %>%
+#   read_tsv() -> df
+# 
+# df %>% 
+#   head() %>% 
+#   DT::datatable()
+# ```
+
+
+ps = "~/Documents/GitHub/amchick/data/raw/metabarcoding/merged_chicken_human_04.08.2021.tsv"
+
+ps %>% 
+  # here::here() %>%
+  read_tsv() %>% 
+  filter(metagenomic_sample_name %!in% NA) -> meta
+
+meta %>% 
+  head() %>% 
+  DT::datatable()
+
+meta 
+```
+
+## Import resistome data:
+
+```{r}
+type = c("protein homolog model")
+
+# df %>% 
+#   filter(Model_type %in% type,
+#          Cut_Off == "Strict",
+#          Nudged %!in% c("TRUE"),
+#          Best_Identities > 95, # plot disteibution of bestID vs percentage length ref and color bitscore and symbol class AMR
+#          Percentage.Length.of.Reference.Sequence > 80) %>% 
+#   select(ORF_ID,
+#          Best_Hit_ARO,
+#          Model_type,
+#          Drug.Class,
+#          Resistance.Mechanism,
+#          AMR.Gene.Family,
+#          Best_Identities,
+#          Percentage.Length.of.Reference.Sequence,
+#          Note,
+#          "Length AA",
+#          "Gene name",
+#          "Contig ID", 
+#          starts_with("TPM"),
+#          ) -> fil_df
+# 
+# fil_df %>% 
+#   head() %>% 
+#   DT::datatable()
+
+# fil_df %>% 
+#   write_tsv(here::here("~/Projects/ETH/Alessia/mobilome/rgi_card_table.tsv"))
+
+"~/Documents/GitHub/amchick/tmp/rgi_card_table.tsv" %>% 
+  read_tsv() %>% 
+  separate(ORF_ID, into = c("cont", "cont_num", "orf"), sep = "_", remove = FALSE) %>% 
+  mutate(cont_id = paste0(cont,"_", cont_num)) %>% 
+  select(cont_id, everything()) -> fil_df_fil
+
+
+fil_df_fil %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+## Import contig mapping:
+```{r, message = FALSE}
+"/Users/fconstan/Projects/ETH/Alessia/mobilome/chicken/map_megahit_SQM.csv" %>% 
+  read_csv()  -> mapping
+
+mapping %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+## Import isescan results:
+
+```{r, message = FALSE}
+
+"/Users/fconstan/Projects/ETH/Alessia/mobilome/chicken/01.SqueezeChicken.fasta.tsv" %>% 
+  read_tsv() -> isescan
+
+isescan %>% 
+  head() %>% 
+  DT::datatable()
+```
+```{r, message = FALSE}
+isescan %>% 
+  group_by(seqID) %>% 
+  # add_count(family) %>% 
+  # arrange(-n) %>% 
+  top_n(1, wt = `E-value4copy`) %>% 
+  top_n(1, wt = isBegin) -> isescan_top
+```
+
+## Import viralverify results:
+
+```{r, message = FALSE}
+
+"/Users/fconstan/Projects/ETH/Alessia/mobilome/chicken/final.contigs_result_table.csv" %>% 
+  read_csv() -> viralverify
+
+viralverify %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+## Import DAStool mapping - contig-MAG:
+```{r, message = FALSE}
+"/Users/fconstan/Projects/ETH/Alessia/anvio_chicken_SM_last/DAS-collection.txt.txt" %>% 
+  read_tsv(col_names = c("split", "bin")) %>% 
+  separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
+  mutate(cont_id = paste0(cont,"_", cont_num)) %>% 
+  distinct(cont_id, .keep_all = TRUE) %>% 
+  select(cont_id, bin) -> DAS
+
+DAS %>% 
+  head %>% 
+  DT::datatable()
+
+
+"/Users/fconstan/Projects/ETH/Alessia/anvio_chicken_SM_last/DAS-collection-HQ-MAGs.txt" %>% 
+  read_tsv(col_names = c("split", "binHQ")) %>% 
+  separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
+  mutate(cont_id = paste0(cont,"_", cont_num)) %>% 
+  distinct(cont_id, .keep_all = TRUE) %>% 
+  select(cont_id, binHQ) -> DASHQ
+```
+
+## Import MAG taxonomy
+```{r, message = FALSE}
+"/Users/fconstan/Projects/ETH/Alessia/anvio_chicken_SM_last/MAGs_additional_data.tsv" %>% 
+  read_tsv() -> MAG_tax
+```
+
+
+# Combine data:
+
+## viralverify contig names
+
+```{r, message = FALSE}
+viralverify %>% 
+  left_join(mapping,
+            by = c("Contig name" = "megahit_contig")) %>% 
+  select(-`Contig name`, -megahit_contig_full) %>% 
+  select(SQM_contig, everything()) -> viralverify_fil
+```
+
+## CARD & TPM + viralverify + isescan + DAStool HQ collection - we generated withing SqueezeMeta (link between contigs [or split] and MAG [=bin])
+
+We need a table with CARD AMR genes, TMP values as well as classification from viralverify, isescan and DAS tools as well as MAG taxonomy.
+Would be great to include contig taxonomy from SQM as well ORF AA sequence.
+
+```{r, message = FALSE}
+fil_df_fil %>% 
+  left_join(viralverify_fil,
+            by = c("cont_id" = "SQM_contig")) %>% 
+  left_join(isescan_top,
+            by = c("cont_id" = "seqID")) %>% 
+  left_join(DASHQ,
+            by = c("cont_id" = "cont_id")) %>% 
+  left_join(DAS,
+            by = c("cont_id" = "cont_id")) %>% 
+  left_join(MAG_tax %>%  select(bin, genus:AMR_genes_megares),
+            by = c("binHQ" = "bin")) %>% 
+  mutate(Classification = ifelse(!is.na(binHQ), "MAG", Prediction)) %>% 
+  mutate(Classification2 = ifelse(!is.na(binHQ), GTDB_tax, Prediction)) %>% 
+  rename(IS = family) %>% 
+  select(ORF_ID, cont_id, orf, Best_Hit_ARO, Drug.Class, 
+         Prediction, Circular, Score,
+         binHQ, bin,
+         AMR_genes_megares, AMR_genes_VFDB, AMR_genes_card, 
+         genus, GTDB_tax,
+         Classification, Classification2,
+         IS, cluster, "E-value", `TPM D1`:`TPM D9`) -> test
+
+test %>% 
+  DT::datatable()
+
+test %>% 
+  write_tsv("~/Projects/ETH/Alessia/mobilome/combine_attempt.tsv")
+```
+
+```{r, fig.height=6, fig.width=10}
+test %>% 
+  pivot_longer(cols = `TPM D1`:`TPM D9`,
+               names_to = "sample", values_to = "TPM") %>%   
+  mutate(sample = str_remove(sample, "TPM ")) %>% 
+  left_join(meta %>% 
+              select(raw_metagenomic_pairs, metagenomic_sample_name,
+                     Treatment, Day_of_Treatment, Fermentation, Reactor_Treatment),
+            by = c("sample" = "metagenomic_sample_name")) %>% 
+  # select(Day_of_Treatment, Best_Hit_ARO, TPM, Drug.Class, Reactor_Treatment, ORF_ID) %>% 
+  mutate(Day_of_Treatment = as.factor(Day_of_Treatment)) %>% 
+  # mutate(TPM = na_if(TPM, 0)) %>%
+  mutate(Reactor_Treatment = fct_relevel(Reactor_Treatment, c("DONOR")))  %>% 
+  # group_by(Classification, sample, Day_of_Treatment, Reactor_Treatment) %>%
+  # summarise(sum_class = sum(TPM)) %>%  #arrange(sum_class) 
+  # ungroup() %>% # filter(Classification %in% c("Plasmid")) # distinct(Classification)   %>% # filter(Classification %in% c("Plasmid))
+  ggplot(aes(x = Day_of_Treatment, y = TPM, fill = Classification)) +   
+  geom_bar(stat = "identity") +  
+  facet_grid(. ~ Reactor_Treatment, drop = TRUE, scales = "free", space = "free") + 
+  ggpubr::rotate_x_text(90) +
+  theme_light() -> p
+
+p
+```
+
+```{r, fig.height=10, fig.width=14}
+test %>% 
+  pivot_longer(cols = `TPM D1`:`TPM D9`,
+               names_to = "sample", values_to = "TPM") %>%   
+  mutate(sample = str_remove(sample, "TPM ")) %>% 
+  left_join(meta %>% 
+              select(raw_metagenomic_pairs, metagenomic_sample_name,
+                     Treatment, Day_of_Treatment, Fermentation, Reactor_Treatment),
+            by = c("sample" = "metagenomic_sample_name")) %>% 
+  # select(Day_of_Treatment, Best_Hit_ARO, TPM, Drug.Class, Reactor_Treatment, ORF_ID) %>% 
+  mutate(Day_of_Treatment = as.factor(Day_of_Treatment)) %>% 
+  # mutate(TPM = na_if(TPM, 0)) %>%
+  mutate(Reactor_Treatment = fct_relevel(Reactor_Treatment, c("DONOR"))) -> test_ready
+
+#define color vector:
+# colors <- test_ready$Classification2 %>%  unique()
+
+#megahit_219391-> CTX
+#megahit_8588 -> VAN
+
+test_ready %>% 
+  # mutate(plasmid_donor = ifelse(Best_Hit_ARO %in% c("CTX-M-1", "vanZA", "vanYA", "vanXA", "vanA", "vanHA", "vanRA")), )  %>% 
+  # mutate(lab = case_when(GTDB_tax == NA ~ "memory", 
+  #                             P1choice == "FALSE" ~ "choice",
+  #                             P1future == "FALSE" ~ "justification"))
+  mutate(lab = ifelse(is.na(GTDB_tax) & Classification == "Plasmid", 
+                      Drug.Class,
+                      GTDB_tax))  %>% 
+  mutate(lab2 =  case_when(is.na(GTDB_tax) & cont_id %in% c("megahit_219391", "megahit_8588") ~ cont_id, TRUE ~ GTDB_tax)) %>%  
+  # group_by(Classification, sample, Day_of_Treatment, Reactor_Treatment) %>%
+  # summarise(sum_class = sum(TPM)) %>%  #arrange(sum_class) 
+  # ungroup() %>% # filter(Classification %in% c("Plasmid")) # distinct(Classification)   %>% # filter(Classification %in% c("Plasmid))
+  ggplot(aes(x = Day_of_Treatment, y = TPM, fill = lab2)) + #factor(ifelse(Classification2 %in% c("unknown Enterobacteriaceae (Family)", "Enterococcus faecium"),"Highlighted","Normal")))) +   
+  geom_bar(stat = "identity") +  
+  facet_grid(Classification ~ Reactor_Treatment, drop = TRUE, scales = "free", space = "free_x") + 
+  ggpubr::rotate_x_text(90) +
+  theme_light() -> p
+
+p
+
+# plotly::ggplotly(p)
+```
+```{r, fig.height=10, fig.width=14}
+p + scale_fill_viridis_d(na.value= "gray20")
+
+# plotly::ggplotly(p)
+```
+
+
+```{r, fig.height=10, fig.width=10}
+test %>% 
+  pivot_longer(cols = `TPM D1`:`TPM D9`,
+               names_to = "sample", values_to = "TPM") %>%   
+  mutate(sample = str_remove(sample, "TPM ")) %>% 
+  left_join(meta %>% 
+              select(raw_metagenomic_pairs, metagenomic_sample_name,
+                     Treatment, Day_of_Treatment, Fermentation, Reactor_Treatment),
+            by = c("sample" = "metagenomic_sample_name")) %>% 
+  # select(Day_of_Treatment, Best_Hit_ARO, TPM, Drug.Class, Reactor_Treatment, ORF_ID) %>% 
+  mutate(Day_of_Treatment = as.factor(Day_of_Treatment)) %>% 
+  # mutate(TPM = na_if(TPM, 0)) %>%
+  mutate(Reactor_Treatment = fct_relevel(Reactor_Treatment, c("DONOR"))) -> test_ready
+
+#define color vector:
+# colors <- test_ready$Classification2 %>%  unique()
+
+
+test_ready %>% 
+  # mutate(plasmid_donor = ifelse(Best_Hit_ARO %in% c("CTX-M-1", "vanZA", "vanYA", "vanXA", "vanA", "vanHA", "vanRA")), )  %>% 
+  # mutate(lab = case_when(GTDB_tax == NA ~ "memory", 
+  #                             P1choice == "FALSE" ~ "choice",
+  #                             P1future == "FALSE" ~ "justification"))
+  # mutate(lab = ifelse(is.na(GTDB_tax) & Classification == "Plasmid", 
+  #                     Drug.Class,
+  #                     GTDB_tax))  %>% 
+  # group_by(Classification, sample, Day_of_Treatment, Reactor_Treatment) %>%
+  # summarise(sum_class = sum(TPM)) %>%  #arrange(sum_class) 
+  # ungroup() %>% # filter(Classification %in% c("Plasmid")) # distinct(Classification)   %>% # filter(Classification %in% c("Plasmid))
+  ggplot(aes(x = Day_of_Treatment, y = TPM, fill = Drug.Class)) + #factor(ifelse(Classification2 %in% c("unknown Enterobacteriaceae (Family)", "Enterococcus faecium"),"Highlighted","Normal")))) +   
+  geom_bar(stat = "identity") +  
+  facet_grid(Classification ~ Reactor_Treatment, drop = TRUE, scales = "free", space = "free_x") + 
+  ggpubr::rotate_x_text(90) +
+  theme_light() -> p
+
+p
+
+# plotly::ggplotly(p)
+```
+
+
+```{r, fig.height=18, fig.width=16}
+plot.df <- test %>% 
+  pivot_longer(cols = `TPM D1`:`TPM D9`,
+               names_to = "sample", values_to = "TPM") %>%   
+  mutate(sample = str_remove(sample, "TPM ")) %>% 
+  left_join(meta %>% 
+              select(raw_metagenomic_pairs, metagenomic_sample_name,
+                     Treatment, Day_of_Treatment, Fermentation, Reactor_Treatment),
+            by = c("sample" = "metagenomic_sample_name")) %>% 
+  # select(Day_of_Treatment, Best_Hit_ARO, TPM, Drug.Class, Reactor_Treatment, ORF_ID) %>% 
+  mutate(Day_of_Treatment = as.factor(Day_of_Treatment)) %>% 
+  mutate(TPM = na_if(TPM, 0)) %>%
+  mutate(Reactor_Treatment = fct_relevel(Reactor_Treatment, c("DONOR"))) 
+
+plot.df$Drug.Class <- str_remove_all(plot.df$Drug.Class," antibiotic")
+```
+
+Split drug classes containing multiple agents into separate drug classes. For example the drug class "cephalosporin; penam" should be split into "cephalosporin" and "penam" and genes coming under "cephalosporin; penam" should appear both in drug.class "cephalosporin" and "penam". 
+
+```{r}
+
+plot.df.sep <- separate_rows(plot.df, Drug.Class,sep = '; ',convert = TRUE)
+
+
+```
+
+
+```{r, include=FALSE}
+drug_class_labels<- c("AcDy; Dis and IntDye","AMC","AMG","AMG; AMC","AMG; CEPSP; CEPMY; PENAM","CARPEN; CEPSP; PENAM","CEPSP","CEPSP; PENAM","DAP","FQ","FQ; CEPSP; CEPMY;PENAM","FQ; CEPSP; GLYCY; PENAM; TET; RIF; PHCOL; TRI","FQ; CEPSP; GLYCY; PENAM; TET; RIF; PHCOL; TRI", "FQ; LIN; NUC; AcDy; PHCOL; Dis and IntDye","FQ; MONO; CARPEN; CEPSP; GLYCY; CEPMY; PENAM; TET; RIF; PHCOL; TRI; PENEM","FQ; TET","FOS","GLYPEP","LIN","MAC","MAC; AcDy; Dis and IntDye","MAC; AMC","MAC; FQ","MAC; FQ; AMG; CARPEN; CEPSP; GLYCY; CEPMY; PENAM; TET; PEP; AMC; RIF; PHCOL; TRI; PENEM","MAC; FQ; CEPSP; CEPMY; PENAM; TET","MAC; FQ; PENAM","MAC; FQ; PENAM; TET","MAC; FQ; RIF","MAC; LIN; STRPGR", "MONO; CEPSP; PENAM; PENEM", "NI","NUC","NUC; AcDy; Dis and IntDye","PEP","PHCOL","SUL","TET","TET; BenzChl; RHO")
+
+drug_class_table <- data.frame(Drug.Class = levels(factor(plot.df$Drug.Class)),
+                               Drug.Class.Abbreviations = drug_class_labels)
+```
+
+Make the heatmap. 
+```{r, fig.height=18, fig.width=16}
+#convert drug class ino factors
+plot.df.sep$Drug.Class <- factor(plot.df.sep$Drug.Class
+                                 #, labels = drug_class_labels
+)
+
+
+plot.df.sep %>% 
+  ggplot(mapping = aes(x = Day_of_Treatment,
+                       y = Best_Hit_ARO ,
+                       fill = TPM,
+  )) +
+  # facet_grid(. ~ Reactor_Treatment,  scales = "free", space = "free", drop = TRUE) +
+  facet_grid(Classification + Drug.Class ~ Reactor_Treatment, scales = "free", space = "free", drop = TRUE,labeller = labeller(Drug.Class = label_wrap_gen(width = 15))) +
+  #we adjust the vertical labels such that it is printed correctly. 
+  geom_tile() +
+  theme_bw() -> perma_bbuble
+
+```
+
+
+Make the heatmap pretty 
+```{r, fig.height=32, fig.width=12}
+perma_bbuble +
+  scale_fill_viridis_c(name = "TPM",
+                       na.value = "transparent", trans = scales::pseudo_log_trans(sigma = 0.1),
+                       # trans =  scales::pseudo_log_trans(sigma = 1),
+                       breaks = c(1, 10, 50, 100, 400), labels = c(1, 10, 50, 100, 400),
+                       limits = c(0, 500)) + #need to make sure that we include max value of tpm as upper limit
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        strip.text.x = element_text(size=8),
+        #change the size of the label and the angle so the text is printed horizontally
+        strip.text.y = element_text(size = 7,angle=0)) -> perma_bbuble
+
+perma_bbuble
+```
+
+# hannah plot:
+
+```{r}
+"/Users/fconstan/Documents/GitHub/chicken/src/12_Figures/Resistome/resistome_phyloseq.rds" %>% 
+  readRDS() -> physeq
+
+
+sample_data(physeq)$Reactor_Treatment <- fct_relevel(sample_data(physeq)$Reactor_Treatment, "DONOR", "CR_UNTREATED", "TR1_CTX+HV292.1",
+                                                     "TR2_CTX","TR3_HV292.1", "TR4_VAN", "TR5_VAN+CCUG59168", "TR6_CCUG59168") 
+
+sample_data(physeq)$Treatment <- fct_relevel(sample_data(physeq)$Treatment, "DONOR", "UNTREATED",  "CTX+HV292.1", "CTX","HV292.1","VAN+CCUG59168", "VAN",  "CCUG59168") 
+
+```
+
+Create ARG type abundance plots:
+
+```{r, fig.height=8, fig.width=10}
+physeq_drug <- speedyseq::tax_glom(physeq, taxrank = "Drug.Class")
+
+#define colors
+set.seed(123)
+n <- phyloseq::ntaxa(physeq_drug)
+
+col <- randomcoloR::distinctColorPalette(n)
+
+
+physeq_drug %>%
+  phyloseq::plot_bar(x = "Day_of_Treatment", fill = "Drug.Class") +
+  scale_fill_manual(values=col) +
+    # geom_bar(stat="identity",colour=NA,size=0,  position = "fill") +
+  # geom_bar(stat="identity",colour=NA,size=0,  position = "fill") +
+  facet_grid(~ Reactor_Treatment, scales = "free", space = "free") +
+  ggtitle("ARG Type Abundance per Sample") + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme_light() +
+  xlab("Day of Treatment") +
+  ylab("TPM")
+
+
+```
+
+ARG Alpha Diversity
+
+```{r}
+# extract ARG abundance info from phyloseq object
+physeq %>%
+  otu_table() %>%
+  as.data.frame() %>%
+  t() -> resistome_copy
+
+# extract sample info
+physeq %>%
+  sample_data() %>%
+  as.data.frame() -> treatment_info
+
+# add sample info to resistome abundance data and get richeness
+resistome_copy %>%
+  specnumber() %>%
+  cbind(., treatment_info) %>%
+  filter(., Treatment != "DONOR")-> ARG_richeness
+
+levels(ARG_richeness$Day_of_Treatment)[ARG_richeness$Day_of_Treatment] %>%
+  as.numeric() -> ARG_richeness$Day_of_Treatment
+
+
+
+
+colnames(ARG_richeness)[1] <- "Richeness"
+
+# plot
+ggplot(ARG_richeness, aes(x = Reactor_Treatment, y = Richeness)) + 
+  geom_boxplot(aes(color=Reactor_Treatment),
+                      outlier.shape = NA,
+               outlier.colour = NA,
+               outlier.size = 0) + 
+  geom_jitter(aes(color=Reactor_Treatment), alpha = 0.4) +
+  theme(legend.position="none") +
+  xlab("Treatment") +
+  ylab("ARG Richness") +
+  theme_light() + scale_color_viridis_d(na.value = "black")
+```
+
+
+```{r}
+# plot panels for each treatment
+
+ggplot(ARG_richeness, aes(x = Day_of_Treatment, y = Richeness, color = Reactor_Treatment)) +
+  geom_line(linetype = "dashed",  size = 0.75) +
+  geom_point() + 
+  labs(title = "AMR Gene Richness",
+       y = "Richness", x = "Days of Treatment") +
+  theme_light() + scale_color_viridis_d(na.value = "black")
+
+```
+
+Beta Diversity:
+
+```{r, warning=FALSE}
+
+sample_data(physeq)$Reactor_Treatment <- fct_relevel(sample_data(physeq)$Reactor_Treatment, "DONOR", "CR_UNTREATED", "TR1_CTX+HV292.1",
+                                                     "TR2_CTX","TR3_HV292.1", "TR4_VAN", "TR5_VAN+CCUG59168", "TR6_CCUG59168") 
+
+sample_data(physeq)$Treatment <- fct_relevel(sample_data(physeq)$Treatment, "DONOR", "UNTREATED",  "CTX+HV292.1", "CTX","HV292.1","VAN+CCUG59168", "VAN",  "CCUG59168") 
+
+
+# physeq %>% 
+#   rarefy_even_depth(sample.size = 43,
+#                     rngseed = 123) -> phyloseq_rare
+
+physeq %>%
+  phyloseq_compute_bdiv(norm = "pc",
+                        phylo = FALSE,
+                        seed = 123) -> bdiv_list
+
+physeq  %>%
+  subset_samples(Treatment != "DONOR") %>%
+  phyloseq_plot_bdiv(dlist = bdiv_list,
+                     seed = 123,
+                     axis1 = 1,
+                     axis2 = 2)  -> pcoa
+
+# phyloseq_plot_bdiv(bdiv_list,
+#                    # m = "CoDa",
+#                    seed = 123) -> coda
+# 
+pcoa$wjaccard$layers = NULL
+
+pcoa$wjaccard + geom_point(size=2,
+                           aes(color = Reactor_Treatment, 
+                               fill = Reactor_Treatment,
+                               shape = NULL,
+                               alpha = Day_of_Treatment)) + 
+  theme_light() +
+  geom_path(arrow = arrow(type = "open", angle = 30, length = unit(0.15, "inches")),
+            size = 0.05, linetype = "dashed", inherit.aes = TRUE, aes(group=Reactor_Treatment, color = Reactor_Treatment), show.legend = FALSE) +
+  #scale_alpha_continuous(range=c( 0.9, 0.3)) + 
+  scale_color_viridis_d(na.value = "black") + 
+  scale_fill_viridis_d(na.value = "black") + 
+  # scale_shape_manual(values = c(8, 21, 22, 23, 24, 16, 15, 18, 17)) + 
+  theme_classic() +
+  labs(col=NULL, fill = NULL, shape = NULL) + guides(shape=FALSE) -> p1
+
+p1
+
+
+physeq %>% 
+  tax_table() %>% 
+  data.frame() %>% 
+  rownames_to_column("id") %>% 
+  mutate(gene = id) %>% 
+  column_to_rownames("id") %>% 
+  as.matrix %>% 
+  tax_table() -> tax_table(physeq)
+
+
+
+physeq  %>%
+  subset_samples(Treatment != "DONOR") %>% 
+  phyloseq_add_taxa_vector(dist = bdiv_list$wjaccard,
+                           phyloseq = .,
+                           figure_ord = p1,
+                           tax_rank_plot = "Drug.Class", taxrank_glom = "Drug.Class",
+                           top_r = 10, fact = 0.6) -> pco_env
+
+p1
+
+pco_env$plot
+
+pco_env$signenvfit %>% 
+  DT::datatable()
+```
+
+
+
+
+
+```{r}
+# plot.df.sep %>%
+# select(sample, TPM, Best_Hit_ARO) %>% 
+# pivot_wider(names_from = c("Best_Hit_ARO"), values_from = TPM) -> ready
+#   t() %>%
+#   pheatmap::pheatmap(clustering_distance_cols= "euclidean", 
+#                      cluster_distance_rows = 'pearson', 
+#                      annotation_col = full_data %>% column_to_rownames(sample_id_column) %>% dplyr::select(all_of(pca_group)), 
+#                      cutree_cols = cutree_cols, 
+#                      cutree_rows = cutree_rows,
+#                      fontsize = 8) -> heatmap
+```
+
+
+```{r}
+sessionInfo()
+```

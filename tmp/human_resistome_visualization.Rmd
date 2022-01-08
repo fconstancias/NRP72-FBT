@@ -1,0 +1,765 @@
+---
+title: "Resistome_visualization"
+author: "Florentin Constancias"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load required packages
+
+```{r,packages,message=FALSE}
+library(tidyverse)
+library(phyloseq)
+library(speedyseq)
+library(ggrepel)
+library(here)
+library(microViz)
+library(RColorBrewer)
+library(vegan)
+library(randomcoloR)
+options(getClass.msg=FALSE) # https://github.com/epurdom/clusterExperiment/issues/66
+#this fixes an error message that pops up because the class 'Annotated' is defined in two different packages
+```
+
+#### Source required functions
+
+```{r message=FALSE}
+rm(list = ls())
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_heatmap.R")
+```
+
+# Import data and define variables:
+
+```{r}
+"~/Projects/ETH/Alessia/mobilome/ps_combined_tax_clean.rds" %>% 
+  readRDS() -> ps_all
+
+ps_all %>% 
+  subset_samples(Model == "Human") %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> physeq
+
+out_pptx = "~/Projects/ETH/Alessia/mobilome/human/graph.pptx"
+
+physeq %>% 
+  tax_table() %>% 
+  data.frame() -> tax_mapping
+
+```
+
+
+```{r}
+physeq_tmp <- physeq
+tax_table(physeq_tmp) <- tax_table(physeq_tmp)[,c("Resistance_Mechanism_multi", "Best_Hit_ARO")]
+# tax_table(physeq_tmp) <- tax_table(physeq_tmp)[,c("Best_Hit_ARO", "Drug_Class")]
+
+physeq_tmp %>% 
+  tax_glom(., taxrank = "Best_Hit_ARO") %>% 
+  tax_glom(., taxrank = "Resistance_Mechanism_multi") -> physeq_res_multi
+
+taxa_names(physeq_res_multi) <- tax_table(physeq_res_multi)[,"Resistance_Mechanism_multi"]
+
+physeq_res_multi
+```
+
+```{r}
+physeq_tmp <- physeq
+tax_table(physeq_tmp) <- tax_table(physeq_tmp)[,c("Drug_Class_multi", "Best_Hit_ARO")]
+# tax_table(physeq_tmp) <- tax_table(physeq_tmp)[,c("Best_Hit_ARO", "Drug_Class")]
+
+physeq_tmp %>% 
+  tax_glom(., taxrank = "Best_Hit_ARO") %>% 
+  tax_glom(., taxrank = "Drug_Class_multi") -> physeq_drug_multi
+
+taxa_names(physeq_drug_multi) <- tax_table(physeq_drug_multi)[,"Drug_Class_multi"]
+
+physeq_drug_multi
+```
+
+```{r}
+physeq_tmp <- ps_all
+tax_table(physeq_tmp) <- tax_table(physeq_tmp)[,c("Drug_Class_multi", "Best_Hit_ARO")]
+# tax_table(physeq_tmp) <- tax_table(physeq_tmp)[,c("Best_Hit_ARO", "Drug_Class")]
+
+physeq_tmp %>% 
+  tax_glom(., taxrank = "Best_Hit_ARO") %>% 
+  tax_glom(., taxrank = "Drug_Class_multi") -> ps_all_drug_multi
+
+taxa_names(ps_all_drug_multi) <- tax_table(ps_all_drug_multi)[,"Drug_Class_multi"]
+
+ps_all_drug_multi
+```
+
+
+```{r}
+physeq_tmp <- physeq
+tax_table(physeq_tmp) <- tax_table(physeq_tmp)[,c("Drug_Class", "Best_Hit_ARO")]
+# tax_table(physeq_tmp) <- tax_table(physeq_tmp)[,c("Best_Hit_ARO", "Drug_Class")]
+
+physeq_tmp %>% 
+  tax_glom(., taxrank = "Best_Hit_ARO") %>% 
+  tax_glom(., taxrank = "Drug_Class") -> physeq_drug
+
+taxa_names(physeq_drug) <- tax_table(physeq_drug)[,"Drug_Class"]
+
+physeq_drug
+```
+
+```{r}
+physeq_tmp <- physeq
+
+tax_table(physeq_tmp) <- tax_table(physeq_tmp)[,c("Best_Hit_ARO", "Drug_Class")]
+
+physeq_tmp %>% 
+  tax_glom(., taxrank = "Best_Hit_ARO") -> physeq_AMRgn
+
+taxa_names(physeq_AMRgn) <- tax_table(physeq_AMRgn)[,"Best_Hit_ARO"]
+
+physeq_AMRgn
+```
+
+
+Define colors for Drug classes:
+
+```{r}
+
+set.seed(123)
+col <- distinctColorPalette(ntaxa(ps_all_drug_multi))
+
+names(col) <- taxa_names(ps_all_drug_multi)
+```
+
+
+Define colors for Treatment - no matter concentration / fermentation / reactors:
+
+```{r}
+# myCol <- viridis::viridis(n = get_variable(physeq_drug_multi, "Treatment") %>%  
+#                             levels() %>% 
+#                             length() + 20)
+# myCol
+# 
+# scales::show_col(myCol,
+#                  cex_label = 0.5)
+```
+
+
+```{r}
+treat_col = get_variable(physeq_drug_multi, "Treatment") %>%  
+  levels()
+
+
+# treat_col <- c("#1B1919", "#7C8181", "#00468B", "#2589AE","#029AAF", "#463161", "#7C66A2", "#ad99cf")
+
+treat_col <- c("#1B1919", "#7C8181", "#00468B", "#3085AD", "#42B540", "#9E172E", "#B43C15", "#AD7987")
+
+
+names(treat_col) <- get_variable(physeq_drug_multi, "Treatment") %>%  
+  levels()
+
+scales::show_col(treat_col,
+                 cex_label = 0.5)
+```
+
+
+
+```{r, fig.height=16, fig.width=8}
+physeq_AMRgn %>%
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  left_join(tax_mapping,
+            by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+            suffix = c("_x", "")) %>% 
+  mutate(Best_Hit_ARO = fct_reorder(Best_Hit_ARO, Abundance, .desc=FALSE)) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # df$Item = factor(df$Item, levels = a_lot$Item[order(a_lot$percent)])
+  
+  # tmp$variable <- factor(melted$variable, levels=rev(levels(melted$variable)))
+  # mutate(Best_Hit_ARO =  fct_reorder(Best_Hit_ARO, logTPM)) %>% 
+  # mutate(Best_Hit_ARO =  fct_relevel(Best_Hit_ARO, logTPM)) %>% 
+  # separate_rows(., Drug_Class,sep = '; ',convert = TRUE) %>% 
+  ggplot(mapping = aes(x = as.factor(Day_of_Treatment),
+                       y = Best_Hit_ARO,
+                       fill = logTPM,
+  )) +
+  facet_grid(Drug_Class_multi  ~ Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free") + #,  labeller = labeller(Drug_Class_multi = label_wrap_gen(width = 15)))  +
+  # facet_grid(. ~ Reactor_Treatment, scales = "free", space = "free", drop = TRUE,labeller = labeller(Drug.Class = label_wrap_gen(width = 15))) +
+  #we adjust the vertical labels such that it is printed correctly. 
+  geom_tile() +
+  theme_light()  +
+  # scale_fill_viridis_c(name = "TPM",
+  #                      na.value = "transparent", trans = scales::pseudo_log_trans(sigma = 0.1),
+  #                      # trans =  scales::pseudo_log_trans(sigma = 1),
+  #                      breaks = c(1, 10, 50, 100, 400), labels = c(1, 10, 50, 100, 400),
+  #                      limits = c(0, 500)) + #need to make sure that we include max value of tpm as upper limit
+  scale_fill_viridis_c(na.value = "transparent") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        strip.text.x = element_text(size=8),
+        #change the size of the label and the angle so the text is printed horizontally
+        strip.text.y = element_text(size = 7,angle=0)) -> perma_bbuble
+
+perma_bbuble +
+  theme(legend.position = "bottom") +
+  scale_y_discrete(label = function(x) stringr::str_trunc(x, 34, side = "center"))  -> perma_bbuble
+
+perma_bbuble
+
+perma_bbuble %>%
+  export::graph2ppt(append = TRUE, width = 8, height = 16,
+                    file = out_pptx)
+
+
+# perma_bbuble + facet_null() +  facet_grid(.  ~  Model + Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free") +
+#  ggside::geom_ysidetile(aes(x = 0, yfill = col[perma_bbuble$data$Drug_Class_multi]), show.legend = TRUE) -> test_annot
+# 
+# 
+# test_annot
+```
+
+pheatmap:
+```{r, fig.height=18, fig.width=24}
+physeq_AMRgn %>%
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::tax_glom("Best_Hit_ARO") %>% 
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  # left_join(tax_mapping,
+  #           by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #           suffix = c("_x", "")) %>% 
+  # mutate(Sample = fct_reorder(Sample, Model,Treatment,Fermentation,Antibiotic_mg.mL, Day_of_Treatment )) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1)) -> pheatmap_df
+
+
+pheatmap_df %>% 
+  # replace(is.na(.), 0)  %>% 
+  # select(Sample, Best_Hit_ARO, logTPM) %>% 
+  group_by(Sample, Best_Hit_ARO) %>%
+  pivot_wider(names_from =  Sample, Best_Hit_ARO,
+              values_from = logTPM) %>% 
+  column_to_rownames("Best_Hit_ARO") -> pheatmap_samples
+
+pheatmap_samples %>% 
+  replace(is.na(.), 0)  %>% 
+  t() %>% 
+  vegdist(na.rm = TRUE) %>% 
+  hclust() -> clust_t
+
+# pheatmap_samples %>% 
+#     replace(is.na(.), 0)  %>%
+#     vegdist(na.rm = TRUE) %>% 
+#   # cor() %>% 
+#   hclust() -> clust
+
+pheatmap_samples %>% 
+  pheatmap::pheatmap(cluster_rows = FALSE ,
+                     cluster_cols = clust_t,
+                     na_col = "transparent",
+                     annotation_row = tax_mapping %>% rownames_to_column('tmp_col') %>% 
+                       filter(Best_Hit_ARO %in% taxa_names(physeq_AMRgn)) %>% 
+                       distinct(Best_Hit_ARO, .keep_all = TRUE) %>% 
+                       column_to_rownames("Best_Hit_ARO") %>% 
+                       select(Drug_Class_multi, Resistance_Mechanism_multi),
+                     annotation_colors = list("Drug_Class_multi" = col,
+                                              "Treatment" = treat_col),
+                     annotation_col = physeq_AMRgn %>% 
+                       sample_data() %>% 
+                       data.frame() %>% 
+                       select(Model,Treatment,Fermentation,Antibiotic_mg.mL, Day_of_Treatment)) -> p_pheat
+
+
+p_pheat %>% 
+print()
+
+p_pheat %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 18,
+                    file = out_pptx)
+```
+
+```{r, fig.height=6, fig.width=10}
+
+physeq_AMRgn %>%
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  left_join(tax_mapping,
+            by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+            suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = Resistance_Mechanism_multi)) +   
+  geom_bar( stat = "identity", colour="black", size=0.025) +
+  facet_grid(.  ~   Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("log10 TPM") + 
+  theme_light() -> p_mec
+
+p_mec %>% 
+  ggpubr::set_palette("jco") -> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 6,
+                    file = out_pptx)
+```
+
+```{r, fig.height=6, fig.width=11}
+# https://newbedev.com/how-to-control-ordering-of-stacked-bar-chart-using-identity-on-ggplot2
+physeq_AMRgn %>%
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  left_join(tax_mapping,
+            by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+            suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = Resistance_Mechanism_multi)) +   
+  geom_bar( stat = "identity", position = "fill", colour="black", size=0.00125) +
+  facet_grid(.  ~ Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("Proportion") + 
+  theme_light() -> p_mec
+
+p_mec %>% 
+  ggpubr::set_palette("jco") -> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 6,
+                    file = out_pptx)
+```
+
+
+```{r, fig.height=6, fig.width=11}
+physeq_drug_multi %>%
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = Drug_Class_multi)) +   
+  geom_bar( stat = "identity", colour="black", size=0.025) +
+  scale_fill_manual(values=col) +
+  #geom_bar(stat="identity",colour=NA,size=0) +
+  facet_grid( ~  Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("log10 TPM") + 
+  theme_light() -> p_drug
+
+p_drug
+
+p_drug %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 6,
+                    file = out_pptx)
+```
+
+```{r, fig.height=6, fig.width=11}
+
+physeq_drug_multi %>%
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = Drug_Class_multi)) +   
+  geom_bar( stat = "identity", position="fill", colour="black", size=0.025) +
+  scale_fill_manual(values=col) +
+  #geom_bar(stat="identity",colour=NA,size=0) +
+  facet_grid(. ~ Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x", drop = TRUE) +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("Proportion") +
+  theme_light() -> p_drug_prop
+
+p_drug_prop
+
+p_drug_prop %>%
+  export::graph2ppt(append = TRUE, width = 11, height = 5,
+                    file = out_pptx)
+
+```
+
+
+```{r, include= TRUE, eval= TRUE}
+physeq_AMRgn_round <- physeq_AMRgn
+round(otu_table(physeq_AMRgn_round)) -> otu_table(physeq_AMRgn_round)
+
+
+physeq_AMRgn_round %>% 
+  phyloseq_alphas(phylo = FALSE) -> alpha_df
+
+```
+
+
+```{r, fig.width= 11, fig.height= 4}
+# plot panels for each treatment
+alpha_df %>% 
+  pivot_longer(cols = all_of(c("Observed", "diversity_shannon")), values_to = "value", names_to = 'alphadiversiy', values_drop_na  = TRUE) %>%
+  mutate(alphadiversiy = fct_relevel(alphadiversiy, c("Observed", "diversity_shannon"))) %>% 
+  # filter(!is.na(Fermentation)) %>% 
+  # filter(Treatment != "DONOR") %>%
+  ggplot(aes(x = Day_of_Treatment, y = value, color = Treatment, shape = as.factor(Fermentation))) +
+  geom_point() + 
+  geom_line(linetype = "dashed",  size = 0.25,  aes(group = interaction(Treatment,  Fermentation))) +
+  labs(title = "AMR Gene Alpha Diversit",
+       y = "Alpha Diversity", x = "Days (Treatment)") +
+  scale_color_manual(values = treat_col,
+                     na.value = "black") +
+  # facet_grid(alphadiversiy  ~  Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "fixed", drop = TRUE) +
+    facet_grid(alphadiversiy  ~  Antibiotic_mg.mL , scales = "free", space = "fixed", drop = TRUE) +
+    scale_shape_manual(values = c(15, 19), na.value =  17) + 
+  theme_light() -> p_alpha
+
+p_alpha
+
+p_alpha %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 5,
+                    file = out_pptx)
+```
+
+Beta Diversity:
+
+```{r, fig.width= 5, fig.height= 6}
+# physeq_AMRgn %>% 
+#   sample_data() %>% 
+#   data.frame() %>% 
+#   mutate(Antibiotic_mg.mL = replace_na(Antibiotic_mg.mL, 0)) -> sample_data(physeq_AMRgn)
+  # replace(is.na(.), 0)  %>% 
+  # mutate_all(funs(str_replace(., "[^[:alnum:]]", ""))) %>% -> otu_table(physeq) 
+
+physeq_AMRgn %>%
+  phyloseq_compute_bdiv(norm = "pc",
+                        phylo = FALSE,
+                        seed = 123) -> bdiv_list
+
+physeq_AMRgn  %>%
+  # subset_samples(Treatment != "DONOR") %>%
+  phyloseq_plot_bdiv(dlist = bdiv_list,
+                     seed = 123,
+                     axis1 = 1,
+                     axis2 = 2)  -> pcoa
+
+# phyloseq_plot_bdiv(bdiv_list,
+#                    # m = "CoDa",
+#                    seed = 123) -> coda
+# 
+pcoa$wjaccard$layers = NULL
+
+pcoa$wjaccard + geom_point(size=2,
+                           aes(color = Treatment, 
+                               fill = Treatment,
+                               shape = Fermentation %>%  as.factor(),
+                               alpha = Antibiotic_mg.mL)) + 
+  geom_path(arrow = arrow(type = "open", angle = 30, length = unit(0.15, "inches")),
+            size = 0.05, linetype = "dashed", inherit.aes = TRUE, aes(group=Reactor_Treatment), show.legend = FALSE) +
+  scale_alpha_continuous(range=c(0.2, 0.8), breaks = c(0, 20, 90, 200, 600), na.value =  1) +
+  scale_fill_manual(values = treat_col,
+                    na.value = "black") +
+  scale_color_manual(values = treat_col,
+                     na.value = "black") +
+  scale_shape_manual(values = c(15, 19), na.value =  17) + 
+  theme_classic() + guides(fill=FALSE)  -> p1
+
+# p1 + facet_grid(Model ~.)
+p1
+
+p1 %>%
+  export::graph2ppt(append = TRUE, width = 8, height = 6,
+                    file = out_pptx)
+```
+
+```{r, fig.width= 8, fig.height= 6}
+
+physeq_AMRgn %>% 
+  tax_table() %>% 
+  data.frame() %>% 
+  rownames_to_column("id") %>% 
+  mutate(gene = id) %>% 
+  column_to_rownames("id") %>% 
+  as.matrix %>% 
+  tax_table() -> tax_table(physeq_AMRgn)
+
+
+
+physeq_AMRgn  %>%
+  # subset_samples(Treatment != "DONOR") %>% 
+  phyloseq_add_taxa_vector(dist = bdiv_list$wjaccard,
+                           phyloseq = .,
+                           figure_ord = p1,
+                           tax_rank_plot = "Best_Hit_ARO", taxrank_glom = "Best_Hit_ARO",
+                           top_r = 10, fact = 0.4) -> pco_env
+
+# pco_env$plot %>% 
+#   export::graph2ppt(append = TRUE, width = 8, height = 6,
+#                     file = out_pptx)
+pco_env$plot %>% 
+    export::graph2ppt(append = TRUE, width = 8, height = 6,
+                    file = out_pptx)
+
+pco_env$signenvfit %>% 
+  DT::datatable()
+```
+
+```{r, fig.width= 8, fig.height= 6}
+physeq_drug_multi  %>%
+  # subset_samples(Treatment != "DONOR") %>% 
+  phyloseq_add_taxa_vector(dist = bdiv_list$wjaccard,
+                           phyloseq = .,
+                           figure_ord = p1,
+                           tax_rank_plot = "Drug_Class_multi", taxrank_glom = "Drug_Class_multi",
+                           top_r = 10, fact = 0.4) -> pco_env
+
+
+# pco_env$plot + facet_grid(Model ~ .) -> pco_env$plot
+
+pco_env$plot
+
+pco_env$plot  %>%
+  export::graph2ppt(append = TRUE, width = 8, height = 6,
+                    file = out_pptx)
+
+pco_env$signenvfit %>% 
+  DT::datatable()
+```
+
+Make the heatmap pretty 
+```{r, fig.width= 12, fig.height= 4}
+physeq %>% 
+  # speedyseq::tax_glom("Best_Hit_ARO") %>% 
+  speedyseq::psmelt() %>% 
+  rename(TPM = Abundance) %>% 
+  mutate(TPM = na_if(TPM, 0)) %>%
+  # mutate(logTPM = log10(TPM + 1)) %>% 
+  # filter(Drug_Class %in% c("cephalosporin", "glycopeptide")) %>% 
+  # mutate(Drug_Class = fct_relevel(Drug_Class, c("cephalosporin", "glycopeptide"))) %>% 
+  filter(Best_Hit_ARO %in% c("vanZA", "vanYA", "vanXA", "vanA", "vanHA", "vanRA", "CTX-M-1")) %>% 
+  # mutate(Classification = fct_relevel(Classification, c("MAG", "Chromosome", "Plasmid", "Uncertain - plasmid or chromosomal"))) %>% 
+  ggplot(mapping = aes(x = Day_of_Treatment ,
+                       y = Best_Hit_ARO ,
+                       fill = TPM,
+  )) +
+  facet_grid(Drug_Class ~  Model + Treatment + Fermentation + Antibiotic_mg.mL, scales = "free",  space = "fixed", drop = TRUE) +
+  # facet_grid(. ~ Treatment,  scales = "free", space = "free", drop = TRUE) +
+  # facet_grid(. ~ Reactor_Treatment, scales = "free", space = "free", drop = TRUE,labeller = labeller(Drug_Class = label_wrap_gen(width = 15))) +
+  #we adjust the vertical labels such that it is printed correctly. 
+  geom_tile() +
+  theme_bw()  +
+  # scale_fill_viridis_c(name = "TPM",
+  #                      na.value = "transparent", trans = scales::pseudo_log_trans(sigma = 0.1),
+  #                      # trans =  scales::pseudo_log_trans(sigma = 1),
+  #                      breaks = c(1, 10, 50, 100, 400), labels = c(1, 10, 50, 100, 400),
+  #                      limits = c(0, 500)) + #need to make sure that we include max value of tpm as upper limit
+  scale_fill_viridis_c(na.value = "transparent") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        strip.text.x = element_text(size=8),
+        #change the size of the label and the angle so the text is printed horizontally
+        strip.text.y = element_text(size = 7,angle=0)) -> perma_bbuble
+
+perma_bbuble +
+  theme(legend.position = "bottom") -> perma_bbuble
+
+perma_bbuble
+
+
+perma_bbuble %>%
+  export::graph2ppt(append = TRUE, width = 10, height = 4,
+                    file = out_pptx)
+```
+
+
+```{r}
+tax_table(physeq) %>% 
+  data.frame() %>% 
+  select(c("Best_Hit_ARO", "Strain")) %>% 
+  group_by(Strain) %>% 
+  add_count() %>% 
+  arrange(-n)
+```
+
+Define colors for Taxonomic information:
+
+```{r}
+ps_all %>%  speedyseq::psmelt() %>%  pull(Strain) %>%  unique() -> strains
+set.seed(456)
+col_strains <- distinctColorPalette(length(strains),
+                                    runTsne = FALSE)
+
+names(col_strains) <- strains
+```
+
+```{r, fig.height=10, fig.width=10}
+physeq %>%
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  # left_join(tax_mapping,
+  #         by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #         suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = Strain)) +  
+  geom_bar( stat = "identity", colour="black", size=0.025) +
+  facet_grid(Drug_Class_multi  ~  Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("log10 TPM") + 
+  theme_light() +
+  scale_fill_manual(name = "", values = col_strains) +
+  theme(legend.position = "bottom") -> p_mec
+
+# p_mec %>% 
+#   ggpubr::set_palette("jco") -> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 12,
+                    file = out_pptx)
+```
+
+```{r, fig.height=10, fig.width=10}
+
+physeq %>%
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  # left_join(tax_mapping,
+  #         by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #         suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = Drug_Class_multi)) +  
+  geom_bar( stat = "identity", colour="black", size=0.025) +
+  facet_grid( Strain   ~ Model +  Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("log10 TPM") + 
+  theme_light() +
+  scale_fill_manual(name = "", values = col) +
+  theme(legend.position = "bottom") -> p_mec
+
+# p_mec %>% 
+#   ggpubr::set_palette("jco") -> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 12,
+                    file = out_pptx)
+```
+
+```{r, fig.height=16, fig.width=18}
+# see Sneha's & Hannah's code for "plot.df.sep <- separate_rows(plot.df, Drug.Class,sep = '; ',convert = TRUE)"
+
+physeq %>%
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  # left_join(tax_mapping,
+  #         by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #         suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = Strain)) +  
+  geom_bar( stat = "identity", colour="black", position = "fill", size=0.05) +
+  facet_grid(Drug_Class_multi  ~ Model +  Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("Proportion") + 
+  theme_light() +
+  scale_fill_manual(name = "", values = col_strains) +
+  theme(legend.position = "bottom") -> p_mec
+
+# p_mec %>% 
+#   ggpubr::set_palette("jco") -> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 12,
+                    file = out_pptx)
+```
+
+```{r, fig.height=6, fig.width=11}
+# see Sneha's & Hannah's code for "plot.df.sep <- separate_rows(plot.df, Drug.Class,sep = '; ',convert = TRUE)"
+
+physeq %>%
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  # left_join(tax_mapping,
+  #         by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #         suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = Strain)) +  
+  geom_bar( stat = "identity", colour="black", size=0.025) +
+  facet_grid(.  ~ Model +  Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("log10 TPM") + 
+  theme_light() +
+  scale_fill_manual(name = "", values = col_strains) +
+  theme(legend.position = "bottom") -> p_mec
+
+# p_mec %>% 
+#   ggpubr::set_palette("jco") -> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 6,
+                    file = out_pptx)
+```
+
+```{r, fig.height=6, fig.width=11}
+# see Sneha's & Hannah's code for "plot.df.sep <- separate_rows(plot.df, Drug.Class,sep = '; ',convert = TRUE)"
+
+physeq %>%
+  microbiome::transform(transform = "log10p") %>% 
+  speedyseq::psmelt() %>% 
+  # left_join(tax_mapping,
+  #         by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #         suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  # ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = fct_reorder(Strain, logTPM))) +   
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = reorder(Strain, logTPM, FUN=median, na.rm = TRUE))) +
+  geom_bar( stat = "identity", position="fill", colour="black", size=0.025) +
+  facet_grid(.  ~ Model +  Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("Proportion") + 
+  theme_light() +
+  scale_fill_manual(name = "", values = col_strains) +
+  theme(legend.position = "bottom") -> p_mec
+
+# p_mec %>% 
+#   ggpubr::set_palette("jco") -> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 14, height = 6,
+                    file = out_pptx)
+```
+
+```{r}
+sessionInfo()
+```
+
