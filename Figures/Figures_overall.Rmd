@@ -137,7 +137,17 @@ physeq_simplify_tax <- function(ps, tax_sel, round_otu = FALSE){
 ps_CARD %>% 
   sample_data() %>% 
   data.frame() %>% 
-  select(-input:-index2) -> sample_data(ps_CARD)
+  select(-input:-index2) %>% 
+  mutate(
+    Period = case_when(
+      Day_of_Treatment == -2 | Day_of_Treatment == -3 | Day_of_Treatment == -6 | Day_of_Treatment == -7 ~ "pret",
+      Day_of_Treatment < 10 & Day_of_Treatment >= 0 ~ "t1",
+      Day_of_Treatment < 20 & Day_of_Treatment >= 10 ~ "t2",
+      Day_of_Treatment < 30 & Day_of_Treatment >= 20 ~ "t3",
+      Day_of_Treatment < 40 & Day_of_Treatment >= 30 ~ "t4",
+      Day_of_Treatment < 50 & Day_of_Treatment >= 40 ~ "t5",
+    )
+  ) %>% mutate(Period = base::replace(Period, Treatment == "DONOR", "pret")) -> sample_data(ps_CARD)
 ```
 
 
@@ -148,12 +158,32 @@ ps_CARD %>%
   readRDS() %>% 
   subset_samples(Enrichment == "NotEnriched" ) %>% 
   subset_samples(Sample_description %!in% c("TR5-15", "TR4-1")) %>% 
-  subset_samples(Day_from_Inoculum >= 30) %>% 
+  subset_samples(Day_from_Inoculum >= 30 | Experiment == "Cecum") %>% 
   subset_samples(Experiment != "Batch") %>% 
   subset_samples(is.na(Paul)) %>% 
-  subset_samples(Day_of_Treatment >= -4) %>% 
+  subset_samples(Day_of_Treatment >= -4 | Experiment == "Cecum") %>% 
   # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> ps_16S
+
+# add Day_of_Treatment groups.
+
+ps_16S %>% 
+  sample_data() %>% 
+  data.frame() %>% 
+  mutate(Treatment = base::replace(Treatment, Experiment == "Cecum", "DONOR")) %>%
+  # mutate( Treatment  = case_when(Experiment == "Cecum" ~ "DONOR",
+  #                               TRUE ~ Treatment)) %>% 
+  # mutate(Treatment = ifelse(Experiment == "Cecum", "Donor", Treatment)) %>% 
+  mutate(
+    Period = case_when(
+      Day_of_Treatment == -2 | Day_of_Treatment == -3 | Day_of_Treatment == -6 | Day_of_Treatment == -7 ~ "pret",
+      Day_of_Treatment < 10 & Day_of_Treatment >= 0 ~ "t1",
+      Day_of_Treatment < 20 & Day_of_Treatment >= 10 ~ "t2",
+      Day_of_Treatment < 30 & Day_of_Treatment >= 20 ~ "t3",
+      Day_of_Treatment < 40 & Day_of_Treatment >= 30 ~ "t4",
+      Day_of_Treatment < 50 & Day_of_Treatment >= 40 ~ "t5",
+    )
+  ) %>% mutate(Period = base::replace(Period, Treatment == "DONOR", "pret")) -> sample_data(ps_16S)
 ```
 
 Then:mOTUS, metaphlan, and SQM ORF/genes...
@@ -220,7 +250,7 @@ ps_16S %>%
 
 <https://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=6>
 ```{r, out.width = "50%",fig.width = 4.3}  
-treat_col <- c("#1B1919", "#7C8181",'#d73027','#fc8d59','#fee090','#4575b4','#91bfdb', '#e0f3f8')
+treat_col <- c("#3CB371", "#7C8181",'#d73027','#fc8d59','#fee090','#4575b4','#91bfdb', '#e0f3f8')
 
 names(treat_col) <- get_variable(ps_CARD, "Treatment") %>%  
   levels()
@@ -274,7 +304,7 @@ names(conc_stroke) <- sample_data(ps_CARD)$Antibiotic_mg.mL %>%  levels()
 #   values = c(`A` = 2, `B` = 1, `C` = 2)
 # )
 
-theme_set(theme_classic()+ theme(legend.position = 'bottom'))
+theme_set(theme_classic() + theme(legend.position = 'bottom'))
 ```
 
 <https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing>
@@ -286,11 +316,13 @@ theme_set(theme_classic()+ theme(legend.position = 'bottom'))
 
 
 ```{r}
-plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point_size = 2.5, color = "Treatment", fill  = "Treatment", shape = "Antibiotic", alpha = "Antibiotic_mg.mL", facet_formula = paste0("alphadiversiy ~  Model "), ylab = "Resistome alpha-diversity", xlab = "Days (Treatment)", measures = c("Observed", "diversity_shannon", "evenness_pielou"), path_group = "interaction(Model, Fermentation, Reactor_Treatment)"){
+plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point_size = 2.5, color = "Treatment", fill  = "Treatment", shape = "Antibiotic", alpha = "Antibiotic_mg.mL", facet_formula = paste0("alphadiversiy ~  Model "), ylab = "Resistome alpha-diversity", xlab = "Days (Treatment)", measures = c("Observed"), path_group = "interaction(Model, Fermentation, Reactor_Treatment)"){
   
   df %>% 
     pivot_longer(cols = all_of(measures), values_to = "value", names_to = 'alphadiversiy', values_drop_na  = TRUE) %>%
-    mutate(alphadiversiy = fct_relevel(alphadiversiy, measures)) %>% 
+    mutate(alphadiversiy = fct_relevel(alphadiversiy, measures)) -> df_ready
+  
+  df_ready %>% 
     ggplot(aes_string(x = x, y = y, color = color, fill = fill, shape = shape, alpha = alpha)) + #shape = Fermentation
     geom_point(size = point_size) + 
     geom_line(linetype = 2,  size = 0.5,  aes_string(group = path_group)) +
@@ -302,43 +334,111 @@ plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point
     facet_grid(as.formula(facet_formula), scales = "free", space = "fixed", drop = TRUE) +
     scale_shape_manual(name = "" ,values = antibio_shape, na.value =  17) +
     scale_alpha_discrete(name = "", range=c(0.6, 1), na.value =  0.6) + 
-    geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") -> p_alpha
+    geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") -> p_alpha_both
   
-  return(p_alpha)
+  return(p_alpha_both)
 }
 ```
 
 
 
 ## AMR genes:
-```{r, message= FALSE}
+```{r, warning= FALSE, message= FALSE}
 ps_CARD %>% 
-  physeq_simplify_tax(round_otu = TRUE, tax_sel = c("Best_Hit_ARO")) %>% 
-  phyloseq_alphas(phylo = FALSE) -> alpha_Best_Hit_ARO
+  physeq_simplify_tax(round_otu = TRUE, tax_sel = c("Best_Hit_ARO")) -> ps_AMRgn
+
+ps_AMRgn %>% 
+  phyloseq_alphas(phylo = FALSE) -> alpha_AMRgn
+
+alpha_AMRgn %>% 
+  group_by(Model, Fermentation, Antibiotic, Antibiotic_mg.mL, Treatment, Phase, Period) %>% 
+  rstatix::get_summary_stats(Observed, type = "common") %>% 
+  DT::datatable()
 ```
 
-```{r,warning= FALSE, message= FALSE}
-alpha_Best_Hit_ARO %>% 
-  plot_alpha_div_NRP72() -> p_a_AMRgn
+```{r, message= FALSE}
+
+alpha_AMRgn %>% 
+  plot_alpha_div_NRP72(measures ="Observed") -> p_a_AMRgn
 
 p_a_AMRgn # + geom_smooth(alpha = 0.05, linetype=0)
 ```
 
 ## 16S:
+
+```{r, warning= FALSE, message= FALSE}
+ps_CARD %>% 
+  physeq_simplify_tax(round_otu = TRUE, tax_sel = c("Best_Hit_ARO")) -> ps_AMRgn
+
+ps_AMRgn %>% 
+  phyloseq_alphas(phylo = FALSE) -> alpha_AMRgn
+
+alpha_AMRgn %>% 
+  group_by(Model, Fermentation, Antibiotic, Antibiotic_mg.mL, Treatment, Phase, Period) %>% 
+  rstatix::get_summary_stats(Observed, type = "common") %>% 
+  DT::datatable()
+```
+
+
 ```{r, message= FALSE}
 ps_16S %>% 
-  rarefy_even_depth(sample.size = 5000, rngseed = 123) %>% 
+  rarefy_even_depth(sample.size = 5000, rngseed = 123) -> ps_16S_rare
+
+ps_16S_rare %>% 
   phyloseq_alphas(phylo = FALSE) -> alpha_16S
+
+alpha_16S %>% 
+  group_by(Model, Fermentation, Antibiotic, Antibiotic_mg.mL, Treatment, Phase, Period) %>% 
+  rstatix::get_summary_stats(Observed, type = "common") %>% 
+  DT::datatable()
+```
+
+
+```{r, message= FALSE}
+alpha_16S %>% 
+  plot_alpha_div_NRP72(path_group = "interaction(Fermentation, Reactor_Treatment)", ylab = "Bacterial community alpha-diversity", measures ="Observed") -> p_a_16S
+
+p_a_16S
 ```
 
 ```{r,warning= FALSE, message= FALSE}
-alpha_16S %>% 
-  plot_alpha_div_NRP72(path_group = "interaction(Fermentation, Reactor_Treatment)", ylab = "Bacterial community alpha-diversity") -> p_a_16S
-
-p_a_16S + geom_smooth(alpha = 0.05, linetype=0, level = 0.90)
+p_a_16S + facet_null() + facet_grid(Model ~ alphadiversiy, scales = "free", space = "fixed", drop = TRUE) +
+  geom_smooth(alpha = 0.05, linetype=0, level = 0.90)
 ```
 
-+ boxplot phases pour chicken?
+```{r,warning= FALSE, message= FALSE}
+# p_a_16S$chick + facet_null() + facet_wrap(Model ~ .,scales = "free", ncol = 1, nrow = 2) + geom_point() +
+#   # geom_smooth(alpha = 0.05, linetype=0, level = 0.90) + 
+#   geom_boxplot(aes(group = interaction(Period, Treatment),
+#                    color = Treatment,
+#                    fill = Treatment,
+#                    outlier.shape = NA, outlier.colour = NA),
+#                # position = position_dodge2(width = .75),
+#                position = position_dodge2(preserve = "total"),
+#                alpha = 0.8) -> p_combine
+# 
+# p_combine + scale_color_manual(name = "", values = treat_col,
+#                                na.value = "transparent") +
+#   scale_fill_manual(name = "", values = treat_col,
+#                     na.value = "transparent")
+# 
+# p_combine$layers[[1]] <- NULL
+# p_combine$layers[[3]] <- NULL
+# 
+# 
+# p_combine
+```
+
+
+```{r}
+ggpubr::ggboxplot(p_a_16S$data, x = "Period", y = "value", color = "Treatment", fill = "Treatment",  add = "jitter", alpha = 0.6)  + 
+  scale_color_manual(name = "", values = treat_col,
+                     na.value = "transparent") +
+  scale_fill_manual(name = "", values = treat_col,
+                    na.value = "transparent") +
+  ylab("Bacterial community alpha-diversity")
+
+```
 
 # Beta-diversity:
 
@@ -346,16 +446,23 @@ p_a_16S + geom_smooth(alpha = 0.05, linetype=0, level = 0.90)
 plot_beta_NRP72 <- function(ps,
                             color = "Treatment", 
                             fill = "Treatment",
-                            shape = "Antibiotic",
+                            shape = "Fermentation",
                             alpha = "Antibiotic_mg.mL",
+                            label = NA,
                             path_group = "interaction(Model, Fermentation, Reactor_Treatment)",
-                            point_size = 2.5){
+                            point_size = 2.5,
+                            tax_rank_plot = "ASV",
+                            taxrank_glom = FALSE,
+                            top_r = 10, 
+                            fact = 0.4){
   
-  
+  #### ----------------------------------------------
   ps %>%
     phyloseq_compute_bdiv(norm = "pc",
                           phylo = FALSE,
                           seed = 123) -> bdiv_list
+  
+  #### ----------------------------------------------
   
   ps  %>%
     # subset_samples(Treatment != "DONOR") %>%
@@ -370,6 +477,8 @@ plot_beta_NRP72 <- function(ps,
   # 
   pcoa$wjaccard$layers = NULL
   
+  #### ----------------------------------------------
+  
   pcoa$wjaccard + geom_point(size= point_size,
                              aes_string(color = color, 
                                         fill = fill,
@@ -381,42 +490,159 @@ plot_beta_NRP72 <- function(ps,
                        na.value = "black") +
     scale_fill_manual(name = "", values = treat_col,
                       na.value = "black") +
-    scale_shape_manual(name = "" ,values = antibio_shape, na.value =  17) +
+    scale_shape_manual(name = "" ,values = fermentaion_shape, na.value =  17) +
     scale_alpha_discrete(name = "", range=c(0.6, 1), na.value =  0.6) +
-    theme(legend.position = "bottom") -> p1
+    theme(legend.position = "bottom") + 
+    ggrepel::geom_text_repel(cex=2,aes_string(label=label)) -> p_pcoa
+  
+  #### ----------------------------------------------
+  
+  # ps %>% 
+  #   tax_table() %>% 
+  #   data.frame() %>% 
+  #   rownames_to_column("id") %>% 
+  #   mutate(gene = id) %>% 
+  #   column_to_rownames("id") %>% 
+  #   as.matrix() %>% 
+  #   tax_table() -> tax_table(ps)
+  
+  #### ----------------------------------------------
+  
+  
+  ps  %>%
+    # subset_samples(Treatment != "DONOR") %>% 
+    phyloseq_add_taxa_vector(dist = bdiv_list$wjaccard,
+                             phyloseq = .,
+                             figure_ord = p_pcoa,
+                             tax_rank_plot = tax_rank_plot, taxrank_glom = taxrank_glom,
+                             top_r = top_r, fact = fact, join_cbind = "cbind") -> pco_env
+  
+  # pco_env$plot %>% 
+  #   export::graph2ppt(append = TRUE, width = 8, height = 6,
+  #                     file = out_pptx)
   
   # p1 + facet_grid(Model ~.)
-  return(p1)
+  #### ----------------------------------------------
+  
+  return(out = list("pcoa" = p_pcoa,
+                    "envfit" = pco_env$plot,
+                    "bdiv_list" = bdiv_list))
 }
 ```
 
-```{r}
+```{r, message= FASE, warning= FALSE}
 ps_CARD %>% 
-  physeq_simplify_tax(round_otu = TRUE, tax_sel = c("Best_Hit_ARO")) %>% 
+  physeq_simplify_tax(round_otu = FALSE, tax_sel = c("Best_Hit_ARO")) %>% 
   plot_beta_NRP72(path_group = "interaction(Model, Fermentation, Reactor_Treatment)") -> p_b_AMRgn
 
-
-p_b_AMRgn + facet_grid(Model ~.)
+p_b_AMRgn$pcoa + facet_grid(Model ~.)
 ```
 
-```{r}
+```{r, message= FASE, warning= FALSE}
 ps_CARD %>% 
-  physeq_simplify_tax(round_otu = TRUE, tax_sel = c("Best_Hit_ARO")) %>% 
-  subset_samples(Model == "Chicken") %>% 
-  plot_beta_NRP72(path_group = "interaction(Model, Fermentation, Reactor_Treatment)") -> p_b_chick_AMRgn
+  subset_samples(Model == "Human") %>% 
+  physeq_simplify_tax(round_otu = FALSE, tax_sel = c("Best_Hit_ARO")) %>% 
+  plot_beta_NRP72(path_group = "interaction(Model, Fermentation, Reactor_Treatment)", label = "Day_of_Treatment") -> p_b_chick_AMRgn
 
-p_b_chick_AMRgn
+p_b_chick_AMRgn$pcoa# %>% 
+  # plotly::ggplotly()
 ```
+
+```{r, message= FASE, warning= FALSE}
+ps_CARD %>% 
+  subset_samples(Model == "Human") %>% 
+  physeq_simplify_tax(round_otu = FALSE, tax_sel = c("Best_Hit_ARO")) -> ps_tmp
+
+ps_tmp %>% 
+  tax_table() %>% 
+  data.frame() %>% 
+  rownames_to_column("id") %>% 
+  mutate(gene = id) %>% 
+  column_to_rownames("id") %>% 
+  as.matrix %>% 
+  tax_table() -> tax_table(ps_tmp)
+
+ps_tmp  %>%
+  # subset_samples(Treatment != "DONOR") %>% 
+  phyloseq_add_taxa_vector(dist = p_b_chick_AMRgn$bdiv_list$wjaccard,
+                           phyloseq = .,
+                           figure_ord = p_b_chick_AMRgn$pcoa,
+                           tax_rank_plot = "Drug_Class", taxrank_glom = FALSE,
+                           top_r = 10, fact = 0.4) -> pco_env
+
+
+pco_env$plot
+# pco_env$plot %>% 
+#   export::graph2ppt(append = TRUE, width = 8, height = 6,
+#                     file = out_pptx)
+```
+
+```{r, message= FASE, warning= FALSE}
+ps_CARD %>% 
+  subset_samples(Model == "Chicken") %>% 
+  physeq_simplify_tax(round_otu = FALSE, tax_sel = c("Best_Hit_ARO")) %>% 
+  plot_beta_NRP72(path_group = "interaction(Model, Fermentation, Reactor_Treatment)", label = "Day_of_Treatment") -> p_b_chick_AMRgn
+
+p_b_chick_AMRgn$pcoa# %>% 
+  # plotly::ggplotly()
+```
+
+```{r, message= FASE, warning= FALSE}
+ps_CARD %>% 
+  subset_samples(Model == "Chicken") %>% 
+  physeq_simplify_tax(round_otu = FALSE, tax_sel = c("Best_Hit_ARO")) -> ps_tmp
+
+ps_tmp %>% 
+  tax_table() %>% 
+  data.frame() %>% 
+  rownames_to_column("id") %>% 
+  mutate(gene = id) %>% 
+  column_to_rownames("id") %>% 
+  as.matrix %>% 
+  tax_table() -> tax_table(ps_tmp)
+
+ps_tmp  %>%
+  # subset_samples(Treatment != "DONOR") %>% 
+  phyloseq_add_taxa_vector(dist = p_b_chick_AMRgn$bdiv_list$wjaccard,
+                           phyloseq = .,
+                           figure_ord = p_b_chick_AMRgn$pcoa,
+                           tax_rank_plot = "Drug_Class_multi", taxrank_glom = FALSE,
+                           top_r = 10, fact = 0.4) -> pco_env
+
+
+pco_env$plot
+# pco_env$plot %>% 
+#   export::graph2ppt(append = TRUE, width = 8, height = 6,
+#                     file = out_pptx)
+```
+
 
 
 ```{r}
 ps_CARD %>% 
   physeq_simplify_tax(round_otu = TRUE, tax_sel = c("Best_Hit_ARO")) %>% 
   subset_samples(Model == "Human") %>% 
-  plot_beta_NRP72(path_group = "interaction(Model, Fermentation, Reactor_Treatment)") -> p_b_hum_AMRgn
+  plot_beta_NRP72(path_group = "interaction(Reactor, Treatment, Fermentation)") -> p_b_hum_AMRgn
 
 p_b_hum_AMRgn
 ```
+
+Combine plots:
+
+Resistome + 
+```{r}
+# ggarrange(
+#   p_a_AMRgn$chick,                # First row with line plot
+#   # Second row with box and dot plots
+#   ggarrange(bxp, dp, ncol = 2, labels = c("B", "C")), 
+#   nrow = 2, 
+#   labels = "A"       # Label of the line plot
+#   ) 
+# ggpubr::ggarrange(p_a_AMRgn$chick, p_a_AMRgn$human, ncol = 2, labels = c("A", "B"), common.legend = TRUE) 
+# ggpubr::ggarrange(p_b_chick_AMRgn, p_b_hum_AMRgn, ncol = 2, labels = c("A", "B"), common.legend = TRUE) 
+
+```
+
 TODO add envfit in function run 16S...
 
 ```{r, fig.width= 8, fig.height= 6}
