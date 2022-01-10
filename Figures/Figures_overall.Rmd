@@ -124,6 +124,13 @@ physeq_simplify_tax <- function(ps, tax_sel, round_otu = FALSE){
 
 ```
 
+```{r}
+export_ppt = TRUE
+export_ppt_width = NULL
+export_ppt_height = NULL
+out_pptx = here::here("output/plots.pptx")
+```
+
 # Import data + cleaning/ colors/ factors:
 
 ## Data
@@ -380,7 +387,7 @@ alpha_AMRgn %>%
 ```
 
 
-```{r, message= FALSE}
+```{r, message= FALSE, warnings = FALSE}
 ps_16S %>% 
   rarefy_even_depth(sample.size = 5000, rngseed = 123) -> ps_16S_rare
 
@@ -399,11 +406,31 @@ alpha_16S %>%
   plot_alpha_div_NRP72(path_group = "interaction(Fermentation, Reactor_Treatment)", ylab = "Bacterial community alpha-diversity", measures ="Observed") -> p_a_16S
 
 p_a_16S
+
+
+if(export_ppt == TRUE)
+{
+  p_a_16S %>% 
+    export::graph2ppt(append = TRUE, width = export_ppt_width, height = export_ppt_height,
+                      file = out_pptx)
+}
+
 ```
 
 ```{r,warning= FALSE, message= FALSE}
 p_a_16S + facet_null() + facet_grid(Model ~ alphadiversiy, scales = "free", space = "fixed", drop = TRUE) +
-  geom_smooth(alpha = 0.05, linetype=0, level = 0.90)
+  geom_smooth(alpha = 0.05, linetype=0, level = 0.90) -> p_tmp
+
+
+p_tmp
+
+if(export_ppt == TRUE)
+{
+  p_tmp %>% 
+    export::graph2ppt(append = TRUE, width = export_ppt_width, height = export_ppt_height,
+                      file = out_pptx)
+}
+
 ```
 
 ```{r,warning= FALSE, message= FALSE}
@@ -431,12 +458,23 @@ p_a_16S + facet_null() + facet_grid(Model ~ alphadiversiy, scales = "free", spac
 
 
 ```{r}
-ggpubr::ggboxplot(p_a_16S$data, x = "Period", y = "value", color = "Treatment", fill = "Treatment",  add = "jitter", alpha = 0.6)  + 
+p_a_16S$data %>% 
+  filter(Model == "Chicken") %>% 
+ggpubr::ggboxplot(., x = "Period", y = "value", color = "Treatment", fill = "Treatment",  add = "jitter", alpha = 0.6)  + 
   scale_color_manual(name = "", values = treat_col,
                      na.value = "transparent") +
   scale_fill_manual(name = "", values = treat_col,
                     na.value = "transparent") +
-  ylab("Bacterial community alpha-diversity")
+  ylab("Bacterial community alpha-diversity") -> p_tmp
+
+p_tmp
+
+if(export_ppt == TRUE)
+{
+  p_tmp %>% 
+    export::graph2ppt(append = TRUE, width = export_ppt_width, height = export_ppt_height,
+                      file = out_pptx)
+}
 
 ```
 
@@ -545,7 +583,7 @@ ps_CARD %>%
   plot_beta_NRP72(path_group = "interaction(Model, Fermentation, Reactor_Treatment)", label = "Day_of_Treatment") -> p_b_chick_AMRgn
 
 p_b_chick_AMRgn$pcoa# %>% 
-  # plotly::ggplotly()
+# plotly::ggplotly()
 ```
 
 ```{r, message= FASE, warning= FALSE}
@@ -584,7 +622,7 @@ ps_CARD %>%
   plot_beta_NRP72(path_group = "interaction(Model, Fermentation, Reactor_Treatment)", label = "Day_of_Treatment") -> p_b_chick_AMRgn
 
 p_b_chick_AMRgn$pcoa# %>% 
-  # plotly::ggplotly()
+# plotly::ggplotly()
 ```
 
 ```{r, message= FASE, warning= FALSE}
