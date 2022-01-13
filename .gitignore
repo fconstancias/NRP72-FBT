@@ -52,3 +52,12 @@ vignettes/*.pdf
 *.struct
 .DS_Store
 chicken_SQM.rds
+*.db
+data/processed/chicken_full_SQM.rds
+data/processed/mobilome/01.SqueezeHuman_result_table.csv
+data/processed/anvio/chicken/RUNLOG.txt
+data/processed/anvio/chicken/chicken_anvio_contig_taxonomy.txt
+data/processed/anvio/chicken/anvi-load-sqm.logfile
+data/processed/anvio/human/RUNLOG.txt
+data/processed/anvio/human/SqueezeHuman_anvio_contig_taxonomy.txt
+data/processed/anvio/human/anvi-load-sqm.logfile
