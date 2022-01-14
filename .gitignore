@@ -61,3 +61,6 @@ data/processed/anvio/chicken/anvi-load-sqm.logfile
 data/processed/anvio/human/RUNLOG.txt
 data/processed/anvio/human/SqueezeHuman_anvio_contig_taxonomy.txt
 data/processed/anvio/human/anvi-load-sqm.logfile
+data/processed/mobilome/01.chicken_result_table.csv
+data/processed/SQM/chicken_full_SQM.rds
+data/processed/SQM/human_SQM.rds
