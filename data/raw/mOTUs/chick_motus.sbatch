@@ -53,7 +53,7 @@ done
 #motu profile -i test1.bam -l 70 -o result_l70.motus
 #motu profile -i test1.bam -l 100 -o result_l100.motus
 
-/homedir/constancias/tools/mOTUs_v2/motus merge -d ${MOTUS_PROF} -o ${MOTUS_PROF}merged_profile.tsv
+/home/constanciasf/tools/mOTUs_v2/motus merge -d ${MOTUS_PROF} -o ${MOTUS_PROF}merged_profile.tsv
 # /homedir/constancias/tools/mOTUs_v2/motus merge -d ${MOTUS_PROF} -a all -o ${MOTUS_PROF}merged_with_all_profile.tsv
 
 exit 0
