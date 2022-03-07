@@ -1,0 +1,57 @@
+---
+title: "NRP72 -metadata - humann - chiken "
+author: "Florentin Constancias"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+
+---
+
+```{r setup, include=FALSE}
+rm(list = ls())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load required packages
+
+```{r,packages,message=FALSE}
+library(tidyverse)
+library(phyloseq)
+library(microbiome)
+library(here)
+options(getClass.msg=FALSE) # https://github.com/epurdom/clusterExperiment/issues/66
+#this fixes an error message that pops up because the class 'Annotated' is defined in two different packages
+```
+
+
+# Import phyloseq object
+
+```{r}
+ps = "data/processed/16S/ps_silva_dada2_human_chicken_meta.RDS"
+
+ps %>% 
+  here::here() %>%
+  readRDS()  -> physeq
+
+physeq
+
+```
+
+```{r, eval=TRUE}
+source("https://raw.githubusercontent.com/fconstancias/metabaRpipe/master/Rscripts/functions.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R")
+
+physeq %>% 
+  phyloseq_get_strains_fast() %>% 
+  phloseq_export_otu_tax() %>% 
+  write_tsv( here::here("data/processed/16S/ps_silva_dada2_human_chicken_meta.tsv")) 
+ 
+
+```
+
+```{r}
+sessionInfo()
+```
+
