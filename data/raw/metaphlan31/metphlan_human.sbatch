@@ -52,6 +52,8 @@ metaphlan ${R1R2s} \
 
 done
 
+metaphlan --version
+
 
 # JOB END
 
@@ -59,5 +61,8 @@ merge_metaphlan_tables.py -o ${OUT}/human_merged_profiles.tsv ${OUT}/*_profiled_
 
 conda activate biobakery3
 humann_join_tables  -o ${OUT}/human_merged_profiles.tsv -i ${OUT} --file_name profiled_metagenome.txt
+
+
+metaphlan --version
 
 exit 0
