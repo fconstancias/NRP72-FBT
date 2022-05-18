@@ -71,3 +71,36 @@ We download the generated collections.
 	rsync 	-rv -P --checksum ${CLUSTER_DIR}*_collection.txt.txt ${WD_DIR_LOCAL}
 	rsync -rv -P --relative --checksum ${CLUSTER_DIR}SUMMARY/*/bins_summary.txt ${WD_DIR_LOCAL}
 
+We can start with the `concoct_10` collection since no bin exceed 25000 contigs there:
+
+	conda activate anvio-7.1
+	DB_dir=/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/human/
+	cd ${DB_dir}
+	PROF=PROFILE.db
+	CONT_DB=CONTIGS.db
+	
+	anvi-summarize -c ${CONT_DB} -p ${PROF} --list-collections
+	
+	anvi-import-collection  -c ${CONT_DB} -p ${PROF} -C concoct_10 manual_binning/concoct_10_collection.txt.txt 
+	
+We are going to refine this freshly imported concoct_10 collection. First we bin roughly we will go for a second refinement later.
+
+	for bin in `cut -f2  manual_binning/concoct_10_collection.txt.txt | uniq`
+	do
+	echo "### Refining bin" ${bin} "Start###"
+	
+	        anvi-refine -c ${CONT_DB} \
+	                    -p ${PROF}  \
+	                    -C concoct_10 \
+	                    -b ${bin}
+	done
+
+	anvi-export-collection -C concoct_10 \
+	-p ${PROF} \
+	-O manual_binning/concoct_10_collection_refined
+	
+	anvi-import-collection  -c ${CONT_DB} -p ${PROF} -C concoct_10_raw manual_binning/concoct_10_collection.txt.txt 
+
+	anvi-summarize -c ${CONT_DB} -p ${PROF} -C concoct_10 -o SUMMARY/concoct_10_refined
+
+Start diff coverage and seq composition in detection - bin - adapt with only diff coverage and some times then only seq composition - when coverage in only one sample.
