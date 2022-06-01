@@ -129,3 +129,21 @@ We are going to refine this freshly imported concoct_20 collection. First we bin
 	anvi-summarize -c ${CONT_DB} -p ${PROF} -C concoct_20 -o manual_binning/SUMMARY/concoct_20_refined
 
 Start diff coverage and seq composition in detection - bin - adapt with only diff coverage and some times then only seq composition - when coverage in only one sample.
+
+We now go for a second run of binning: refinement!
+
+	for bin in `cut -f2  manual_binning/concoct_20_collection_refined.txt| uniq`
+	do
+	echo "### Refining bin" ${bin} "Start###"
+	
+	        anvi-refine -c ${CONT_DB} \
+	                    -p ${PROF}  \
+	                    -C concoct_20 \
+	                    -b ${bin}
+	done
+	
+	anvi-export-collection -C concoct_20 \
+	-p ${PROF} \
+	-O manual_binning/concoct_20_collection_refined_2
+
+	anvi-summarize -c ${CONT_DB} -p ${PROF} -C concoct_20 -o SUMMARY/concoct_20_refined_2

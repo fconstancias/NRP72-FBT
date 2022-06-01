@@ -104,3 +104,23 @@ We are going to refine this freshly imported concoct_10 collection. First we bin
 	anvi-summarize -c ${CONT_DB} -p ${PROF} -C concoct_10 -o SUMMARY/concoct_10_refined
 
 Start diff coverage and seq composition in detection - bin - adapt with only diff coverage and some times then only seq composition - when coverage in only one sample.
+ 
+***Good idea to use the search function to look for blaCTX or AMR resistance genes when binning***
+
+	for bin in `cut -f2  manual_binning/concoct_10_collection_refined.txt | uniq`
+	do
+	echo "### Refining bin" ${bin} "Start###"
+	
+	        anvi-refine -c ${CONT_DB} \
+	                    -p ${PROF}  \
+	                    -C concoct_10 \
+	                    -b ${bin}
+	done
+	
+	anvi-export-collection -C concoct_10 \
+	-p ${PROF} \
+	-O manual_binning/concoct_10_collection_refined_2
+
+	anvi-summarize -c ${CONT_DB} -p ${PROF} -C concoct_10 -o SUMMARY/concoct_10_refined
+
+
