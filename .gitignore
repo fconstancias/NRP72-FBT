@@ -70,3 +70,5 @@ vignettes/*.pdf
 *_mgc_read_count.txt
 *.sam.bz2
 *.bam
+data/raw/SQM/chicken1_full_SQM.rds
+data/raw/SQM/human1_SQM.rds

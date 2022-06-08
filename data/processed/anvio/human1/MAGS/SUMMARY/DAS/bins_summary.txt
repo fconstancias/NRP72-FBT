@@ -1,0 +1,137 @@
+bins	total_length	num_contigs	N50	GC_content	percent_completion	percent_redundancy	t_domain	t_phylum	t_class	t_order	t_family	t_genus	t_species
+maxbin_002_fasta_contigs	3373122	99	65526	44.10077764312698	88.73239436619718	2.816901408450704	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Phocaeicola	Phocaeicola plebeius
+maxbin_004_fasta_contigs	2078616	36	155262	40.779221272908764	91.54929577464789	4.225352112676056	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Ruminococcus	Ruminococcus bromii
+maxbin_005_fasta_contigs	3887172	465	22282	57.84143397134521	80.28169014084507	22.535211267605632	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Faecalibacterium	
+maxbin_006_fasta_contigs	2170300	288	13284	41.178526214432814	39.436619718309856	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Agathobacter	
+maxbin_008_fasta_contigs	2596485	54	117427	40.733717504529054	64.78873239436619	11.267605633802816	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	RUG115	
+maxbin_009_fasta_contigs	2676589	325	14386	37.0186970597009	95.77464788732394	8.450704225352112	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Anaerostipes	
+maxbin_010_fasta_contigs	6840287	270	59075	42.12605847396881	100.0	7.042253521126761	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	
+maxbin_011_fasta_contigs	2278970	65	108475	45.24018546417072	91.54929577464789	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	CAG-180	CAG-180 sp000432435
+maxbin_012_fasta_contigs	3312280	189	41228	44.50665362370507	74.64788732394366	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Acetatifactor	
+maxbin_013_fasta_contigs	2792382	197	26004	53.96328494097096	87.32394366197182	7.042253521126761	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Faecalibacterium	
+maxbin_014_fasta_contigs	4003023	169	47157	41.967536680529584	91.54929577464789	2.816901408450704	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Phocaeicola	Phocaeicola massiliensis
+maxbin_015_fasta_contigs	1751379	168	73857	43.65167983303693	63.38028169014085	23.943661971830984	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Hungatella	Hungatella sp005845265
+maxbin_017_fasta_contigs	4408022	97	103123	46.00526083977623	98.59154929577464	2.816901408450704	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides	
+maxbin_018_fasta_contigs	4323842	459	21712	42.313192737626984	95.77464788732394	38.028169014084504	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA3402	UBA3402 sp003478355
+maxbin_019_fasta_contigs	3902312	518	11460	41.15275891476674	84.50704225352112	29.577464788732396	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	
+maxbin_020_fasta_contigs	4737411	520	14081	42.15193255824389	85.91549295774648	2.816901408450704	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Phocaeicola	
+maxbin_021_fasta_contigs	2782824	192	47864	40.84813313138161	84.50704225352112	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	Mediterraneibacter faecis
+maxbin_022_fasta_contigs	4147704	406	17884	48.20788211533921	97.1830985915493	36.61971830985915	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Fusicatenibacter	Fusicatenibacter saccharivorans
+maxbin_023_fasta_contigs	2528319	430	9297	38.03452338537506	50.70422535211268	7.042253521126761	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-81	
+maxbin_025_fasta_contigs	3179080	377	12855	37.628829576349965	92.95774647887323	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Anaerobutyricum	
+maxbin_026_fasta_contigs	2331683	32	117575	43.7422713792076	97.1830985915493	1.408450704225352	Bacteria	Firmicutes	Negativicutes	Acidaminococcales	Acidaminococcaceae	Phascolarctobacterium	
+maxbin_028_fasta_contigs	4785209	93	131412	45.20095111991399	100.0	2.816901408450704	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Tannerellaceae	Parabacteroides	
+maxbin_029_fasta_contigs	3051715	148	39411	43.61501855472048	95.77464788732394	19.718309859154928	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae		
+maxbin_033_fasta_contigs	2491933	42	136340	62.84137108934169	91.54929577464789	0.0	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	Adlercreutzia	
+maxbin_034_fasta_contigs	2962683	59	111381	37.833551360417765	98.59154929577464	0.0	Bacteria	Firmicutes	Clostridia	Monoglobales	UBA1381	CAG-41	CAG-41 sp900066215
+maxbin_035_fasta_contigs	5084709	122	95529	44.99034406986251	97.1830985915493	1.408450704225352	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales			
+maxbin_036_fasta_contigs	3482898	325	21768	36.869668759663604	88.73239436619718	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Schaedlerella	Schaedlerella sp900066545
+maxbin_037_fasta_contigs	3182217	94	66268	42.565980128543735	90.14084507042253	2.816901408450704	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Roseburia	
+maxbin_039_fasta_contigs	518676	31	80602	37.467696802091034	49.29577464788732	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Bariatricus	Bariatricus comes
+maxbin_040_fasta_contigs	2454300	98	57561	42.1022680825863	43.66197183098591	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Bariatricus	Bariatricus comes
+maxbin_041_fasta_contigs	2651203	138	43494	41.25969416196357	85.91549295774648	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Dorea	Dorea formicigenerans
+maxbin_042_fasta_contigs	2093348	83	35549	45.284081816691426	78.87323943661971	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UMGS1375	UMGS1375 sp900066615
+maxbin_043_fasta_contigs	3581041	56	225010	41.827723527490015	100.0	4.225352112676056	Bacteria	Firmicutes	Bacilli	Lactobacillales	Enterococcaceae	Enterococcus	
+maxbin_045_fasta_contigs	2140966	319	10390	57.34607657310059	47.88732394366197	4.225352112676056	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Faecalibacterium	
+maxbin_052_fasta_contigs	3268057	230	22632	61.89172396213692	64.78873239436619	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Flavonifractor	
+maxbin_053_fasta_contigs	3209009	294	19626	40.874013956411936	63.38028169014085	7.042253521126761	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Roseburia	
+maxbin_054_fasta_contigs	1902223	122	32140	59.15853691653439	66.19718309859155	2.816901408450704	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Gemmiger	
+maxbin_055_fasta_sub_contigs	3187059	245	43140	51.415091970363605	45.070422535211264	11.267605633802816	Bacteria	Firmicutes	Clostridia				
+maxbin_056_fasta_contigs	2980542	262	19808	46.55767012739797	85.91549295774648	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Clostridium	Clostridium sp003024715
+maxbin_057_fasta_contigs	2748315	163	33718	58.44145125620845	87.32394366197182	9.859154929577464	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Gemmiger	
+maxbin_058_fasta_contigs	2982363	233	25665	28.359541447664068	98.59154929577464	0.0	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Peptostreptococcaceae	Intestinibacter	
+maxbin_060_fasta_contigs	3432566	185	45850	46.30342540883949	63.38028169014085	7.042253521126761	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eisenbergiella	Eisenbergiella sp900066775
+maxbin_061_fasta_contigs	2601903	96	76650	42.90574859749878	78.87323943661971	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Coprococcus	
+maxbin_062_fasta_contigs	1617318	217	11313	40.71892954194455	80.28169014084507	16.901408450704224	Bacteria	Firmicutes	Bacilli	Lactobacillales	Streptococcaceae	Streptococcus	
+maxbin_064_fasta_contigs	3151075	269	25240	43.07103936550112	91.54929577464789	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	
+maxbin_065_fasta_contigs	4115760	257	31157	42.53878038051795	91.54929577464789	9.859154929577464	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae		
+maxbin_066_fasta_contigs	7133105	755	21434	42.59369854949174	94.36619718309859	35.2112676056338	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium	Eubacterium ramulus
+maxbin_068_fasta_sub_contigs	3464382	619	7439	43.01681614316507	70.4225352112676	19.718309859154928	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	
+maxbin_069_fasta_contigs	3391385	46	171855	63.969294422257384	95.77464788732394	0.0	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	Eggerthella	Eggerthella lenta
+maxbin_071_fasta_contigs	2867852	79	91302	37.18837039484955	60.563380281690144	11.267605633802816	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	
+maxbin_074_fasta_contigs	3201182	301	39490	28.33394249921266	98.59154929577464	4.225352112676056	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelatoclostridiaceae	Erysipelatoclostridium	Erysipelatoclostridium spiroforme
+maxbin_075_fasta_contigs	3287311	46	115067	31.357868356488872	97.1830985915493	1.408450704225352	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelatoclostridiaceae	Erysipelatoclostridium	Erysipelatoclostridium ramosum
+maxbin_077_fasta_contigs	3941312	246	29155	47.04379311571496	97.1830985915493	26.760563380281692	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eisenbergiella	Eisenbergiella sp900066775
+maxbin_084_fasta_contigs	2971085	102	71697	42.00708352498109	100.0	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Ruminococcus	
+maxbin_086_fasta_sub_contigs	3374151	725	7230	46.58623089235744	67.6056338028169	26.760563380281692	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	GCA-900066135	GCA-900066135 sp900066135
+maxbin_087_fasta_contigs	1475845	380	4803	30.619604176740523	40.84507042253521	15.492957746478874	Bacteria	Firmicutes	Clostridia				
+maxbin_088_fasta_contigs	5751915	1200	6440	55.44499583060096	92.95774647887323	35.2112676056338	Bacteria	Firmicutes	Clostridia	Christensenellales	CAG-74	SFFH01	SFFH01 sp900548125
+maxbin_090_fasta_contigs	2177663	186	23783	37.55034615146865	57.74647887323944	2.816901408450704	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Gemmiger	
+maxbin_091_fasta_contigs	7647045	627	23448	47.69297355103706	84.50704225352112	25.35211267605634	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Enterocloster	
+maxbin_092_fasta_contigs	1697604	45	67073	44.82635537583328	90.14084507042253	2.816901408450704	Bacteria	Firmicutes	Negativicutes	Veillonellales	Dialisteraceae	Dialister	Dialister invisus
+maxbin_094_fasta_contigs	3132984	122	62727	54.60315673750774	98.59154929577464	16.901408450704224	Bacteria	Firmicutes	Clostridia	Oscillospirales	Butyricicoccaceae	Agathobaculum	Agathobaculum butyriciproducens
+maxbin_096_fasta_contigs	2309056	57	114091	41.39929283517001	90.14084507042253	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-317	CAG-317 sp000433215
+maxbin_098_fasta_contigs	3230458	51	151499	66.15620637043565	88.73239436619718	0.0	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	Gordonibacter	
+maxbin_101_fasta_contigs	2330609	66	98422	43.29790645587393	91.54929577464789	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnoclostridium	Lachnoclostridium sp900066555
+maxbin_102_fasta_contigs	2662751	122	45502	57.08924171019672	100.0	2.816901408450704	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Lawsonibacter	Lawsonibacter sp014287875
+maxbin_103_fasta_sub_contigs	2637453	900	3029	47.374089068630376	61.971830985915496	15.492957746478874	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	BX12	BX12 sp014333425
+maxbin_105_fasta_contigs	2370233	111	52066	56.52012874661203	94.36619718309859	2.816901408450704	Bacteria	Firmicutes	Clostridia	Oscillospirales	Butyricicoccaceae	Agathobaculum	
+maxbin_106_fasta_contigs	125720	57	2161	39.38409169917046	0.0	0.0	Bacteria	Firmicutes	Negativicutes	Veillonellales	Veillonellaceae	Veillonella	
+maxbin_107_fasta_contigs	3210334	261	29755	37.35922056778857	57.74647887323944	2.816901408450704	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Anaerobutyricum	
+maxbin_109_fasta_contigs	2640313	87	50927	36.71641091619331	69.01408450704226	7.042253521126761	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	Lachnospira rogosae
+maxbin_110_fasta_contigs	3346619	399	11955	51.09931556475467	83.09859154929578	0.0	Bacteria	Proteobacteria	Gammaproteobacteria	Enterobacterales	Enterobacteriaceae		
+maxbin_111_fasta_contigs	2277999	579	4696	42.24178617656525	71.83098591549296	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	Lachnospira sp000437735
+maxbin_112_fasta_contigs	2118661	202	19256	41.80440895384725	50.70422535211268	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	
+maxbin_113_fasta_contigs	5770917	199	70202	47.66504795955198	98.59154929577464	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eisenbergiella	Eisenbergiella massiliensis
+maxbin_117_fasta_contigs	2354668	65	68390	36.74044855457768	57.74647887323944	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	Lachnospira sp900316325
+maxbin_121_fasta_contigs	1879982	22	189532	40.216912248885166	97.1830985915493	7.042253521126761	Bacteria	Firmicutes	Negativicutes	Veillonellales	Dialisteraceae	Allisonella	Allisonella pneumosintes
+maxbin_122_fasta_contigs	4771004	341	37237	42.62381597698412	63.38028169014085	5.633802816901408	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Clostridium	
+maxbin_123_fasta_contigs	2122622	664	3501	48.9714080676581	57.74647887323944	4.225352112676056	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	Emergencia	
+maxbin_124_fasta_contigs	2169566	59	110018	40.576396155501236	90.14084507042253	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Anaerotignaceae	UMGS1670	UMGS1670 sp900553995
+maxbin_125_fasta_contigs	4273951	64	252902	46.81872737764212	98.59154929577464	7.042253521126761	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Clostridium	
+maxbin_126_fasta_contigs	4838542	121	90798	51.40905799463511	64.78873239436619	8.450704225352112	Bacteria	Proteobacteria	Gammaproteobacteria	Enterobacterales	Enterobacteriaceae		
+maxbin_127_fasta_contigs	3869701	412	25263	43.06013140208943	59.15492957746479	5.633802816901408	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	
+maxbin_128_fasta_contigs	2648134	104	59271	41.791669338158314	94.36619718309859	2.816901408450704	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	Mediterraneibacter torques
+maxbin_129_fasta_contigs	3076375	124	56003	42.35241940561193	94.36619718309859	2.816901408450704	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Marvinbryantia	
+maxbin_130_fasta_contigs	2525973	175	27270	49.248061468812764	69.01408450704226	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA7160	UBA7160 sp902363135
+maxbin_131_fasta_contigs	1775842	373	6071	44.97783255082361	57.74647887323944	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	Mediterraneibacter butyricigenes
+maxbin_132_fasta_contigs	1918947	64	86097	32.87729487114252	70.4225352112676	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium	
+maxbin_133_fasta_contigs	4469524	143	83490	43.47855266065737	94.36619718309859	9.859154929577464	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Clostridium	
+maxbin_134_fasta_sub_contigs	2824795	258	22238	48.19858302390401	52.11267605633803	2.816901408450704	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-81	
+maxbin_135_fasta_contigs	2614897	231	19605	42.31076922125514	49.29577464788732	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium	Eubacterium ramulus
+maxbin_136_fasta_contigs	2691477	64	112598	54.78035820151067	94.36619718309859	2.816901408450704	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Gemmiger	
+maxbin_137_fasta_contigs	2504177	135	34902	55.72595158902829	98.59154929577464	0.0	Bacteria						
+maxbin_138_fasta_contigs	3127539	879	4000	37.23739756881347	16.901408450704224	0.0	Bacteria	Firmicutes	Bacilli	Lactobacillales	Enterococcaceae	Enterococcus	
+maxbin_139_fasta_contigs	2911907	446	8913	51.81746717050878	95.77464788732394	2.816901408450704	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Holdemania	
+maxbin_140_fasta_contigs	3652195	1108	3648	42.93841822166428	52.11267605633803	26.760563380281692	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Enterocloster	
+maxbin_141_fasta_contigs	2791915	917	3049	48.880711462876775	61.971830985915496	18.309859154929576	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Enterocloster	
+maxbin_143_fasta_contigs	605572	24	90634	42.40321604982274	49.29577464788732	0.0	Bacteria	Firmicutes	Negativicutes	Veillonellales	Dialisteraceae	Dialister	Dialister sp900541485
+maxbin_144_fasta_contigs	2801769	40	272597	47.050176920912975	95.77464788732394	2.816901408450704	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Bacteroidaceae	Prevotella	Prevotella bergensis
+maxbin_145_fasta_contigs	6603095	1020	10113	56.5608671439858	60.563380281690144	16.901408450704224	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Enterocloster	
+maxbin_152_fasta_contigs	2486052	429	7752	48.787538062871874	76.05633802816901	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA7160	UBA7160 sp902363665
+maxbin_153_fasta_contigs	2789045	106	47764	37.44217765047631	94.36619718309859	5.633802816901408	Bacteria	Firmicutes	Bacilli	Lactobacillales	Enterococcaceae	Enterococcus	
+maxbin_154_fasta_contigs	2330915	60	135754	34.69693462745689	94.36619718309859	0.0	Bacteria	Firmicutes	Bacilli	Lactobacillales	Streptococcaceae	Lactococcus	Lactococcus lactis
+maxbin_155_fasta_contigs	3035523	21	353187	51.19874893366958	78.87323943661971	0.0	Bacteria	Proteobacteria	Gammaproteobacteria	Enterobacterales	Enterobacteriaceae	Morganella	Morganella morganii
+maxbin_156_fasta_contigs	6666361	193	121942	47.66342914612018	63.38028169014085	8.450704225352112	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Hungatella	Hungatella sp005845265
+maxbin_157_fasta_contigs	5556849	238	52101	50.26104606254788	78.87323943661971	4.225352112676056	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Enterocloster	
+maxbin_158_fasta_contigs	5240324	116	110054	45.49167962521842	81.69014084507042	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	Blautia coccoides
+maxbin_159_fasta_contigs	2334237	43	120742	58.40780730045109	98.59154929577464	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Evtepia	Evtepia gabavorous
+maxbin_161_fasta_contigs	1815015	47	194925	33.426818154849734	94.36619718309859	1.408450704225352	Bacteria	Firmicutes	Clostridia	Tissierellales	Peptoniphilaceae	Anaerococcus	
+maxbin_162_fasta_contigs	2796785	85	65324	37.04190291073785	100.0	1.408450704225352	Bacteria	Firmicutes	Bacilli	Lactobacillales	Enterococcaceae	Enterococcus	Enterococcus faecalis
+maxbin_163_fasta_contigs	4022708	45	199739	28.467534718996234	100.0	2.816901408450704	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Peptostreptococcaceae	Clostridioides	Clostridioides difficile
+maxbin_164_fasta_contigs	2004513	59	88323	31.463032537571163	92.95774647887323	0.0	Bacteria	Firmicutes	Clostridia	Tissierellales	Peptoniphilaceae	Peptoniphilus	Peptoniphilus sp900538655
+maxbin_165_fasta_contigs	2645723	129	44122	45.48188944439155	98.59154929577464	0.0	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lacticaseibacillus	Lacticaseibacillus paracasei
+maxbin_166_fasta_contigs	7211972	200	58483	60.032715990831456	95.77464788732394	0.0	Bacteria	Proteobacteria	Gammaproteobacteria	Pseudomonadales	Pseudomonadaceae	Pseudomonas	
+maxbin_167_fasta_contigs	2224109	130	31299	37.268101970721936	63.38028169014085	0.0	Bacteria	Firmicutes	Bacilli	Lactobacillales	Enterococcaceae	Enterococcus	
+maxbin_168_fasta_contigs	1240859	32	77678	43.70905433362888	77.46478873239437	1.408450704225352	Bacteria	Firmicutes	Clostridia	Tissierellales	Peptoniphilaceae	Levyella	Levyella massiliensis
+maxbin_169_fasta_contigs	3057648	63	106633	44.23105513078633	98.59154929577464	1.408450704225352	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactiplantibacillus	
+maxbin_171_fasta_contigs	1866079	35	111061	49.84593317346036	97.1830985915493	0.0	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Atopobiaceae	Olegusella	Olegusella massiliensis
+maxbin_173_fasta_contigs	1563358	14	362801	29.329595911656188	95.77464788732394	0.0	Bacteria	Campylobacterota	Campylobacteria	Campylobacterales	Campylobacteraceae	Campylobacter	Campylobacter ureolyticus
+metabat2_116_fa_contigs	2587551	55	69794	60.644981608458856	90.14084507042253	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Harryflintia	Harryflintia acetispora
+metabat2_144_fa_contigs	2112057	44	68639	53.46685993602186	90.14084507042253	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-81	CAG-81 sp000435795
+metabat2_174_fa_contigs	1770331	82	30734	57.3266528481784	88.73239436619718	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	UMGS966	UMGS966 sp900547185
+metabat2_179_fa_contigs	1890558	125	24509	42.18601977817196	66.19718309859155	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	
+metabat2_185_fa_contigs	2550702	28	119184	62.9712661384238	84.50704225352112	0.0	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Bittarella	Bittarella massiliensis
+metabat2_197_fa_contigs	2412266	78	48816	59.28678387567678	92.95774647887323	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Ruthenibacterium	Ruthenibacterium lactatiformans
+metabat2_203_fa_contigs	1661800	24	81562	52.153301369509904	40.84507042253521	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae		
+metabat2_212_fa_contigs	622773	3	279759	60.811934202361016	52.11267605633803	0.0	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	
+metabat2_226_fa_contigs	685261	10	134072	48.45153352285371	50.70422535211268	0.0	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	UBA1191	UBA1191 sp900549125
+metabat2_234_fa_contigs	1209039	15	111396	60.88246487996943	30.985915492957748	1.408450704225352	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Dysosmobacter	Dysosmobacter welbionis
+metabat2_240_fa_contigs	2976430	19	250680	59.499378208271125	76.05633802816901	0.0	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	
+metabat2_261_fa_contigs	1897860	163	15304	56.82504710160315	53.521126760563384	4.225352112676056	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Gemmiger	Gemmiger qucibialis
+metabat2_272_fa_contigs	1201194	7	201200	46.94366600137262	43.66197183098591	0.0	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	UBA1191	UBA1191 sp900549125
+metabat2_285_fa_contigs	2171428	42	102486	60.05480191674367	97.1830985915493	0.0	Bacteria	Actinobacteriota	Actinomycetia	Actinomycetales	Bifidobacteriaceae	Bifidobacterium	
+metabat2_307_fa_contigs	3385232	37	161820	49.43871908108992	88.73239436619718	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	OF09-33XD	OF09-33XD sp003481995
+metabat2_319_fa_contigs	1416906	77	25782	45.95983946044434	71.83098591549296	0.0	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA7182	UBA7182 sp003480725
+metabat2_61_fa_contigs	1344028	155	9979	48.18217022617851	30.985915492957748	1.408450704225352	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	GCA-900066135	GCA-900066135 sp900066135
+metabat2_71_fa_contigs	1371273	15	126826	58.03783004059183	0.0	0.0	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	Alistipes finegoldii
