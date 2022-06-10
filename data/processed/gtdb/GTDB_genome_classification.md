@@ -144,3 +144,4 @@ I then reorganised the fa files names so we can find model_binning/sample_fastan
 	
 	
 	done
+
