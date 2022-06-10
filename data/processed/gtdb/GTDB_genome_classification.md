@@ -98,17 +98,24 @@ I then reorganised the fa files names so we can find model_binning/sample_fastan
 	eval "$(conda shell.bash hook)" #https://github.com/conda/conda/issues/7980
 	
 	conda activate /home/constanciasf/.conda/envs/gtdbtk
+	
 	# JOB STARTS
 	
 	cd /home/constanciasf/scratch/NRP72/gtdb2.1/genomes
 	
-	gtdbtk classify_wf --genome_dir  chicken1/all/ -x fa --cpus ${OMP_NUM_THREADS} --pplacer_cpus ${OMP_NUM_THREADS} --out_dir  chicken1/all/gtdb
+	gtdbtk classify_wf --genome_dir  chicken1/all/ -x fa \
+	 --cpus ${OMP_NUM_THREADS} --pplacer_cpus ${OMP_NUM_THREADS} \
+	 --out_dir  chicken1/all/gtdb \
+	 --keep_intermediates
 	
-	gtdbtk classify_wf --genome_dir human1/all/ -x fa --cpus ${OMP_NUM_THREADS} --pplacer_cpus ${OMP_NUM_THREADS} --out_dir human1/all/gtdb
+	gtdbtk classify_wf --genome_dir human1/all/ -x fa \
+	--cpus ${OMP_NUM_THREADS} \
+	--pplacer_cpus ${OMP_NUM_THREADS} \
+	--out_dir human1/all/gtdb \
+	--keep_intermediates
 	
 	
 	# JOB END
-	# /home/constanciasf/.conda/envs/gtdbtk/share/gtdbtk-1.5.1/db/
 	
 	exit 0
 	
@@ -132,7 +139,7 @@ I then reorganised the fa files names so we can find model_binning/sample_fastan
 	            rm gtdbtk_r207_v2_data.tar.gz
 	
 	        3. Set the GTDBTK_DATA_PATH environment variable by running:
-	            conda env config vars set GTDBTK_DATA_PATH="/path/to/target/db"
+	            conda env config vars set GTDBTK_DATA_PATH="/home/constanciasf/.conda/envs/gtdbtk/share/gtdbtk-2.1.0/db/"
 	
 	
 	

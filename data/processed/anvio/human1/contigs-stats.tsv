@@ -1,0 +1,30 @@
+contigs_db	../../SqueezeHuman
+Total Length	647343539
+Num Contigs	253075
+Num Contigs > 100 kb	722
+Num Contigs > 50 kb	2138
+Num Contigs > 20 kb	5751
+Num Contigs > 10 kb	10627
+Num Contigs > 5 kb	18137
+Num Contigs > 2.5 kb	31265
+Longest Contig	652841
+Shortest Contig	200
+Num Genes (prodigal)	0
+L50	5356
+L75	26598
+L90	99283
+N50	21668
+N75	3038
+N90	710
+Archaea_76	7191
+Bacteria_71	13127
+Protista_83	717
+Ribosomal_RNA_12S	0
+Ribosomal_RNA_16S	68
+Ribosomal_RNA_18S	1
+Ribosomal_RNA_23S	126
+Ribosomal_RNA_28S	1
+Ribosomal_RNA_5S	0
+archaea (Archaea_76)	0
+eukarya (Protista_83)	0
+bacteria (Bacteria_71)	176

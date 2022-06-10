@@ -1,0 +1,30 @@
+contigs_db	chicken_new
+Total Length	1191175336
+Num Contigs	655896
+Num Contigs > 100 kb	784
+Num Contigs > 50 kb	2793
+Num Contigs > 20 kb	9247
+Num Contigs > 10 kb	18475
+Num Contigs > 5 kb	34528
+Num Contigs > 2.5 kb	65156
+Longest Contig	688493
+Shortest Contig	200
+Num Genes (prodigal)	0
+L50	19436
+L75	112779
+L90	326405
+N50	9453
+N75	1448
+N90	539
+Archaea_76	15067
+Bacteria_71	26364
+Protista_83	1306
+Ribosomal_RNA_12S	0
+Ribosomal_RNA_16S	95
+Ribosomal_RNA_18S	0
+Ribosomal_RNA_23S	203
+Ribosomal_RNA_28S	0
+Ribosomal_RNA_5S	0
+eukarya (Protista_83)	0
+archaea (Archaea_76)	0
+bacteria (Bacteria_71)	395
