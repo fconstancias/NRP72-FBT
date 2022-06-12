@@ -45,6 +45,7 @@ vignettes/*.pdf
 # raw data
 *.fastq.gz
 *.fastq
+*.fasta.gz
 *.fas
 *.qual
 *.stats
@@ -52,6 +53,8 @@ vignettes/*.pdf
 *.struct
 .DS_Store
 
+*Mdb.csv
+*Ndb.csv
 *.db
 *chicken_full_SQM.rds
 *01.SqueezeHuman_result_table.csv
@@ -71,5 +74,5 @@ vignettes/*.pdf
 *.sam.bz2
 *.tar.gz
 *.bam
-data/raw/SQM/chicken1_full_SQM.rds
-data/raw/SQM/human1_SQM.rds
+*chicken1_full_SQM.rds
+*human1_SQM.rds

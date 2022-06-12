@@ -46,11 +46,61 @@ dRep dereplicate human1_drep_SS_098 \
 
 
 
-## gtdb
-conda activate gtdbtk
+## coassembly bins:
 
-gtdbtk classify_wf --genome_dir drep_all/dereplicated_genomes/ -x fa --cpus 10 --pplacer_cpus 10 --out_dir drep_all/dereplicated_genomes/gtdb
+cd /datadrive05/Flo/NRP72/dRep_SS_coASS/human1
 
+### 0.95
 
-## SS bins + coassembly bins:
+dRep dereplicate human1_drep_DAS_concoct_10_refined_2_095 \
+-g DAS/*fa concoct_10_refined_2/*fa \
+-p 10 -comp 70 -con 20 \
+--checkM_method lineage_wf --S_algorithm ANImf \
+-sa 0.95
+
+### 0.98
+
+dRep dereplicate human1_drep_DAS_concoct_10_refined_2_098 \
+-g DAS/*fa concoct_10_refined_2/*fa \
+-p 10 -comp 70 -con 20 \
+--checkM_method lineage_wf --S_algorithm ANImf \
+-sa 0.98
+
+## coassembly + ss bins:
+
+### DAS
+
+### 0.95
+
+dRep dereplicate human1_drep_DAS_SS_095 \
+-g DAS/*fa SS/*fa \
+-p 10 -comp 70 -con 20 \
+--checkM_method lineage_wf --S_algorithm ANImf \
+-sa 0.95
+
+### 0.98
+
+dRep dereplicate human1_drep_DAS_SS_098 \
+-g DAS/*fa SS/*fa \
+-p 10 -comp 70 -con 20 \
+--checkM_method lineage_wf --S_algorithm ANImf \
+-sa 0.98
+
+### manual
+
+### 0.95
+
+dRep dereplicate human1_drep_concoct_10_refined_2_SS_095 \
+-g concoct_10_refined_2/*fa SS/*fa \
+-p 10 -comp 70 -con 20 \
+--checkM_method lineage_wf --S_algorithm ANImf \
+-sa 0.95
+
+### 0.98
+
+dRep dereplicate human1_drep_concoct_10_refined_2_SS_098 \
+-g concoct_10_refined_2/*fa SS/*fa \
+-p 10 -comp 70 -con 20 \
+--checkM_method lineage_wf --S_algorithm ANImf \
+-sa 0.98
 
