@@ -76,3 +76,4 @@ vignettes/*.pdf
 *.bam
 *chicken1_full_SQM.rds
 *human1_SQM.rds
+*_modules.txt
