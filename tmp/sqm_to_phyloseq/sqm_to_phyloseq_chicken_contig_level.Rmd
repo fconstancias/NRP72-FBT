@@ -1,0 +1,303 @@
+---
+title: "SQM to phyloseq"
+output: html_document
+date: '2022-05-19'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+rm(list = ls())
+library('dplyr')
+library("tidyverse")
+library('here')
+library("SQMtools")
+library("phyloseq")
+library("readxl")
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_heatmap.R")
+
+
+```
+
+Load dataset:
+
+```{r}
+
+chicken <- "~/Documents/MSc_Thesis-NRP72/data/chicken_full_SQM.rds" %>% readRDS()
+
+"~/Documents/NRP72-FBT/data/raw/25.11.2021_metadata_updated.tsv" %>% 
+  read_tsv() %>% 
+  data.frame() %>% 
+  filter(!is.na(metagenomic_sample_name), Model == "Chicken") -> meta_chicken
+
+```
+
+Modify meta data:
+
+```{r}
+# create Period column
+
+meta_chicken %>%
+  mutate(Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment)) %>% 
+  mutate(Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Treatment, `Antibiotic_mg.mL`), Treatment)) %>%
+  mutate(
+    Period = case_when(
+      Day_of_Treatment == 0 |Day_of_Treatment == -2 | Day_of_Treatment == -3 | Day_of_Treatment == -6 | Day_of_Treatment == -7 ~ "pret",
+      Day_of_Treatment <= 10 & Day_of_Treatment > 0 ~ "t1",
+      Day_of_Treatment <= 20 & Day_of_Treatment > 10 ~ "t2",
+      Day_of_Treatment <= 30 & Day_of_Treatment > 20 ~ "t3",
+      Day_of_Treatment <= 40 & Day_of_Treatment > 30 ~ "t4",
+      Day_of_Treatment <= 50 & Day_of_Treatment > 40 ~ "t5",
+    )) %>%
+  mutate(Period = base::replace(Period, Treatment == "DONOR", "pret")) %>%
+  mutate(Day_of_Treatment = addNA(Day_of_Treatment)) %>%
+  mutate(metagenomic_sample_name = str_remove_all(metagenomic_sample_name, "_")) %>%
+  column_to_rownames("metagenomic_sample_name") -> meta_chicken
+
+
+meta_chicken$Treatment <- factor(meta_chicken$Treatment, ordered = TRUE, 
+                                 levels = c("DONOR", "UNTREATED", "CTX+HV292.1", "CTX", "HV292.1", "VAN+CCUG59168", "VAN", "CCUG59168"))
+
+
+```
+
+
+Extract infos for otu tables:
+```{r}
+
+# Extract ORF info for row names
+chicken$orfs$table %>%
+  as.data.frame() %>%
+  rownames_to_column("ORF_ID") %>%
+  separate(ORF_ID, c("Megahit", "Contig", "Split"), sep = "_", fill = "right", remove = FALSE) %>%
+  mutate(Contig = paste(Megahit, Contig, sep = "_")) %>%
+  select(ORF_ID, Contig) -> contig_df
+
+# TPM
+chicken$contigs$table %>% as.data.frame() %>% select(starts_with("TPM")) %>% rownames_to_column("Contig")  -> chicken_otu_tpm
+
+contig_df %>%
+  left_join(chicken_otu_tpm, by = "Contig") %>%
+  column_to_rownames("ORF_ID") %>%
+  select(-Contig) -> chicken_otu_tpm
+
+colnames(chicken_otu_tpm) <- colnames(chicken_otu_tpm) %>% str_remove_all("TPM ") %>% str_replace_all("-", "_")
+rownames(chicken_otu_tpm) <- paste0("c_", rownames(chicken_otu_tpm))
+
+# Coverage
+chicken$contigs$table %>% as.data.frame() %>% select(starts_with("Coverage")) %>% rownames_to_column("Contig") -> chicken_otu_cov
+
+contig_df %>%
+  left_join(chicken_otu_cov, by = "Contig") %>%
+  column_to_rownames("ORF_ID") %>%
+  select(-Contig) -> chicken_otu_cov
+
+colnames(chicken_otu_cov) <- colnames(chicken_otu_cov) %>% str_remove_all("Coverage ") %>% str_replace_all("-", "_")
+rownames(chicken_otu_cov) <- paste0("c_", rownames(chicken_otu_cov))
+
+# Raw reads
+chicken$contigs$table %>% as.data.frame() %>% select(starts_with("Raw read count")) %>% rownames_to_column("Contig") -> chicken_otu_rr
+
+contig_df %>%
+  left_join(chicken_otu_rr, by = "Contig") %>%
+  column_to_rownames("ORF_ID") %>%
+  select(-Contig)-> chicken_otu_rr
+
+colnames(chicken_otu_rr) <- colnames(chicken_otu_rr) %>% str_remove_all("Raw read count ") %>% str_replace_all("-", "_")
+rownames(chicken_otu_rr) <- paste0("c_", rownames(chicken_otu_rr))
+```
+
+Extract resistome and mobilome information for tax table:
+```{r}
+
+
+# Resistome data:
+"~/Documents/MSc_Thesis-NRP72/scripts/Misc/rgi_annotation_chicken.txt" %>% 
+  read.delim() %>%
+  select(-ORF_ID) %>%
+  filter(Model_type %in% "protein homolog model",
+       Cut_Off %in% c("Strict", "Perfect"),
+       Nudged %!in% c("TRUE"),
+       Best_Identities > 95, # plot distribution of bestID vs percentage length ref and color bitscore and symbol class AMR
+       Percentage.Length.of.Reference.Sequence > 80) %>%
+  separate(Contig, c("Megahit", "Contig", "Split"), sep = "_", fill = "right") %>%
+  mutate(ORF_ID = paste(Megahit, Contig, paste(Start, Stop, sep = "-"), sep = "_")) %>%
+  #mutate(Contig = paste(Megahit, Contig, sep = "_")) %>%
+  select(-c(Megahit, Split, CARD_Protein_Sequence, Predicted_DNA, Predicted_Protein, Contig)) -> card
+
+
+
+# HGT events
+hgt <- "~/Documents/MSc_Thesis-NRP72/data/HGT/chicken.contigs.lgt.tsv" %>% read_tsv() %>% select(CONTIG_NAME, CALL)
+no_hgt <- "~/Documents/MSc_Thesis-NRP72/data/HGT/chicken.contigs.no_lgt.tsv" %>% read_tsv() %>% select(CONTIG_NAME, CALL)
+unclassified_hgt <- "~/Documents/MSc_Thesis-NRP72/data/HGT/chicken.contigs.unclassified.tsv" %>% read_tsv() %>% select(CONTIG_NAME, CALL)
+
+hgt_events <- rbind(hgt, no_hgt, unclassified_hgt)
+
+# Viralverify 
+"~/Documents/MSc_Thesis-NRP72/data/mobilome/01.chicken_viralverify_result_table.csv" %>%
+  read_csv() -> viralverify
+
+
+# Isescan
+"~/Documents/MSc_Thesis-NRP72/data/mobilome/01.SqueezeChicken-isescan.fasta.tsv" %>%
+  read_tsv() -> isescan
+  
+isescan %>%
+  group_by(seqID) %>%
+  top_n(1, wt = `E-value4copy`) %>%
+  top_n(1, wt = isBegin) %>%
+  mutate(IS = "yes") %>%
+  select(IS, seqID:isBegin, type) -> top_isescan
+
+```
+
+MAG information:
+
+```{r}
+
+# MAGs DAS 
+"~/Documents/MSc_Thesis-NRP72/data/anvio/chicken_DAS.txt" %>% 
+  read_tsv(col_names = c("split", "DAS_bin")) %>% 
+  separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
+  mutate(cont_id = paste0(cont,"_", cont_num)) %>% 
+  distinct(cont_id, .keep_all = TRUE) %>% 
+  select(cont_id, DAS_bin) -> DAS
+
+# tax info 
+"~/Documents/MSc_Thesis-NRP72/data/anvio/GTDB_all.xlsx" %>%
+  read_excel() %>%
+  filter(dataset == "chicken1") %>%
+  mutate(user_genome = str_remove_all(user_genome, c("chicken1_|-contigs|refined_2_"))) %>%
+  filter(str_detect(user_genome, c("DAS|concoct"))) %>%
+  select(user_genome, classification) %>%
+  separate(classification, 
+           into = c("domain", "phylum", "class", "order", "family", "genus", "species"), 
+           sep = ";", 
+           fill = "right") -> tax_info
+
+#DAS tax info 
+tax_info %>%
+  filter(str_detect(user_genome, "DAS")) %>%
+  mutate(user_genome = str_remove_all(user_genome, "DAS_")) -> DAS_tax
+
+colnames(DAS_tax) <- paste0("DAS_", colnames(DAS_tax))
+
+# HQ MAGs DAS
+"~/Documents/MSc_Thesis-NRP72/data/anvio/chicken_DAS-info.txt" %>% 
+  read.delim() -> DAS_info
+
+colnames(DAS_info) <- paste0("DAS_", colnames(DAS_info))
+
+DAS_info %>%
+  filter(DAS_percent_completion >= 80,
+         DAS_percent_redundancy <= 10) %>% 
+  mutate(DAS_bins_HQ = DAS_bins) %>%
+  select(DAS_bins_HQ)-> DAS_HQ
+
+# MAGs CONCOCT
+"~/Documents/MSc_Thesis-NRP72/data/anvio/chicken_concoct.txt" %>% 
+  read_tsv(col_names = c("split", "CONCOCT_bin")) %>% 
+  separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
+  mutate(cont_id = paste0(cont,"_", cont_num)) %>% 
+  distinct(cont_id, .keep_all = TRUE) %>% 
+  select(cont_id, CONCOCT_bin) -> CONCOCT
+
+# CONCOCT tax info
+tax_info %>%
+  filter(str_detect(user_genome, "concoct")) %>%
+  mutate(user_genome = str_remove_all(user_genome, "concoct_20_")) -> CONCOCT_tax
+
+colnames(CONCOCT_tax) <- paste0("CONCOCT_", colnames(CONCOCT_tax))
+
+# HQ MAGs CONCOCT 
+"~/Documents/MSc_Thesis-NRP72/data/anvio/chicken_concoct-info.txt" %>% 
+  read.delim() -> CONCOCT_info
+
+colnames(CONCOCT_info) <- paste0("CONCOCT_", colnames(CONCOCT_info))
+
+CONCOCT_info %>%
+  filter(CONCOCT_percent_completion >= 80,
+         CONCOCT_percent_redundancy <= 10) %>% 
+  mutate(CONCOCT_bins_HQ = CONCOCT_bins) %>%
+  select(CONCOCT_bins_HQ)-> CONCOCT_HQ
+```
+
+# Add resistome, mobilime, MAG and hgt event info to tax table
+
+```{r}
+# Add resistome, mobilome, and hgt event info to tax table
+contig_df %>%
+  left_join(chicken$contigs$tax %>% as.data.frame %>% rownames_to_column("Contig")) %>%  
+  left_join(card, by = "ORF_ID") %>%
+  left_join(hgt_events, by = c("Contig" = "CONTIG_NAME")) %>%
+  left_join(viralverify, by = c("Contig" = "Contig name")) %>%
+  left_join(top_isescan, by = c("Contig" = "seqID")) %>%
+  left_join(DAS, by = c("Contig" = "cont_id")) %>%
+  left_join(DAS_tax, by = c("DAS_bin" ="DAS_user_genome")) %>%
+  left_join(DAS_HQ, by = c("DAS_bin" = "DAS_bins_HQ"), keep = TRUE) %>%
+  left_join(CONCOCT, by = c("Contig" = "cont_id")) %>%
+  left_join(CONCOCT_tax, by = c("CONCOCT_bin" ="CONCOCT_user_genome")) %>%
+  left_join(CONCOCT_HQ, by = c("CONCOCT_bin" = "CONCOCT_bins_HQ"), keep = TRUE) %>%
+  column_to_rownames("ORF_ID") %>%
+  mutate(Classification_mobilome_DAS = case_when(
+    Prediction == "Plasmid" ~ "Plasmid",
+    !is.na(DAS_bin) ~ "MAG",
+    TRUE ~ Prediction)) %>%
+  mutate(Classification_mobilome_DAS_HQ = case_when(
+    Prediction == "Plasmid" ~ "Plasmid",
+    !is.na(DAS_bins_HQ) ~ "MAG",
+    TRUE ~ Prediction)) %>%
+  mutate(Classification_mobilome_CONCOCT = case_when(
+    Prediction == "Plasmid" ~ "Plasmid",
+    !is.na(CONCOCT_bin) ~ "MAG",
+    TRUE ~ Prediction)) %>%
+  mutate(Classification_mobilome_CONCOCT_HQ = case_when(
+    Prediction == "Plasmid" ~ "Plasmid",
+    !is.na(CONCOCT_bins_HQ) ~ "MAG",
+    TRUE ~ Prediction)) %>%
+  as.matrix(rownames = TRUE) -> chicken_tax
+
+
+rownames(chicken_tax) <- paste0("c_",rownames(chicken_tax))
+
+chicken_tax %>% data.frame() %>% head()
+
+```
+
+Create phyloseq objects
+
+```{r}
+# TPM
+chicken_physeq_tpm <- phyloseq(chicken_otu_tpm %>% otu_table(taxa_are_rows = TRUE),
+                   chicken_tax %>% tax_table(),
+                   meta_chicken %>% sample_data())
+
+chicken_physeq_tpm %>% saveRDS("~/Documents/MSc_Thesis-NRP72/data/chicken_full_tpm_contig.rds")
+
+# Coverage
+
+chicken_physeq_cov <- phyloseq(chicken_otu_cov %>% otu_table(taxa_are_rows = TRUE),
+                   chicken_tax %>% tax_table(),
+                   meta_chicken %>% sample_data())
+
+chicken_physeq_cov %>% saveRDS("~/Documents/MSc_Thesis-NRP72/data/chicken_full_cov_contig.rds")
+
+# Raw reads
+
+chicken_physeq_rr <- phyloseq(chicken_otu_rr %>% otu_table(taxa_are_rows = TRUE),
+                   chicken_tax %>% tax_table(),
+                   meta_chicken %>% sample_data())
+
+chicken_physeq_rr %>% saveRDS("~/Documents/MSc_Thesis-NRP72/data/chicken_full_rr_contig.rds")
+```

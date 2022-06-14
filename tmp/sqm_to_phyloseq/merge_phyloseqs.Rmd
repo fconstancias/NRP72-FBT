@@ -1,0 +1,92 @@
+---
+title: "merge phyloseq objects"
+output: html_document
+date: '2022-06-05'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Merge chicken and human phyloseq into one large phyloseq object
+
+## Load libaries
+
+```{r}
+rm(list = ls())
+library("dplyr")
+library("tidyverse")
+library("here")
+library("phyloseq")
+'%!in%' <- function(x,y)!('%in%'(x,y))
+```
+
+
+Merge phyloseq objects:
+
+```{r}
+merge_phylo <- function(chicken, human){
+  
+  merged_phyloseq <- merge_phyloseq(chicken, human)
+
+  merged_phyloseq %>% 
+    sample_data() %>% 
+    data.frame() %>% 
+    mutate(Treatment = factor(Treatment, ordered = TRUE, 
+                              levels = c("DONOR", "UNTREATED", "CTX+HV292.1", "CTX", "HV292.1", 
+                                         "VAN+CCUG59168", "VAN", "CCUG59168"))) %>%
+    mutate(Treatment_Dose = factor(Treatment_Dose, ordered = TRUE, 
+                                 levels = c("DONOR", "UNTREATED", "CTX+HV292.120", "CTX+HV292.1200",
+                                            "CTX20", "CTX200", "HV292.1", "VAN+CCUG5916890", "VAN+CCUG59168600",
+                                            "VAN90", "VAN600", "CCUG59168"))) %>%
+    mutate(Reactor_Treatment = factor(Reactor_Treatment, ordered = TRUE, 
+                                      levels = c("DONOR", "CR_UNTREATED", "TR1_CTX+HV292.1","TR3_CTX+HV292.1", 
+                                                 "TR2_CTX","TR4_CTX", "TR3_HV292.1", "TR5_HV292.1", "TR5_VAN+CCUG59168",
+                                                 "TR1_VAN+CCUG59168","TR3_VAN+CCUG59168", "TR4_VAN","TR2_VAN", 
+                                                 "TR6_CCUG59168", "TR5_CCUG59168"))) %>%
+    mutate(Reactor_Treatment_Dose = factor(Reactor_Treatment_Dose, ordered = TRUE,
+                                           levels = c("DONOR", "CR_UNTREATED", "TR1_CTX+HV292.120","TR3_CTX+HV292.1200", 
+                                                 "TR2_CTX20","TR4_CTX200", "TR3_HV292.1", "TR5_HV292.1", "TR5_VAN+CCUG5916890",
+                                                 "TR1_VAN+CCUG5916890","TR3_VAN+CCUG59168600", "TR4_VAN90","TR2_VAN90", 
+                                                 "TR4_VAN600", "TR6_CCUG59168", "TR5_CCUG59168"))) -> sample_data(merged_phyloseq) 
+    
+  
+  return(merged_phyloseq)
+  
+}
+
+
+```
+
+Load Phyloseq objects:
+
+```{r}
+# TPM
+chicken_tpm <- "~/Documents/MSc_Thesis-NRP72/data/chicken_full_tpm_orf.rds" %>% readRDS()
+human_tpm <- "~/Documents/MSc_Thesis-NRP72/data/human_full_tpm_orf.rds" %>% readRDS()
+
+# Coverage
+chicken_cov <- "~/Documents/MSc_Thesis-NRP72/data/chicken_full_cov_orf.rds" %>% readRDS()
+human_cov <- "~/Documents/MSc_Thesis-NRP72/data/human_full_cov_orf.rds" %>% readRDS()
+
+# Raw reads
+chicken_rr <- "~/Documents/MSc_Thesis-NRP72/data/chicken_full_rr_orf.rds" %>% readRDS()
+human_rr <- "~/Documents/MSc_Thesis-NRP72/data/human_full_rr_orf.rds" %>% readRDS()
+
+```
+
+Merge and save:
+
+```{r}
+
+# TPM
+merge_phylo(chicken_tpm, human_tpm) %>% saveRDS("~/Documents/MSc_Thesis-NRP72/data/chicken_human_tpm_orf.rds")
+
+# Coverage
+merge_phylo(chicken_cov, human_cov) %>% saveRDS("~/Documents/MSc_Thesis-NRP72/data/chicken_human_cov_orf.rds")
+
+# Raw reads
+merge_phylo(chicken_rr, human_rr) %>% saveRDS("~/Documents/MSc_Thesis-NRP72/data/chicken_human_rr_orf.rds")
+
+
+```
