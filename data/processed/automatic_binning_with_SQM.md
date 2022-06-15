@@ -23,6 +23,8 @@ _Objectives:_
 	for SAMPLE in `cut  all_against_all.tsv -f1 | sort | uniq`
 	do echo "###running " $SAMPLE "###"
 	
+	ls -lh /datadrive05/Flo/NRP72/chicken1/ssbins/${SAMPLE}/results/01.${SAMPLE}.fasta 
+	
 	SqueezeMeta.pl -m coassembly -contiglen 1000 --nocog --nokegg --nopfam \
 	-p all_against_all_${SAMPLE} \
 	-s all_against_all.tsv \
