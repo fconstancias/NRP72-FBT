@@ -14,15 +14,16 @@ suppressPackageStartupMessages(library("optparse"))
 
 prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL,
                                           fasta_file_path = NULL,
-                                      output_dir = "~/Desktop/",
-                                      length_fil = 250,
-                                      pat = "[[:space:]].*",
-                                      sample_name = "Sample"){
+                                          output_dir = "~/Desktop/",
+                                          length_fil = 2000,
+                                          pat = "[[:space:]].*",
+                                          sample_name = "Sample"){
   
   #######-------------------------- Loading required Packges
   require(Biostrings)
   require(tidyverse)
   require(Biostrings)
+  
   
   #######-------------------------- Read faa
   
@@ -35,42 +36,49 @@ prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL,
   
   #######--------------------------
   
-  sequences[width(sequences) >= length_fil,] -> sequences
+  # sequences[width(sequences) >= length_fil,] -> sequences
   
-  #######--------------------------
-  
-  data.frame(names(sequences)) -> df 
-  rownames(df) <- NULL
-  
+
   
   #######--------------------------
   
   fasta_file_path %>% 
     Biostrings::readDNAStringSet() -> fna_contigs
   
-
+  fna_contigs[width(fna_contigs) >= length_fil,] -> fna_contigs
+  
+  
+  data.frame(names(fna_contigs)) -> df_fasta 
+  rownames(df_fasta) <- NULL
+  
   #######--------------------------
+
+  data.frame(names(sequences)) -> df 
+  rownames(df) <- NULL
   
   df %>% 
     mutate(CONTIG = sub("(.*?_.*?)_.*", "\\1", names.sequences.)) %>% 
     rename("ORF" = "names.sequences.") %>% 
     rownames_to_column("id") %>% 
-    select(CONTIG, ORF) -> df
+    select(CONTIG, ORF) %>% 
+    filter(CONTIG %in% df_fasta$names.fna_contigs.) -> df
   
   #######--------------------------
-  fna_contigs[df$CONTIG]  %>% 
+  # fna_contigs[df$CONTIG]  %>% 
+  fna_contigs %>% 
     Biostrings::writeXStringSet(paste0(output_dir,"/", sample_name, ".fna"), append=FALSE,
                                 compress=FALSE, compression_level=NA, format="fasta")
-    
+
+  
+  sequences[df$ORF]  %>% 
+    Biostrings::writeXStringSet(paste0(output_dir,"/", sample_name, ".faa"), append=FALSE,
+                                compress=FALSE, compression_level=NA, format="fasta")
+  
   colnames(df) <- NULL
   
   write_tsv(x = df , 
             col_names = FALSE,
             file = paste0(output_dir,"/", sample_name, ".contig"))
-  
-  sequences %>% 
-    Biostrings::writeXStringSet(paste0(output_dir,"/", sample_name, ".faa"), append=FALSE,
-                                compress=FALSE, compression_level=NA, format="fasta")
   
   #######--------------------------
   
@@ -80,16 +88,16 @@ prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL,
   #         
   #         )
   
-          system2("gsed",
-                  args = c("-i 's/*//g' ", paste0(output_dir,"/", sample_name, ".faa"))
+  system2("gsed",
+          args = c("-i 's/*//g' ", paste0(output_dir,"/", sample_name, ".faa"))
   )
-
+  
 }
 
 
 
 # prepare_faa_PathoFact_orf(aa_file_path = "~/Desktop/03.SqueezeHuman.faa",
-                            # fasta_file_path = "~/Desktop/01.SqueezeHuman.fasta",
+# fasta_file_path = "~/Desktop/01.SqueezeHuman.fasta",
 #                           length_fil = 10000)
 
 
@@ -108,8 +116,8 @@ option_list = list(
   make_option(c("-s","--sample_name"), type="character", default = "Sample", 
               help="sample_name for the output files", metavar="character"),
   
-  make_option(c("-l","--length_fil"), type="numeric", default= 250, 
-              help="Length filtering of orf AA sequence", metavar="character"),
+  make_option(c("-l","--length_fil"), type="numeric", default= 2000, 
+              help="Length filtering of contig fasta file", metavar="character"),
   
   make_option(c("--pat"), type="character", default= "[[:space:]].*", 
               help="Default regex pattern for faa header cleangin", metavar="character")
@@ -127,10 +135,10 @@ opt = parse_args(opt_parser)
 
 prepare_faa_fna_PathoFact_orf(aa_file_path = opt$aa_file_path,
                               fasta_file_path = opt$contig_fasta_file_path,
-                          output_dir = opt$output_dir,
-                          length_fil = opt$length_fil,
-                          pat = opt$pat,
-                          sample_name = opt$sample_name)
+                              output_dir = opt$output_dir,
+                              length_fil = opt$length_fil,
+                              pat = opt$pat,
+                              sample_name = opt$sample_name)
 
 ## ------------------------------------------------------------------------
 
