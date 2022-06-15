@@ -26,7 +26,7 @@ _Objectives:_
 	SqueezeMeta.pl -m coassembly -contiglen 1000 --nocog --nokegg --nopfam \
 	-p all_against_all_${SAMPLE} \
 	-s all_against_all.tsv \
-	-extassembly /datadrive05/Flo/NRP72/chicken1/ssbins/${SAMPLE}/01.${SAMPLE}.fasta \
+	-extassembly /datadrive05/Flo/NRP72/chicken1/ssbins/${SAMPLE}/results/01.${SAMPLE}.fasta \
 	-f /datadrive05/Flo/NRP72/chicken1/01_QC \
 	-b 20 -t 10
 	
