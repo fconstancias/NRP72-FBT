@@ -1,0 +1,7 @@
+CLUSTERING WARNING: Primary cluster 12 was almost not split
+CLUSTERING WARNING: Primary cluster 28 was almost split
+CLUSTERING WARNING: Primary cluster 44 was almost split
+CLUSTERING WARNING: Primary cluster 60 was almost split
+CLUSTERING WARNING: Primary cluster 60 was almost not split
+CLUSTERING WARNING: Primary cluster 62 was almost not split
+CLUSTERING WARNING: Primary cluster 153 was almost not split

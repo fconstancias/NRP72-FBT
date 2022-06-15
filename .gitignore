@@ -53,6 +53,9 @@ vignettes/*.pdf
 *.struct
 .DS_Store
 
+*logger.log
+*contigs.fa
+*tar.gz
 *Mdb.csv
 *Ndb.csv
 *.db

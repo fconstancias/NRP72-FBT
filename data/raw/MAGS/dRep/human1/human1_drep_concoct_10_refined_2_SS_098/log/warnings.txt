@@ -1,0 +1,2 @@
+CLUSTERING WARNING: Primary cluster 80 was almost split
+CLUSTERING WARNING: Primary cluster 106 was almost not split
