@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg fill-rule="evenodd" height="708.6614173228346" preserveAspectRatio="xMinYMin meet" version="1.0" viewBox="0 0 1417 708" width="1417.3228346456692" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect height="708.6614173228346" width="1417.3228346456692" x="0" y="0"/>
+	</clipPath>
+	<g id="group" style="clip-path: url(#clip)" transform="scale(1,-1) translate(0,-708)">
+		<g transform="">
+			<polygon points="70.86614 169.8256, 727.0267 169.8256, 727.0267 251.8279, 70.86614 251.8279" style="stroke: rgb(96%,96%,96%); stroke-linecap: butt; stroke-width: 1; fill: rgb(96%,96%,96%); fill-rule: evenodd;"/>
+			<polygon points="70.86614 456.8335, 1346.401 456.8335, 1346.401 538.8358, 70.86614 538.8358" style="stroke: rgb(96%,96%,96%); stroke-linecap: butt; stroke-width: 1; fill: rgb(96%,96%,96%); fill-rule: evenodd;"/>
+			<polygon points="587.6746 456.8335, 840.4151 456.8335, 466.099 251.8279, 719.232 251.8279" style="stroke: rgb(100%,5%,5%); stroke-linecap: round; stroke-width: 1; fill: rgb(100%,5%,5%); fill-rule: evenodd;"/>
+			<polygon points="79.38989 241.5776, 130.7308 241.5776, 130.7308 251.8279, 147.1313 231.3273, 130.7308 210.8268, 130.7308 221.0771, 79.38989 221.0771" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="147.7481 241.5776, 147.7481 251.8279, 157.786 231.3273, 147.7481 210.8268, 147.7481 221.0771" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="200.4608 200.5765, 176.8781 200.5765, 176.8781 210.8268, 160.4777 190.3262, 176.8781 169.8256, 176.8781 180.0759, 200.4608 180.0759" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="306.4469 200.5765, 221.2914 200.5765, 221.2914 210.8268, 204.8909 190.3262, 221.2914 169.8256, 221.2914 180.0759, 306.4469 180.0759" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="348.6731 200.5765, 324.5858 200.5765, 324.5858 210.8268, 308.1853 190.3262, 324.5858 169.8256, 324.5858 180.0759, 348.6731 180.0759" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="380.5811 200.5765, 365.5783 200.5765, 365.5783 210.8268, 349.1778 190.3262, 365.5783 169.8256, 365.5783 180.0759, 380.5811 180.0759" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="453.8742 200.5765, 398.1592 200.5765, 398.1592 210.8268, 381.7587 190.3262, 398.1592 169.8256, 398.1592 180.0759, 453.8742 180.0759" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="466.1551 241.5776, 488.0554 241.5776, 488.0554 251.8279, 504.4559 231.3273, 488.0554 210.8268, 488.0554 221.0771, 466.1551 221.0771" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="505.8578 241.5776, 577.5548 241.5776, 577.5548 251.8279, 593.9553 231.3273, 577.5548 210.8268, 577.5548 221.0771, 505.8578 221.0771" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="595.918 241.5776, 609.7432 241.5776, 609.7432 251.8279, 626.1437 231.3273, 609.7432 210.8268, 609.7432 221.0771, 595.918 221.0771" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="657.9956 200.5765, 648.0397 200.5765, 648.0397 210.8268, 631.6392 190.3262, 648.0397 169.8256, 648.0397 180.0759, 657.9956 180.0759" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="712.6709 200.5765, 674.6203 200.5765, 674.6203 210.8268, 658.2199 190.3262, 674.6203 169.8256, 674.6203 180.0759, 712.6709 180.0759" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="70.86614 528.5855, 116.4872 528.5855, 116.4872 538.8358, 132.8876 518.3352, 116.4872 497.8346, 116.4872 508.0849, 70.86614 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="132.7194 528.5855, 171.7794 528.5855, 171.7794 538.8358, 188.1799 518.3352, 171.7794 497.8346, 171.7794 508.0849, 132.7194 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="196.3111 528.5855, 258.2506 528.5855, 258.2506 538.8358, 274.6511 518.3352, 258.2506 497.8346, 258.2506 508.0849, 196.3111 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="276.5577 528.5855, 302.6639 528.5855, 302.6639 538.8358, 319.0643 518.3352, 302.6639 497.8346, 302.6639 508.0849, 276.5577 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="326.5787 528.5855, 340.7404 528.5855, 340.7404 538.8358, 357.1408 518.3352, 340.7404 497.8346, 340.7404 508.0849, 326.5787 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="356.9726 528.5855, 370.7978 528.5855, 370.7978 538.8358, 387.1982 518.3352, 370.7978 497.8346, 370.7978 508.0849, 356.9726 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="389.7778 528.5855, 405.9583 528.5855, 405.9583 538.8358, 422.3587 518.3352, 405.9583 497.8346, 405.9583 508.0849, 389.7778 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="425.499 528.5855, 466.7461 528.5855, 466.7461 538.8358, 483.1465 518.3352, 466.7461 497.8346, 466.7461 508.0849, 425.499 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="511.6338 528.5855, 571.891 528.5855, 571.891 538.8358, 588.2915 518.3352, 571.891 497.8346, 571.891 508.0849, 511.6338 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="594.2357 528.5855, 632.2863 528.5855, 632.2863 538.8358, 648.6867 518.3352, 632.2863 497.8346, 632.2863 508.0849, 594.2357 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="648.911 528.5855, 658.8669 528.5855, 658.8669 538.8358, 675.2674 518.3352, 658.8669 497.8346, 658.8669 508.0849, 648.911 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="710.9886 487.5844, 697.1634 487.5844, 697.1634 497.8346, 680.763 477.3341, 697.1634 456.8335, 697.1634 467.0838, 710.9886 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="800.6562 487.5844, 729.4639 487.5844, 729.4639 497.8346, 713.0635 477.3341, 729.4639 456.8335, 729.4639 467.0838, 800.6562 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="840.359 487.5844, 818.4586 487.5844, 818.4586 497.8346, 802.0582 477.3341, 818.4586 456.8335, 818.4586 467.0838, 840.359 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="851.3501 528.5855, 882.5032 528.5855, 882.5032 538.8358, 898.9037 518.3352, 882.5032 497.8346, 882.5032 508.0849, 851.3501 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="903.6703 528.5855, 917.3272 528.5855, 917.3272 538.8358, 933.7277 518.3352, 917.3272 497.8346, 917.3272 508.0849, 903.6703 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="964.9628 487.5844, 958.3715 487.5844, 958.3715 497.8346, 941.9711 477.3341, 958.3715 456.8335, 958.3715 467.0838, 964.9628 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="987.1133 487.5844, 980.3538 487.5844, 980.3538 497.8346, 963.9534 477.3341, 980.3538 456.8335, 980.3538 467.0838, 987.1133 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="999.8989 528.5855, 1030.043 528.5855, 1030.043 538.8358, 1046.443 518.3352, 1030.043 497.8346, 1030.043 508.0849, 999.8989 508.0849" style="stroke: rgb(67%,84%,90%); stroke-linecap: round; stroke-width: 1; fill: rgb(67%,84%,90%); fill-rule: evenodd;"/>
+			<polygon points="1084.351 487.5844, 1068.844 487.5844, 1068.844 497.8346, 1052.443 477.3341, 1068.844 456.8335, 1068.844 467.0838, 1084.351 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="1145.139 487.5844, 1101.032 487.5844, 1101.032 497.8346, 1084.632 477.3341, 1101.032 456.8335, 1101.032 467.0838, 1145.139 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="1164.991 487.5844, 1161.932 487.5844, 1161.932 497.8346, 1145.532 477.3341, 1161.932 456.8335, 1161.932 467.0838, 1164.991 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="1190.618 487.5844, 1182.008 487.5844, 1182.008 497.8346, 1165.607 477.3341, 1182.008 456.8335, 1182.008 467.0838, 1190.618 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="1239.966 487.5844, 1207.972 487.5844, 1207.972 497.8346, 1191.571 477.3341, 1207.972 456.8335, 1207.972 467.0838, 1239.966 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<polygon points="1346.401 487.5844, 1256.366 487.5844, 1256.366 497.8346, 1239.966 477.3341, 1256.366 456.8335, 1256.366 467.0838, 1346.401 467.0838" style="stroke: rgb(56%,93%,56%); stroke-linecap: round; stroke-width: 1; fill: rgb(56%,93%,56%); fill-rule: evenodd;"/>
+			<path d="M 727.026736,169.825647 L 727.026736,251.827897 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70.866142,210.826772 L 727.026736,210.826772 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70.866142,169.825647 L 70.866142,251.827897 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 631.639233,210.826772 L 631.639233,231.327334 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 631.639233,210.826772 L 631.639233,223.127109 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 1346.400616,456.833521 L 1346.400616,538.835771 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70.866142,497.834646 L 1346.400616,497.834646 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70.866142,456.833521 L 70.866142,538.835771 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 631.639233,497.834646 L 631.639233,518.335208 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 1192.412325,497.834646 L 1192.412325,518.335208 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 631.639233,497.834646 L 631.639233,510.134983 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 1192.412325,497.834646 L 1192.412325,510.134983 Z" style="stroke: rgb(0%,0%,0%); stroke-linecap: butt; stroke-width: 1;"/>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,631.639233,231.327334)">
+				<text style="font-family: Helvetica; font-size: 6px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">10000</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,631.639233,518.335208)">
+				<text style="font-family: Helvetica; font-size: 6px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">10000</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,1192.412325,518.335208)">
+				<text style="font-family: Helvetica; font-size: 6px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">20000</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,113.260587,251.827897)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00190</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,152.767052,251.827897)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00191</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,180.469242,169.825647)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00192</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,255.668914,169.825647)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00193</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,328.429223,169.825647)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00194</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,364.879474,169.825647)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00195</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,417.816453,169.825647)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00196</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,485.305495,251.827897)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00197</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,549.906555,251.827897)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00198</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,611.030822,251.827897)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00199</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,644.817401,169.825647)">
+				<text style="font-family: Helvetica; font-size: 16px;fill: rgb(0%,0%,100%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00200 (99.6)</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,685.445411,169.825647)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_00201</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,101.876894,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01435</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,160.449643,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01436</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,235.481083,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01437</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,297.811012,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01438</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,341.859738,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01439</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,372.085408,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01440</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,406.068257,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01441</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,454.322782,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01442</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,549.962632,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01443</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,621.461202,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01444</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,662.089212,538.835771)">
+				<text style="font-family: Helvetica; font-size: 16px;fill: rgb(0%,0%,100%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01445 (99.6)</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,695.875791,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01446</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,756.859865,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01447</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,821.208577,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01448</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,875.12691,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01449</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,918.698979,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01450</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,953.46691,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01451</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,975.533332,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01452</text>
+			</g>
+			<g transform=" matrix(0.707107,0.707107,-0.707107,0.707107,1023.171006,538.835771)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01453</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,1068.397356,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01454</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,1114.885445,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01455</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,1155.261107,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01456</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,1178.112611,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01457</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,1215.768524,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01458</text>
+			</g>
+			<g transform=" matrix(0.707107,-0.707107,0.707107,0.707107,1293.183249,456.833521)">
+				<text style="font-family: Helvetica; font-size: 10px;fill: rgb(0%,0%,0%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">Gene_01459</text>
+			</g>
+			<g transform=" matrix(1,0,-0,1,70,169.825647)">
+				<text style="font-family: Helvetica; font-size: 12px;fill: rgb(60%,60%,60%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">megahit_4160 (left 38188bp, right 1231bp)</text>
+			</g>
+			<g transform=" matrix(1,0,-0,1,70,456.833521)">
+				<text style="font-family: Helvetica; font-size: 12px;fill: rgb(60%,60%,60%); stroke:none;" transform="translate(0,0) scale(1,-1)" x="0" y="0">megahit_19584 (left 121496bp, right 50123bp)</text>
+			</g>
+		</g>
+	</g>
+</svg>
