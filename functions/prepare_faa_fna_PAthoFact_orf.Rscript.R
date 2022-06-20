@@ -12,10 +12,10 @@ suppressPackageStartupMessages(library("optparse"))
 
 ## ------------------------------------------------------------------------
 
-prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL,
-                                          fasta_file_path = NULL,
+prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL, # 
+                                          fasta_file_path = NULL, # fasta_file_path = "~/Desktop/01.chicken.fasta"
                                           output_dir = "~/Desktop/",
-                                          length_fil = 2000,
+                                          length_fil = 1000,
                                           pat = "[[:space:]].*",
                                           sample_name = "Sample"){
   
@@ -24,38 +24,48 @@ prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL,
   require(tidyverse)
   require(Biostrings)
   
-  
   #######-------------------------- Read faa
   
   aa_file_path %>% 
-    Biostrings::readAAStringSet() -> sequences
+    Biostrings::readAAStringSet() -> sequences #https://support.bioconductor.org/p/87210/
   
   #######-------------------------- Simplify headers
   
   names(sequences) <- sub(pattern = pat, "", names(sequences))  # https://stackoverflow.com/questions/9319242/remove-everything-after-space-in-string
   
+  #######-------------------------- get number of sequences
+  
+  names(sequences) %>% length() -> num_faa_seq
+  
   #######--------------------------
   
   # sequences[width(sequences) >= length_fil,] -> sequences
   
-
-  
-  #######--------------------------
+  #######-------------------------- Read contigs fna
   
   fasta_file_path %>% 
     Biostrings::readDNAStringSet() -> fna_contigs
   
+  names(fna_contigs) %>% length() -> num_fna_contigs
+  
+  #######-------------------------- Filter contigs fna
+  
   fna_contigs[width(fna_contigs) >= length_fil,] -> fna_contigs
   
+  names(fna_contigs) %>% length() -> num_fna_contigs_filt
+  
+  #######-------------------------- Get contigs header
   
   data.frame(names(fna_contigs)) -> df_fasta 
   rownames(df_fasta) <- NULL
   
-  #######--------------------------
-
+  #######-------------------------- Get faa header
+  
   data.frame(names(sequences)) -> df 
   rownames(df) <- NULL
   
+  #######-------------------------- Simplify header faa and filter names based on contig kept after length filtering
+
   df %>% 
     mutate(CONTIG = sub("(.*?_.*?)_.*", "\\1", names.sequences.)) %>% 
     rename("ORF" = "names.sequences.") %>% 
@@ -73,6 +83,12 @@ prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL,
   sequences[df$ORF]  %>% 
     Biostrings::writeXStringSet(paste0(output_dir,"/", sample_name, ".faa"), append=FALSE,
                                 compress=FALSE, compression_level=NA, format="fasta")
+  
+  df %>% 
+    add_count(CONTIG) %>% 
+    distinct(CONTIG, .keep_all = TRUE) %>% 
+    arrange(-n) %>% 
+    write_tsv(paste0(output_dir,"/", sample_name, "_report.tsv"))
   
   colnames(df) <- NULL
   
@@ -130,8 +146,10 @@ opt = parse_args(opt_parser)
 # parse_args(opt_parser, args = c("--help"))
 
 ## ------------------------------------------------------------------------
-
-
+# 
+# prepare_faa_fna_PathoFact_orf(aa_file_path = "~/Desktop/03.chicken.faa",
+#                               fasta_file_path = "~/Desktop/01.chicken.fasta",
+#                               sample_name = "chicken1_l1000")
 
 prepare_faa_fna_PathoFact_orf(aa_file_path = opt$aa_file_path,
                               fasta_file_path = opt$contig_fasta_file_path,
