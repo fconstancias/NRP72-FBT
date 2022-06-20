@@ -33,3 +33,6 @@ From SQM:
 -> R?
 
 functions/prepare_faa_fna_PAthoFact_orf.Rscript.R
+
+ conda activate PathoFact
+ snakemake -s Snakefile --use-conda --reason --cores 5 -p --configfile orfs_chicken1_Tox/config.yaml
