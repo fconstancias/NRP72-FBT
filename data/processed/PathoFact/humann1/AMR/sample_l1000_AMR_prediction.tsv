@@ -1,0 +1,1463 @@
+ORF_ID	ARG	ARG_SNPs	AMR_category	AMR_sub_class	Resistance_mechanism	Database
+0000149498	AAC(2')-IIB	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000373337	AAC(3)-IB/AAC(6')-IB''	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000213655	AAC(3)-IIIB	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000442300	AAC(3)-XA	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000327548	AAC(6')-IF	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000011459	AAC(6')-II	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000366673	AAC(6')-IIB	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000522730	AAC(6')-IIC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000491448	AAC(6')-IIH	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000071574	AAC(6')-ISA	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000337916	AAC(6')-IX	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000024929	AAD(6)	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000241761	AADA12	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000340284	AADA12	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000108810	AADA14	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000340282	AADA15	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000335567	AADA3	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000274275	AADA5	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000214550	AADE	n/a	aminoglycoside	aminoglycoside antibiotic	-	DeepARG
+0000114884	AADE	n/a	aminoglycoside	aminoglycoside antibiotic	-	DeepARG
+0000397878	AADK	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000180015	AADS	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000261091	ACINETOBACTER BAUMANNII ABAQ	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	RGI
+0000162342	ACINETOBACTER BAUMANNII ABAQ	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	RGI
+0000257726	ACRA	n/a	multidrug	tetracycline antibiotic; phenicol antibiotic; penam; glycylcycline; cephalosporin; rifamycin antibiotic; triclosan; fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000279449	ACRA	n/a	multidrug	tetracycline antibiotic; phenicol antibiotic; penam; glycylcycline; cephalosporin; rifamycin antibiotic; triclosan; fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000013595	ACRA	n/a	multidrug	tetracycline antibiotic; phenicol antibiotic; penam; glycylcycline; cephalosporin; rifamycin antibiotic; triclosan; fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000392641	ACRA	n/a	multidrug	tetracycline antibiotic; phenicol antibiotic; penam; glycylcycline; cephalosporin; rifamycin antibiotic; triclosan; fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000088283	ACRB	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	RGI
+0000279450	ACRB	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000152767	ACRB	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	RGI
+0000257725	ACRB	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000418819	ACRB	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000477191	ACRB	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	RGI
+0000101622	ACRB	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000358319	ACRD	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	RGI
+0000248582	ACRD	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	RGI
+0000071650	ACRD	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	RGI
+0000519228	ACRD	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	RGI
+0000055884	ACRE	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000503409	ACRF	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;penam	antibiotic efflux	RGI
+0000064982	ACRF	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000482025	ACRF	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;penam	antibiotic efflux	RGI
+0000172690	ACRF	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;penam	antibiotic efflux	RGI
+0000056884	ACRF	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;penam	antibiotic efflux	RGI
+0000055883	ACRF	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;penam	antibiotic efflux	RGI
+0000055885	ACRS	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	RGI
+0000199039	ADC-19	n/a	beta-lactam	cephalosporin	antibiotic inactivation	RGI
+0000411645	ADEB	n/a	multidrug	glycylcycline;tetracycline antibiotic	antibiotic efflux	RGI
+0000431251	ADEB	n/a	multidrug	glycylcycline;tetracycline antibiotic	antibiotic efflux	RGI
+0000020008	ADEC	n/a	multidrug	glycylcycline;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000334171	ADEC	n/a	multidrug	glycylcycline;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000380723	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000340643	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000135144	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000320879	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000403087	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000522363	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000138527	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000422007	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000072533	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000183340	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000436129	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000085612	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000487487	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000397206	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000198090	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000303624	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000281277	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000415116	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000170589	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000090667	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000222983	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000164937	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000260171	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000441070	ADEF	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000235466	ADEG	n/a	multidrug	fluoroquinolone antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000517638	ADP-RIBOSYLATING_TRANSFERASE_ARR	n/a	rifamycin	rifamycin antibiotic	-	DeepARG
+0000011979	ADP-RIBOSYLATING_TRANSFERASE_ARR	n/a	rifamycin	rifamycin antibiotic	-	DeepARG
+0000231294	ADP-RIBOSYLATING_TRANSFERASE_ARR	n/a	rifamycin	rifamycin antibiotic	-	DeepARG
+0000335568	ANT(2'')-IA	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000135500	ANT(6)-IA	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000423268	ANT(9)-IA	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000405024	APH(2'')-IE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000468292	APH(3'')-IB	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000246718	APH(3')-IA	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000444314	APH(3')-IB	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000262531	APH(3')-IIB	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG
+0000024931	APH(3')-IIIA	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000073415	APH(3')-IIIA	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000164393	APH(3')-IIIA	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000187503	APH(3')-VC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000321607	APH(3')-VC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000193817	APH(4)-IB	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000493397	APH(6)-I	n/a	aminoglycoside	aminoglycoside antibiotic	-	DeepARG
+0000276562	APH(6)-IC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000464869	APH(6)-IC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000127273	APH(6)-IC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000241964	APH(6)-IC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000384317	APH(6)-IC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000299753	APH(6)-IC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000461308	APH(6)-IC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000031109	APH(6)-IC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000272987	APH(6)-IC	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	RGI
+0000468291	APH(6)-ID	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000239966	AQU-2	n/a	beta-lactam	cephalosporin	antibiotic inactivation	RGI
+0000137090	BACA	n/a	bacitracin	peptide antibiotic	antibiotic target alteration	RGI
+0000103330	BACA	n/a	bacitracin	peptide antibiotic	antibiotic target alteration	DeepARG
+0000392706	BACA	n/a	bacitracin	peptide antibiotic	antibiotic target alteration	DeepARG
+0000159832	BACA	n/a	bacitracin	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000468516	BACA	n/a	bacitracin	peptide antibiotic	antibiotic target alteration	DeepARG
+0000237023	BACA	n/a	bacitracin	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000415228	BACA	n/a	bacitracin	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000434996	BACA	n/a	bacitracin	peptide antibiotic	antibiotic target alteration	DeepARG
+0000007895	BACTERIAL_REGULATORY_PROTEIN_LUXR	n/a	unclassified	unclassified	-	DeepARG
+0000165750	BAER	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000280028	BAER	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	RGI
+0000281437	BAER	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000554404	BAER	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000182560	BAER	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000099183	BAER	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000155824	BAES	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	RGI
+0000010574	BAES	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000135032	BAES	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000438000	BAES	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	RGI
+0000554403	BAES	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	RGI
+0000182559	BAES	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	RGI
+0000165749	BAES	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000281438	BAES	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000280029	BAES	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000240923	BASS	n/a	peptide	peptide antibiotic	antibiotic efflux;antibiotic target alteration	RGI
+0000118801	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000075547	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000490149	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000147447	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000196522	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000073462	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000297749	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000060621	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000037471	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000390256	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000126786	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000239229	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000066676	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000098965	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000064173	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000274251	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000248346	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000228649	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000320119	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000073210	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000275969	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000488911	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000287101	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000132589	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000223993	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000120450	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000257799	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000468054	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000279718	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000300078	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000368179	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000502440	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000475968	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000414238	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000243474	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000129912	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000284320	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000278964	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000127672	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000009393	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000250960	BCRA	n/a	bacitracin	peptide antibiotic	antibiotic efflux	DeepARG
+0000283786	BCRC	n/a	bacitracin	peptide antibiotic	antibiotic target alteration	RGI
+0000032045	BICYCLOMYCIN-MULTIDRUG_EFFLUX_PROTEIN_BCR	n/a	multidrug	bicyclomycin	antibiotic efflux	DeepARG
+0000222780	BICYCLOMYCIN-MULTIDRUG_EFFLUX_PROTEIN_BCR	n/a	multidrug	bicyclomycin	antibiotic efflux	DeepARG
+0000421125	BICYCLOMYCIN-MULTIDRUG_EFFLUX_PROTEIN_BCR	n/a	multidrug	bicyclomycin	antibiotic efflux	DeepARG
+0000231087	BICYCLOMYCIN-MULTIDRUG_EFFLUX_PROTEIN_BCR	n/a	multidrug	bicyclomycin	antibiotic efflux	DeepARG
+0000307111	BICYCLOMYCIN-MULTIDRUG_EFFLUX_PROTEIN_BCR	n/a	multidrug	bicyclomycin	antibiotic efflux	DeepARG
+0000098908	BICYCLOMYCIN-MULTIDRUG_EFFLUX_PROTEIN_BCR	n/a	multidrug	bicyclomycin	antibiotic efflux	DeepARG
+0000137418	BIFIDOBACTERIUM ADOLESCENTIS RPOB MUTANTS CONFERRING RESISTANCE TO RIFAMPICIN	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG/RGI
+0000500539	BRUCELLA SUIS MPRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000262008	BRUCELLA SUIS MPRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000351343	BRUCELLA SUIS MPRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000463728	BRUCELLA SUIS MPRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000262337	CAMP-REGULATORY_PROTEIN	n/a	unclassified	unclassified	-	DeepARG
+0000061155	CAMPYLOBACTER COLI CHLORAMPHENICOL ACETYLTRANSFERASE	n/a	phenicol	phenicol antibiotic	antibiotic inactivation	DeepARG/RGI
+0000390686	CARB-1	n/a	beta-lactam	penam	antibiotic inactivation	RGI
+0000298039	CAT_CHLORAMPHENICOL_ACETYLTRANSFERASE	n/a	phenicol	phenicol antibiotic	-	DeepARG
+0000548667	CAT_CHLORAMPHENICOL_ACETYLTRANSFERASE	n/a	phenicol	phenicol antibiotic	-	DeepARG
+0000253651	CAT_CHLORAMPHENICOL_ACETYLTRANSFERASE	n/a	phenicol	phenicol antibiotic	-	DeepARG
+0000112830	CATA	n/a	phenicol	phenicol antibiotic	-	DeepARG
+0000129228	CATQ	n/a	phenicol	phenicol antibiotic	antibiotic inactivation	RGI
+0000298864	CATS	n/a	phenicol	phenicol antibiotic	antibiotic inactivation	RGI
+0000183341	CBLA-1	n/a	beta-lactam	cephalosporin	antibiotic inactivation	RGI
+0000089736	CDEA	n/a	multidrug	acridine dye;fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000084482	CFE-1	n/a	beta-lactam	cephamycin	antibiotic inactivation	RGI
+0000311552	CFXA2	n/a	beta-lactam	cephamycin	antibiotic inactivation	DeepARG/RGI
+0000098887	CFXA3	n/a	beta-lactam	cephamycin	antibiotic inactivation	DeepARG
+0000007292	CHLORAMPHENICOL_AND_FLORFENICOL_RESISTANCE	n/a	phenicol	phenicol antibiotic	-	DeepARG
+0000335928	CHLORAMPHENICOL_AND_FLORFENICOL_RESISTANCE	n/a	phenicol	phenicol antibiotic	-	DeepARG
+0000369166	CHRB	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000018774	CHRB	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000241423	CHRB	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000448294	CHRB	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000470688	CHRB	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000088997	CLASS_A	n/a	beta-lactam	beta-lactam antibiotics	antibiotic inactivation	DeepARG
+0000345248	CLASS_A	n/a	beta-lactam	beta-lactam antibiotics	antibiotic inactivation	DeepARG
+0000162231	CLASS_A	n/a	beta-lactam	beta-lactam antibiotics	antibiotic inactivation	DeepARG
+0000234486	CLASS_A	n/a	beta-lactam	beta-lactam antibiotics	antibiotic inactivation	DeepARG
+0000258796	CMEB	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;fusidic acid;macrolide antibiotic	antibiotic efflux	DeepARG
+0000267418	CMH-1	n/a	beta-lactam	cephalosporin	antibiotic inactivation	DeepARG/RGI
+0000340283	CMLA6	n/a	phenicol	phenicol antibiotic	antibiotic efflux	DeepARG/RGI
+0000387321	CMY-50	n/a	beta-lactam	cephamycin	antibiotic inactivation	RGI
+0000193731	CMY-65	n/a	beta-lactam	cephamycin	antibiotic inactivation	RGI
+0000004186	COB(I)ALAMIN_ADENOLSYLTRANSFERASE	n/a	unclassified	unclassified	-	DeepARG
+0000187794	COB(I)ALAMIN_ADENOLSYLTRANSFERASE	n/a	unclassified	unclassified	-	DeepARG
+0000070627	COB(I)ALAMIN_ADENOLSYLTRANSFERASE	n/a	unclassified	unclassified	-	DeepARG
+0000214613	COB(I)ALAMIN_ADENOLSYLTRANSFERASE	n/a	unclassified	unclassified	-	DeepARG
+0000408559	COB(I)ALAMIN_ADENOLSYLTRANSFERASE	n/a	unclassified	unclassified	-	DeepARG
+0000260577	COB(I)ALAMIN_ADENOLSYLTRANSFERASE	n/a	unclassified	unclassified	-	DeepARG
+0000493110	COB(I)ALAMIN_ADENOLSYLTRANSFERASE	n/a	unclassified	unclassified	-	DeepARG
+0000422430	CPXA	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000225535	CPXA	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000299496	CPXA	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000428062	CPXA	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	RGI
+0000540604	CPXA	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000391857	CPXA	n/a	aminoglycoside:aminocoumarin	aminocoumarin antibiotic;aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000023579	CRP	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000409499	CRP	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000337163	CRP	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000540511	CRP	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000172569	CRPP	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic inactivation	DeepARG
+0000300304	CRPP	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic inactivation	DeepARG
+0000006892	CTX-M-1	n/a	beta-lactam	cephalosporin	antibiotic inactivation	DeepARG/RGI
+0000240788	DFRA14	n/a	diaminopyrimidine	diaminopyrimidine antibiotic	antibiotic target replacement	DeepARG/RGI
+0000403251	DFRA26	n/a	diaminopyrimidine	diaminopyrimidine antibiotic	antibiotic target replacement	RGI
+0000445873	DFRA9	n/a	diaminopyrimidine	diaminopyrimidine antibiotic	antibiotic target replacement	RGI
+0000367389	DFRE	n/a	diaminopyrimidine	diaminopyrimidine antibiotic	antibiotic target replacement	RGI
+0000267568	DFRE	n/a	diaminopyrimidine	diaminopyrimidine antibiotic	antibiotic target replacement	RGI
+0000251627	DFRF	n/a	diaminopyrimidine	diaminopyrimidine antibiotic	antibiotic target replacement	RGI
+0000514434	DFRG	n/a	diaminopyrimidine	diaminopyrimidine antibiotic	antibiotic target replacement	RGI
+0000027941	DHA-12	n/a	beta-lactam	cephalosporin;cephamycin	antibiotic inactivation	RGI
+0000392720	DHA-18	n/a	beta-lactam	cephalosporin;cephamycin	antibiotic inactivation	DeepARG/RGI
+0000332367	DNA-BINDING_PROTEIN_H-NS	n/a	unclassified	unclassified	-	DeepARG
+0000317570	DNA-BINDING_PROTEIN_H-NS	n/a	unclassified	unclassified	-	DeepARG
+0000492032	DNA-BINDING_PROTEIN_H-NS	n/a	unclassified	unclassified	-	DeepARG
+0000325466	DNA-BINDING_PROTEIN_H-NS	n/a	unclassified	unclassified	-	DeepARG
+0000007847	DNA-BINDING_PROTEIN_H-NS	n/a	unclassified	unclassified	-	DeepARG
+0000472729	DNA-BINDING_PROTEIN_H-NS	n/a	unclassified	unclassified	-	DeepARG
+0000074333	EATAV	T450I	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000096790	EFMA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic	antibiotic efflux	DeepARG/RGI
+0000317940	EFMA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic	antibiotic efflux	DeepARG
+0000140861	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000117574	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG/RGI
+0000485399	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000095953	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG/RGI
+0000067158	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000197852	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000246735	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000462675	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG/RGI
+0000449644	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000260018	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG/RGI
+0000079698	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000155961	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000063084	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000402699	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000416129	EFRA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000185008	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000201594	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000239940	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000416128	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000257311	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000117575	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG/RGI
+0000425088	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000128872	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000402700	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000140862	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000499209	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000458342	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000303145	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000163291	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000055298	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000382871	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000368368	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000050090	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000207850	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000197853	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000340418	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000095952	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000020959	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000196895	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000536752	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000225497	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000559924	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000485398	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000383373	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000258559	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000274804	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000330241	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000162903	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000053838	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000406080	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000079699	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000367960	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000260019	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000213296	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000443597	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000012473	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000060513	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000083422	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000462676	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000155962	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000386587	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000024122	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000053595	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000229797	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000036517	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000410834	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000142161	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000403670	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000176353	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000073141	EFRB	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;rifamycin antibiotic	antibiotic efflux	DeepARG
+0000439987	EMEA	n/a	acridine_dye	acridine dye	antibiotic efflux	RGI
+0000007831	EMRA	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000308393	EMRA	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000318865	EMRA	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	RGI
+0000420747	EMRA	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000001646	EMRA	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	RGI
+0000417330	EMRA	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000001647	EMRB	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000007830	EMRB	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000223675	EMRB	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000112383	EMRB	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000417331	EMRB	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000464967	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000359934	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000414880	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000074597	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000385934	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000377433	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000219603	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000347164	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000035687	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000516928	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000341800	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000083499	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000363270	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000325658	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000298249	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000204437	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000080088	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000363268	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000213173	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000056659	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000248581	EMRB-QACA_FAMILY_MAJOR_FACILITATOR_TRANSPORTER	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000540595	EMRD	n/a	multidrug	Unclassified	antibiotic efflux	DeepARG
+0000100348	EMRD	n/a	multidrug	Unclassified	antibiotic efflux	DeepARG
+0000354826	EMRD	n/a	multidrug	Unclassified	antibiotic efflux	DeepARG
+0000340940	EMRD	n/a	multidrug	Unclassified	antibiotic efflux	DeepARG
+0000551626	EMRD	n/a	multidrug	Unclassified	antibiotic efflux	DeepARG
+0000045711	EMRK	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	RGI
+0000244671	EMRK	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	RGI
+0000027894	EMRK	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000308392	EMRR	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000417329	EMRR	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000001645	EMRR	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000007832	EMRR	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000462803	EMRY	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	RGI
+0000027895	EMRY	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000460415	EMRY	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	RGI
+0000045710	EMRY	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	RGI
+0000280066	EMRY	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	RGI
+0000477192	ENTEROBACTER CLOACAE ACRA	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG/RGI
+0000505397	EPTA	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000022905	EPTA	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000379525	EPTA	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000524139	EREB	n/a	MLS	macrolide antibiotic	antibiotic inactivation	RGI
+0000261125	ERM(30)	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000218123	ERM(32)	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000147594	ERM(45)	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000378067	ERM(O)-LRM	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000025379	ERMA	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	DeepARG/RGI
+0000195955	ERMB	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000125255	ERMB	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	DeepARG/RGI
+0000155378	ERMF	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	DeepARG/RGI
+0000166494	ERMF	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000163075	ERMG	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	DeepARG/RGI
+0000043668	ERMG	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000386816	ERMQ	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000019361	ERMS	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000039089	ERMY	n/a	MLS	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic	antibiotic target alteration	RGI
+0000088284	ESCHERICHIA COLI ACRA	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG/RGI
+0000152766	ESCHERICHIA COLI ACRA	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG/RGI
+0000152765	ESCHERICHIA COLI ACRR WITH MUTATION CONFERRING MULTIDRUG ANTIBIOTIC RESISTANCE	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration	RGI
+0000249750	ESCHERICHIA COLI AMPC BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	DeepARG/RGI
+0000234220	ESCHERICHIA COLI AMPC BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000215482	ESCHERICHIA COLI AMPC BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000252823	ESCHERICHIA COLI AMPC BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	DeepARG/RGI
+0000243571	ESCHERICHIA COLI AMPC1 BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000108669	ESCHERICHIA COLI AMPC1 BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000131380	ESCHERICHIA COLI AMPH BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000494489	ESCHERICHIA COLI AMPH BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000225398	ESCHERICHIA COLI AMPH BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000342420	ESCHERICHIA COLI AMPH BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000284242	ESCHERICHIA COLI AMPH BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000128725	ESCHERICHIA COLI AMPH BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000424867	ESCHERICHIA COLI AMPH BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000157228	ESCHERICHIA COLI AMPH BETA-LACTAMASE	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000331968	ESCHERICHIA COLI EF-TU MUTANTS CONFERRING RESISTANCE TO PULVOMYCIN	R234F	elfamycin	elfamycin antibiotic	antibiotic target alteration	RGI
+0000283729	ESCHERICHIA COLI EF-TU MUTANTS CONFERRING RESISTANCE TO PULVOMYCIN	R234F	elfamycin	elfamycin antibiotic	antibiotic target alteration	RGI
+0000023560	ESCHERICHIA COLI EF-TU MUTANTS CONFERRING RESISTANCE TO PULVOMYCIN	R234F	elfamycin	elfamycin antibiotic	antibiotic target alteration	RGI
+0000196189	ESCHERICHIA COLI EMRE	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG/RGI
+0000464390	ESCHERICHIA COLI GLPT WITH MUTATION CONFERRING RESISTANCE TO FOSFOMYCIN	E448K	fosfomycin	fosfomycin	antibiotic target alteration	RGI
+0000377695	ESCHERICHIA COLI GLPT WITH MUTATION CONFERRING RESISTANCE TO FOSFOMYCIN	E448K	fosfomycin	fosfomycin	antibiotic target alteration	RGI
+0000012751	ESCHERICHIA COLI GYRA CONFERRING RESISTANCE TO FLUOROQUINOLONES	D87N, S83L	multidrug	fluoroquinolone antibiotic;nybomycin	antibiotic target alteration	RGI
+0000170215	ESCHERICHIA COLI MARR MUTANT CONFERRING ANTIBIOTIC RESISTANCE	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration	RGI
+0000205204	ESCHERICHIA COLI MARR MUTANT CONFERRING ANTIBIOTIC RESISTANCE	Y137H, G103S	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration	RGI
+0000493342	ESCHERICHIA COLI MARR MUTANT CONFERRING ANTIBIOTIC RESISTANCE	Y137H, S3N	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration	RGI
+0000397363	ESCHERICHIA COLI MDFA	n/a	multidrug	benzalkonium chloride;rhodamine;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000031050	ESCHERICHIA COLI MDFA	n/a	multidrug	benzalkonium chloride;rhodamine;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000028459	ESCHERICHIA COLI MDFA	n/a	multidrug	benzalkonium chloride;rhodamine;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000457172	ESCHERICHIA COLI SOXR WITH MUTATION CONFERRING ANTIBIOTIC RESISTANCE	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration	RGI
+0000379579	ESCHERICHIA COLI SOXS WITH MUTATION CONFERRING ANTIBIOTIC RESISTANCE	n/a	multidrug	carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;monobactam;penam;penem;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration;reduced permeability to antibiotic	DeepARG/RGI
+0000550411	ESCHERICHIA COLI SOXS WITH MUTATION CONFERRING ANTIBIOTIC RESISTANCE	n/a	multidrug	carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;monobactam;penam;penem;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration;reduced permeability to antibiotic	RGI
+0000457173	ESCHERICHIA COLI SOXS WITH MUTATION CONFERRING ANTIBIOTIC RESISTANCE	n/a	multidrug	carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;monobactam;penam;penem;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration;reduced permeability to antibiotic	RGI
+0000226603	ESCHERICHIA COLI UHPT WITH MUTATION CONFERRING RESISTANCE TO FOSFOMYCIN	E350Q	fosfomycin	fosfomycin	antibiotic target alteration	RGI
+0000240150	ESCHERICHIA COLI UHPT WITH MUTATION CONFERRING RESISTANCE TO FOSFOMYCIN	E350Q	fosfomycin	fosfomycin	antibiotic target alteration	RGI
+0000354813	ESCHERICHIA COLI UHPT WITH MUTATION CONFERRING RESISTANCE TO FOSFOMYCIN	E350Q	fosfomycin	fosfomycin	antibiotic target alteration	RGI
+0000123832	ESCHERICHIA_COLI_LAMB	n/a	multidrug	tetracycline antibiotic;fluoroquinolone antibiotic	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000379607	ESCHERICHIA_COLI_LAMB	n/a	multidrug	tetracycline antibiotic;fluoroquinolone antibiotic	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000543734	ESCHERICHIA_COLI_LAMB	n/a	multidrug	tetracycline antibiotic;fluoroquinolone antibiotic	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000428882	ESCHERICHIA_COLI_MIPA	n/a	multidrug	fluoroquinolone antibiotic; aminoglycoside antibiotic	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000327503	ESCHERICHIA_COLI_MIPA	n/a	multidrug	fluoroquinolone antibiotic; aminoglycoside antibiotic	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000323748	ESCHERICHIA_COLI_MIPA	n/a	multidrug	fluoroquinolone antibiotic; aminoglycoside antibiotic	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000027893	EVGA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000244672	EVGA	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam;tetracycline antibiotic	antibiotic efflux	RGI
+0000027892	EVGS	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam;tetracycline antibiotic	antibiotic efflux	RGI
+0000308093	FOSA	n/a	fosfomycin	fosfomycin	antibiotic inactivation	DeepARG
+0000348898	FOSB3	n/a	fosfomycin	fosfomycin	antibiotic inactivation	DeepARG/RGI
+0000375371	FOSX	n/a	fosfomycin	fosfomycin	antibiotic inactivation	DeepARG
+0000005546	FOSX	n/a	fosfomycin	fosfomycin	antibiotic inactivation	DeepARG
+0000098867	FRI-3	n/a	beta-lactam	penam	antibiotic inactivation	RGI
+0000257699	FUSH	n/a	fusidic-acid	fusidic acid	antibiotic inactivation	RGI
+0000223676	GADW	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG
+0000086380	GADW	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000223677	GADX	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000074024	GADX	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000406432	GOLS	n/a	multidrug	carbapenem;cephalosporin;cephamycin;monobactam;penam;penem;phenicol antibiotic	antibiotic efflux	DeepARG
+0000099885	GOLS	n/a	multidrug	carbapenem;cephalosporin;cephamycin;monobactam;penam;penem;phenicol antibiotic	antibiotic efflux	DeepARG
+0000415084	GOLS	n/a	multidrug	carbapenem;cephalosporin;cephamycin;monobactam;penam;penem;phenicol antibiotic	antibiotic efflux	DeepARG
+0000296141	H-NS	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;macrolide antibiotic;penam;tetracycline antibiotic	antibiotic efflux	RGI
+0000441155	H-NS	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;macrolide antibiotic;penam;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000493076	H-NS	n/a	multidrug	cephalosporin;cephamycin;fluoroquinolone antibiotic;macrolide antibiotic;penam;tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000231703	HAEMOPHILUS INFLUENZAE PBP3 CONFERRING RESISTANCE TO BETA-LACTAM ANTIBIOTICS	D350N, S357N	beta-lactam	carbapenem;cephalosporin;cephamycin;monobactam;penam	antibiotic target alteration	RGI
+0000110267	HAEMOPHILUS INFLUENZAE PBP3 CONFERRING RESISTANCE TO BETA-LACTAM ANTIBIOTICS	D350N	beta-lactam	carbapenem;cephalosporin;cephamycin;monobactam;penam	antibiotic target alteration	RGI
+0000420795	HAEMOPHILUS INFLUENZAE PBP3 CONFERRING RESISTANCE TO BETA-LACTAM ANTIBIOTICS	D350N	beta-lactam	carbapenem;cephalosporin;cephamycin;monobactam;penam	antibiotic target alteration	RGI
+0000225818	HAEMOPHILUS INFLUENZAE PBP3 CONFERRING RESISTANCE TO BETA-LACTAM ANTIBIOTICS	D350N, S357N	beta-lactam	carbapenem;cephalosporin;cephamycin;monobactam;penam	antibiotic target alteration	RGI
+0000318103	HAEMOPHILUS PARAINFLUENZAE PARC CONFERRING RESISTANCE TO FLUOROQUINOLONES	S84F	fluoroquinolone	fluoroquinolone antibiotic	antibiotic target alteration	RGI
+0000240964	ICR-MC	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000546618	ICR-MC	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000240936	ICR-MO	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000387540	IRI	n/a	rifamycin	rifamycin antibiotic	antibiotic inactivation	RGI
+0000419014	KASUGAMYCIN_RESISTANCE_PROTEIN_KSGA	n/a	aminoglycoside	aminoglycoside antibiotic	-	DeepARG
+0000141133	KASUGAMYCIN_RESISTANCE_PROTEIN_KSGA	n/a	aminoglycoside	aminoglycoside antibiotic	-	DeepARG
+0000231670	KASUGAMYCIN_RESISTANCE_PROTEIN_KSGA	n/a	aminoglycoside	aminoglycoside antibiotic	-	DeepARG
+0000139279	KASUGAMYCIN_RESISTANCE_PROTEIN_KSGA	n/a	aminoglycoside	aminoglycoside antibiotic	-	DeepARG
+0000520967	KASUGAMYCIN_RESISTANCE_PROTEIN_KSGA	n/a	aminoglycoside	aminoglycoside antibiotic	-	DeepARG
+0000433607	KASUGAMYCIN_RESISTANCE_PROTEIN_KSGA	n/a	aminoglycoside	aminoglycoside antibiotic	-	DeepARG
+0000164165	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000129099	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000320501	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000262528	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000004155	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000182153	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	RGI
+0000530104	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000085364	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000041192	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000135156	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	RGI
+0000392809	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000055498	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000466218	KDPE	n/a	aminoglycoside	aminoglycoside antibiotic	antibiotic efflux	DeepARG
+0000413196	KLEBSIELLA PNEUMONIAE ACRA	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	RGI
+0000493386	KLEBSIELLA PNEUMONIAE KPNE	n/a	multidrug	aminoglycoside antibiotic;cephalosporin;macrolide antibiotic;peptide antibiotic;rifamycin antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000462277	KLEBSIELLA PNEUMONIAE KPNE	n/a	multidrug	aminoglycoside antibiotic;cephalosporin;macrolide antibiotic;peptide antibiotic;rifamycin antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000503521	KLEBSIELLA PNEUMONIAE KPNE	n/a	multidrug	aminoglycoside antibiotic;cephalosporin;macrolide antibiotic;peptide antibiotic;rifamycin antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000503520	KLEBSIELLA PNEUMONIAE KPNF	n/a	multidrug	aminoglycoside antibiotic;cephalosporin;macrolide antibiotic;peptide antibiotic;rifamycin antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000493385	KLEBSIELLA PNEUMONIAE KPNF	n/a	multidrug	aminoglycoside antibiotic;cephalosporin;macrolide antibiotic;peptide antibiotic;rifamycin antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000468177	KLEBSIELLA PNEUMONIAE KPNG	n/a	multidrug	aminoglycoside antibiotic;carbapenem;cephalosporin;fluoroquinolone antibiotic;macrolide antibiotic;penam;penem;peptide antibiotic	antibiotic efflux	DeepARG/RGI
+0000420748	KLEBSIELLA PNEUMONIAE KPNH	n/a	multidrug	aminoglycoside antibiotic;carbapenem;cephalosporin;fluoroquinolone antibiotic;macrolide antibiotic;penam;penem;peptide antibiotic	antibiotic efflux	RGI
+0000308394	KLEBSIELLA PNEUMONIAE KPNH	n/a	multidrug	aminoglycoside antibiotic;carbapenem;cephalosporin;fluoroquinolone antibiotic;macrolide antibiotic;penam;penem;peptide antibiotic	antibiotic efflux	RGI
+0000123161	KLEBSIELLA PNEUMONIAE KPNH	n/a	multidrug	aminoglycoside antibiotic;carbapenem;cephalosporin;fluoroquinolone antibiotic;macrolide antibiotic;penam;penem;peptide antibiotic	antibiotic efflux	RGI
+0000061355	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000105132	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000351075	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000143469	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000405782	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000402767	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000148386	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000533985	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000066342	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000427564	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000400889	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000490672	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000468193	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000045934	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000448444	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000148868	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000412856	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000286537	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000371181	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000159199	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000553713	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000066125	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000432533	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000113533	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000382488	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000506785	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000329412	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000275358	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000189617	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000288573	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000029037	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000019990	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000199796	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000464713	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000077915	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000191890	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000040989	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000237520	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000449067	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000031418	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000204425	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000475533	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000137083	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000207442	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000405903	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000073111	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000238655	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000341766	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000266660	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000345602	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000076631	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000242613	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000060384	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000288237	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000133853	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000518164	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000338644	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000182098	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000260373	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000505219	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000253836	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000145378	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000147999	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000011786	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000178050	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000031513	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000169451	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000256594	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000530521	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000056760	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000173873	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000534776	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000402553	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000527208	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000383288	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000381954	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000036783	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000562397	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000407897	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000256550	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000287090	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000163005	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000002535	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000381082	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000285830	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000138190	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000194428	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000017150	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000273852	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000027142	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000505797	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000322900	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000355180	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000388567	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000288213	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000155269	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000138305	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000384997	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000405976	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000142382	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000299553	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000023145	LLMA_23S_RIBOSOMAL_RNA_METHYLTRANSFERASE	n/a	MLS	lincosamide antibiotic	antibiotic target alteration	DeepARG
+0000026495	LMRB	n/a	MLS	lincosamide antibiotic	antibiotic efflux	RGI
+0000261726	LMRC	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000516934	LMRD	n/a	MLS	lincosamide antibiotic	antibiotic efflux	DeepARG
+0000540106	LMRD	n/a	MLS	lincosamide antibiotic	antibiotic efflux	DeepARG
+0000325654	LMRD	n/a	MLS	lincosamide antibiotic	antibiotic efflux	DeepARG
+0000207764	LMRD	n/a	MLS	lincosamide antibiotic	antibiotic efflux	DeepARG
+0000074269	LMRP	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000481605	LNUA	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG
+0000013770	LNUA	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG
+0000432214	LNUA	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG
+0000027047	LNUA	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG
+0000244537	LNUA	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG
+0000026155	LNUA	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG
+0000259667	LNUA	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG
+0000001991	LNUC	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG
+0000465020	LNUC	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	RGI
+0000074216	LNUC	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG/RGI
+0000536795	LNUE	n/a	MLS	lincosamide antibiotic	antibiotic inactivation	DeepARG
+0000413868	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000517803	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000174361	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000142281	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000149119	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000500340	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000397499	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000457713	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000442631	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000397177	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000559163	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000143118	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000219988	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000465498	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000377596	LSA	n/a	multidrug	oxazolidinone antibiotic;lincosamide antibiotic;tetracycline antibiotic;tetracycline antibiotic;streptogramin antibiotic;macrolide antibiotic;pleuromutilin antibiotic; phenicol antibiotic	antibiotic target protection	DeepARG
+0000359983	LSAA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000247626	LSAE	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000007293	LSAE	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000167301	LSAE	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000274687	LSAE	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000426135	LSAE	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000081948	MACA	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000308202	MACA	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000165757	MACA	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000065482	MACA	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000308201	MACB	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000081949	MACB	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000165756	MACB	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000065483	MACB	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000198588	MACB	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000088134	MAJOR_FACILITATOR_SUPERFAMILY_TRANSPORTER	n/a	multidrug	multidrug (unclassified)	-	DeepARG
+0000207671	MAJOR_FACILITATOR_SUPERFAMILY_TRANSPORTER	n/a	multidrug	multidrug (unclassified)	-	DeepARG
+0000403439	MAJOR_FACILITATOR_SUPERFAMILY_TRANSPORTER	n/a	multidrug	multidrug (unclassified)	-	DeepARG
+0000312469	MAJOR_FACILITATOR_SUPERFAMILY_TRANSPORTER	n/a	multidrug	multidrug (unclassified)	-	DeepARG
+0000493343	MARA	n/a	multidrug	carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;monobactam;penam;penem;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;reduced permeability to antibiotic	DeepARG/RGI
+0000404831	MARA	n/a	multidrug	carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;monobactam;penam;penem;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;reduced permeability to antibiotic	DeepARG/RGI
+0000205205	MARA	n/a	multidrug	carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;monobactam;penam;penem;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;reduced permeability to antibiotic	DeepARG/RGI
+0000254962	MDSC	n/a	multidrug	carbapenem;cephalosporin;cephamycin;monobactam;penam;penem;phenicol antibiotic	antibiotic efflux	RGI
+0000415115	MDSC	n/a	multidrug	carbapenem;cephalosporin;cephamycin;monobactam;penam;penem;phenicol antibiotic	antibiotic efflux	DeepARG
+0000453208	MDSC	n/a	multidrug	carbapenem;cephalosporin;cephamycin;monobactam;penam;penem;phenicol antibiotic	antibiotic efflux	RGI
+0000493710	MDSC	n/a	multidrug	carbapenem;cephalosporin;cephamycin;monobactam;penam;penem;phenicol antibiotic	antibiotic efflux	RGI
+0000172780	MDSC	n/a	multidrug	carbapenem;cephalosporin;cephamycin;monobactam;penam;penem;phenicol antibiotic	antibiotic efflux	RGI
+0000478137	MDSC	n/a	multidrug	carbapenem;cephalosporin;cephamycin;monobactam;penam;penem;phenicol antibiotic	antibiotic efflux	RGI
+0000041302	MDTA	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000499785	MDTA	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	DeepARG/RGI
+0000353427	MDTA	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000270323	MDTA	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000353428	MDTB	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000270322	MDTB	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000000321	MDTB	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000495490	MDTB	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000165746	MDTB	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000495489	MDTC	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000165747	MDTC	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000281439	MDTC	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	DeepARG
+0000270321	MDTC	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000353429	MDTC	n/a	aminocoumarin	aminocoumarin antibiotic	antibiotic efflux	RGI
+0000135033	MDTD	n/a	multidrug	multidrug (unclassified)	antibiotic efflux	DeepARG
+0000165748	MDTD	n/a	multidrug	multidrug (unclassified)	antibiotic efflux	DeepARG
+0000087252	MDTE	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG/RGI
+0000007901	MDTE	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	DeepARG
+0000087251	MDTF	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	RGI
+0000510116	MDTF	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;penam	antibiotic efflux	RGI
+0000062457	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	RGI
+0000511150	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000241723	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000228153	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000095739	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000474327	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000076594	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG/RGI
+0000074485	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000017507	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000504388	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000142048	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	RGI
+0000277412	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG/RGI
+0000424873	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000239546	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000096785	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000324121	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000491436	MDTG	n/a	fosfomycin	fosfomycin	antibiotic efflux	DeepARG
+0000076582	MDTH	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG/RGI
+0000332660	MDTH	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000277423	MDTH	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000438635	MDTH	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000324101	MDTK	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000214780	MDTK	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000101360	MDTK	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000370656	MDTK	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000241374	MDTK	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000449189	MDTK	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000493450	MDTK	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000398540	MDTK	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	RGI
+0000413325	MDTL	n/a	multidrug	multidrug (unclassified)	antibiotic efflux	DeepARG
+0000048283	MDTL	n/a	multidrug	multidrug (unclassified)	antibiotic efflux	DeepARG
+0000086252	MDTL	n/a	multidrug	multidrug (unclassified)	antibiotic efflux	DeepARG
+0000284731	MDTM	n/a	multidrug	acridine dye;fluoroquinolone antibiotic;lincosamide antibiotic;nucleoside antibiotic;phenicol antibiotic	antibiotic efflux	DeepARG
+0000043460	MDTM	n/a	multidrug	acridine dye;fluoroquinolone antibiotic;lincosamide antibiotic;nucleoside antibiotic;phenicol antibiotic	antibiotic efflux	DeepARG/RGI
+0000332828	MDTM	n/a	multidrug	acridine dye;fluoroquinolone antibiotic;lincosamide antibiotic;nucleoside antibiotic;phenicol antibiotic	antibiotic efflux	DeepARG/RGI
+0000514699	MDTM	n/a	multidrug	acridine dye;fluoroquinolone antibiotic;lincosamide antibiotic;nucleoside antibiotic;phenicol antibiotic	antibiotic efflux	RGI
+0000199455	MDTN	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000039420	MDTN	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000396933	MDTN	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	RGI
+0000386200	MDTO	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	RGI
+0000199456	MDTO	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	RGI
+0000039421	MDTO	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	RGI
+0000073960	MDTO	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	RGI
+0000024993	MDTO	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	RGI
+0000386201	MDTP	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	RGI
+0000073961	MDTP	n/a	multidrug	acridine dye;nucleoside antibiotic	antibiotic efflux	DeepARG/RGI
+0000013769	MEF(EN2)	n/a	MLS	macrolide antibiotic	antibiotic efflux	RGI
+0000041634	MEFA	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000125500	MEFA	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000018296	MEFA	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000387447	MEFA	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000502647	MEFA	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000485757	MEFE	n/a	MLS	macrolide antibiotic	antibiotic efflux	DeepARG
+0000041635	MEL	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000508728	MEPA	n/a	multidrug	glycylcycline;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000355094	MEPA	n/a	multidrug	glycylcycline;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000397207	MEXA	n/a	multidrug	aminocoumarin antibiotic;carbapenem;cephalosporin;cephamycin;diaminopyrimidine antibiotic;fluoroquinolone antibiotic;macrolide antibiotic;monobactam;penam;penem;peptide antibiotic;phenicol antibiotic;sulfonamide antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000103925	MEXB	n/a	multidrug	aminocoumarin antibiotic;carbapenem;cephalosporin;cephamycin;diaminopyrimidine antibiotic;fluoroquinolone antibiotic;macrolide antibiotic;monobactam;penam;penem;peptide antibiotic;phenicol antibiotic;sulfonamide antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000413376	MEXC	n/a	multidrug	aminocoumarin antibiotic;aminoglycoside antibiotic;cephalosporin;diaminopyrimidine antibiotic;fluoroquinolone antibiotic;macrolide antibiotic;penam;phenicol antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000301654	MEXL	n/a	multidrug	macrolide antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000495235	MEXN	n/a	phenicol	phenicol antibiotic	antibiotic efflux	DeepARG
+0000194242	MEXT	n/a	multidrug	diaminopyrimidine antibiotic;fluoroquinolone antibiotic;phenicol antibiotic	antibiotic efflux	DeepARG
+0000309493	MEXT	n/a	multidrug	diaminopyrimidine antibiotic;fluoroquinolone antibiotic;phenicol antibiotic	antibiotic efflux	DeepARG
+0000155757	MEXT	n/a	multidrug	diaminopyrimidine antibiotic;fluoroquinolone antibiotic;phenicol antibiotic	antibiotic efflux	DeepARG
+0000487464	MEXT	n/a	multidrug	diaminopyrimidine antibiotic;fluoroquinolone antibiotic;phenicol antibiotic	antibiotic efflux	DeepARG
+0000371662	MEXX	n/a	multidrug	acridine dye;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;macrolide antibiotic;penam;phenicol antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000056883	MEXX	n/a	multidrug	acridine dye;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;macrolide antibiotic;penam;phenicol antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000075576	MEXX	n/a	multidrug	acridine dye;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;macrolide antibiotic;penam;phenicol antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000028510	MGRB	n/a	multidrug	macrolide antibiotic;peptide antibiotic	antibiotic efflux;antibiotic target alteration;resistance by absence	DeepARG
+0000540702	MORGANELLA MORGANII GYRB CONFERRING RESISTANCE TO FLUOROQUINOLONE	S463A	multidrug	aminocoumarin antibiotic;fluoroquinolone antibiotic	antibiotic target alteration	RGI
+0000240793	MPHA	n/a	MLS	macrolide antibiotic	antibiotic inactivation	DeepARG/RGI
+0000248603	MPHB	n/a	MLS	macrolide antibiotic	antibiotic inactivation	RGI
+0000110743	MPHJ	n/a	MLS	macrolide antibiotic	antibiotic inactivation	RGI
+0000551273	MPHJ	n/a	MLS	macrolide antibiotic	antibiotic inactivation	RGI
+0000196455	MPHK	n/a	MLS	macrolide antibiotic	antibiotic inactivation	RGI
+0000240792	MRX	n/a	MLS	MLS (unclassified)	-	DeepARG
+0000238045	MSBA	n/a	nitroimidazole	nitroimidazole antibiotic	antibiotic efflux	RGI
+0000203196	MSBA	n/a	nitroimidazole	nitroimidazole antibiotic	antibiotic efflux	RGI
+0000044985	MSBA	n/a	nitroimidazole	nitroimidazole antibiotic	antibiotic efflux	RGI
+0000036698	MSBA	n/a	nitroimidazole	nitroimidazole antibiotic	antibiotic efflux	RGI
+0000085116	MSI-1	n/a	beta-lactam	carbapenem	antibiotic inactivation	RGI
+0000489289	MSRC	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000226258	MSRC	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000123086	MSRC	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000252831	MTRE	n/a	multidrug	macrolide antibiotic;penam	antibiotic efflux	RGI
+0000526112	MYCOBACTERIUM TUBERCULOSIS RPSL MUTATIONS CONFERRING RESISTANCE TO STREPTOMYCIN	K88R	aminoglycoside	aminoglycoside antibiotic	antibiotic target alteration	RGI
+0000082388	MYRA	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000382291	MYRA	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000089058	MYRA	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000241646	MYRA	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000316527	MYRA	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000530936	NDM-10	n/a	beta-lactam	carbapenem;cephalosporin;cephamycin;penam	antibiotic inactivation	RGI
+0000550228	NORB	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000056430	OLEB	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000250699	OMP36	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000394667	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000058391	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000044320	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000265135	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000308160	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000165739	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000073239	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000074344	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000108247	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000473675	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000151402	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000281735	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000376470	OMPF	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000179215	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000031985	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000022037	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000194469	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000092777	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000298072	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000291571	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000091474	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000465441	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000554012	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000409540	OMPR	n/a	beta-lactam	carbapenem;penam;cephalosporin;penem;cephamycin;monobactam	reduced permeability to antibiotic	DeepARG
+0000346773	OPMH	n/a	triclosan	triclosan	antibiotic efflux	RGI
+0000168132	OPRJ	n/a	multidrug	aminocoumarin antibiotic;aminoglycoside antibiotic;cephalosporin;diaminopyrimidine antibiotic;fluoroquinolone antibiotic;macrolide antibiotic;penam;phenicol antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000397205	OPRM	n/a	multidrug	acridine dye;aminocoumarin antibiotic;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;diaminopyrimidine antibiotic;fluoroquinolone antibiotic;macrolide antibiotic;monobactam;penam;penem;peptide antibiotic;phenicol antibiotic;sulfonamide antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000425297	OPRM	n/a	multidrug	acridine dye;aminocoumarin antibiotic;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;diaminopyrimidine antibiotic;fluoroquinolone antibiotic;macrolide antibiotic;monobactam;penam;penem;peptide antibiotic;phenicol antibiotic;sulfonamide antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000541581	OPRM	n/a	multidrug	acridine dye;aminocoumarin antibiotic;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;diaminopyrimidine antibiotic;fluoroquinolone antibiotic;macrolide antibiotic;monobactam;penam;penem;peptide antibiotic;phenicol antibiotic;sulfonamide antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000376195	OPRM	n/a	multidrug	acridine dye;aminocoumarin antibiotic;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;diaminopyrimidine antibiotic;fluoroquinolone antibiotic;macrolide antibiotic;monobactam;penam;penem;peptide antibiotic;phenicol antibiotic;sulfonamide antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000487488	OPRN	n/a	multidrug	diaminopyrimidine antibiotic;fluoroquinolone antibiotic;phenicol antibiotic	antibiotic efflux	DeepARG
+0000291054	OPRN	n/a	multidrug	diaminopyrimidine antibiotic;fluoroquinolone antibiotic;phenicol antibiotic	antibiotic efflux	DeepARG
+0000380724	OQXA	n/a	multidrug	diaminopyrimidine antibiotic;fluoroquinolone antibiotic;glycylcycline;nitrofuran antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000073150	OQXB	n/a	multidrug	diaminopyrimidine antibiotic;fluoroquinolone antibiotic;glycylcycline;nitrofuran antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000067068	OQXB	n/a	multidrug	diaminopyrimidine antibiotic;fluoroquinolone antibiotic;glycylcycline;nitrofuran antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000430754	OXA-156	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000309097	OXA-156	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000160328	OXA-308	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000142091	OXA-43	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000470862	OXA-43	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000339512	OXA-464	n/a	beta-lactam	cephalosporin;penam	antibiotic inactivation	RGI
+0000471792	OXY-1-1	n/a	beta-lactam	cephalosporin;monobactam;penam	antibiotic inactivation	RGI
+0000096267	PATA	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000034961	PATA	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000159817	PATA	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000351734	PATB	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000551606	PATB	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000115619	PATB	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic efflux	DeepARG
+0000409530	PBP-1A	n/a	beta-lactam	penam;cephalosporin;cephamycin	antibiotic target alteration	DeepARG
+0000291499	PBP-1A	n/a	beta-lactam	penam;cephalosporin;cephamycin	antibiotic target alteration	DeepARG
+0000267328	PBP-1A	n/a	beta-lactam	penam;cephalosporin;cephamycin	antibiotic target alteration	DeepARG
+0000256439	PBP-1A	n/a	beta-lactam	penam;cephalosporin;cephamycin	antibiotic target alteration	DeepARG
+0000231764	PBP-1B	n/a	beta-lactam	penam;cephalosporin;cephamycin	antibiotic target alteration	DeepARG
+0000260719	PBP-1B	n/a	beta-lactam	penam;cephalosporin;cephamycin	antibiotic target alteration	DeepARG
+0000426353	PBP-2X	n/a	beta-lactam	penam;cephalosporin;cephamycin	antibiotic target alteration	DeepARG
+0000446275	PBP-2X	n/a	beta-lactam	penam;cephalosporin;cephamycin	antibiotic target alteration	DeepARG
+0000255348	PENA	n/a	beta-lactam	penam	-	DeepARG
+0000308373	PENA	n/a	beta-lactam	penam	-	DeepARG
+0000075609	PENA	n/a	beta-lactam	penam	-	DeepARG
+0000154435	PENA	n/a	beta-lactam	penam	-	DeepARG
+0000030964	PENA	n/a	beta-lactam	penam	-	DeepARG
+0000553237	PENA	n/a	beta-lactam	penam	-	DeepARG
+0000234352	PMPM	n/a	multidrug	aminoglycoside antibiotic;benzalkonium chloride;fluoroquinolone antibiotic	antibiotic efflux	RGI
+0000464403	PMRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000424725	PMRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000260995	PMRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000255729	PMRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000086747	PMRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000281515	PMRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000232416	PMRF	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000392922	PORIN_OMPC	n/a	beta-lactam	penem;cephalosporin;carbapenem;cephamycin;penam;monobactam	reduced permeability to antibiotic	DeepARG
+0000266517	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000103627	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000394381	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000143920	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000348950	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000153895	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000503371	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000131097	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000454685	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000248389	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000343863	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000010333	POXTA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000429258	PP-FLO	n/a	phenicol	phenicol antibiotic	antibiotic efflux	RGI
+0000522431	PSEUDOMONAS AERUGINOSA SOXR	n/a	multidrug	acridine dye;cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration	RGI
+0000098309	PSEUDOMONAS AERUGINOSA SOXR	n/a	multidrug	acridine dye;cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;antibiotic target alteration	RGI
+0000550022	PVRR	n/a	aminoglycoside	aminoglycoside antibiotic	resistance by absence	DeepARG
+0000280718	PVRR	n/a	aminoglycoside	aminoglycoside antibiotic	resistance by absence	DeepARG
+0000134977	QACG	n/a	multidrug	multidrug (unclassified)	-	DeepARG
+0000247938	QACG	n/a	multidrug	multidrug (unclassified)	-	DeepARG
+0000493138	QNRB21	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic target protection	RGI
+0000493139	QNRB60	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic target protection	RGI
+0000299339	QNRS3	n/a	fluoroquinolone	fluoroquinolone antibiotic	antibiotic target protection	RGI
+0000141187	RAMA	n/a	multidrug	carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;monobactam;penam;penem;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;reduced permeability to antibiotic	DeepARG
+0000030901	RAMA	n/a	multidrug	carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;monobactam;penam;penem;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;reduced permeability to antibiotic	DeepARG
+0000425428	RAMA	n/a	multidrug	carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;monobactam;penam;penem;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux;reduced permeability to antibiotic	DeepARG/RGI
+0000009013	RLMA(II)	n/a	MLS	lincosamide antibiotic;macrolide antibiotic	antibiotic target alteration	RGI
+0000189859	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000286923	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000106876	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000088300	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000320934	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000146219	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000425856	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000210629	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000007561	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000416776	ROSA	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000501752	ROSB	n/a	peptide	peptide antibiotic	antibiotic efflux	RGI
+0000392625	ROSB	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000088299	ROSB	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000106877	ROSB	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000245238	ROSB	n/a	peptide	peptide antibiotic	antibiotic efflux	RGI
+0000218295	RPHA	n/a	rifamycin	rifamycin antibiotic	antibiotic inactivation	RGI
+0000351780	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000127435	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000387173	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000439488	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000212632	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000507837	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000155406	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000525579	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000446113	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000100253	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000154291	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000367417	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000121338	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000353452	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000386172	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000145051	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000213029	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000006993	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000033471	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000248283	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000285488	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000347042	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000489384	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000514528	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000487269	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000558534	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000098501	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000122051	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000514477	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000253956	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000047877	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000062706	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000328785	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000011739	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000185633	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000443707	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000224405	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000499128	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000098201	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000371872	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000287537	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000471085	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000109526	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000556069	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000480312	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000476453	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000547085	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000516305	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000184517	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000328492	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000219791	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000077086	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000061317	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000087187	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000071298	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000118253	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000072153	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000039238	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000198231	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000287082	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000514933	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000443653	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000381776	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000250034	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000514744	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000048261	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000230966	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000373210	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000253904	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000388584	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000536269	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000357529	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000177857	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000333281	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000467135	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000039094	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000027153	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000492575	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000535733	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000084116	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000465268	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000188417	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000130051	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000131483	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000279293	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000206973	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000341630	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000360954	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000385954	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000269120	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000251530	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000156542	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000098676	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000190497	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000108956	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000089068	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000372097	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000467446	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000326553	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000175720	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000274135	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000034464	RPOB2	n/a	multidrug	peptide antibiotic;rifamycin antibiotic	antibiotic target alteration;antibiotic target replacement	DeepARG
+0000261021	RPSD_(RAMA_OR_SUD2)	n/a	unclassified	unclassified	-	DeepARG
+0000042979	RPSD_(RAMA_OR_SUD2)	n/a	unclassified	unclassified	-	DeepARG
+0000024930	SAT-4	n/a	nucleoside	nucleoside antibiotic	antibiotic inactivation	DeepARG/RGI
+0000080809	SDIA	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000537398	SDIA	n/a	multidrug	cephalosporin;fluoroquinolone antibiotic;glycylcycline;penam;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000379759	SERRATIA_MARCESCENS_OMP1	n/a	multidrug	phenicol antibiotic;penam;monobactam;cephamycin;fluoroquinolone antibiotic;cephalosporin;tetracycline antibiotic;carbapenem;penem	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000087242	SERRATIA_MARCESCENS_OMP1	n/a	multidrug	phenicol antibiotic;penam;monobactam;cephamycin;fluoroquinolone antibiotic;cephalosporin;tetracycline antibiotic;carbapenem;penem	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000493280	SERRATIA_MARCESCENS_OMP1	n/a	multidrug	phenicol antibiotic;penam;monobactam;cephamycin;fluoroquinolone antibiotic;cephalosporin;tetracycline antibiotic;carbapenem;penem	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000383278	SERRATIA_MARCESCENS_OMP1	n/a	multidrug	phenicol antibiotic;penam;monobactam;cephamycin;fluoroquinolone antibiotic;cephalosporin;tetracycline antibiotic;carbapenem;penem	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000406817	SERRATIA_MARCESCENS_OMP1	n/a	multidrug	phenicol antibiotic;penam;monobactam;cephamycin;fluoroquinolone antibiotic;cephalosporin;tetracycline antibiotic;carbapenem;penem	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000145524	SERRATIA_MARCESCENS_OMP1	n/a	multidrug	phenicol antibiotic;penam;monobactam;cephamycin;fluoroquinolone antibiotic;cephalosporin;tetracycline antibiotic;carbapenem;penem	reduced permeability to antibiotic;resistance by absence	DeepARG
+0000400758	SMB-1	n/a	beta-lactam	carbapenem;cephalosporin;penam	antibiotic inactivation	RGI
+0000263498	SMEE	n/a	multidrug	fluoroquinolone antibiotic;macrolide antibiotic;phenicol antibiotic;tetracycline antibiotic	antibiotic efflux	RGI
+0000436736	STAPHYLOCOCCUS MUPB CONFERRING RESISTANCE TO MUPIROCIN	n/a	mupirocin	mupirocin	antibiotic target alteration	RGI
+0000241759	SUL1	n/a	sulfonamide	sulfonamide antibiotic;sulfone antibiotic	antibiotic target replacement	DeepARG/RGI
+0000251782	SUL2	n/a	sulfonamide	sulfonamide antibiotic;sulfone antibiotic	antibiotic target replacement	RGI
+0000468293	SUL2	n/a	sulfonamide	sulfonamide antibiotic;sulfone antibiotic	antibiotic target replacement	DeepARG/RGI
+0000162189	SUL4	n/a	sulfonamide	sulfonamide antibiotic	antibiotic target replacement	RGI
+0000246721	TEM-1	n/a	beta-lactam	cephalosporin;monobactam;penam;penem	antibiotic inactivation	DeepARG/RGI
+0000270452	TEM-124	n/a	beta-lactam	cephalosporin;monobactam;penam;penem	antibiotic inactivation	RGI
+0000405872	TEM-87	n/a	beta-lactam	cephalosporin;monobactam;penam;penem	antibiotic inactivation	RGI
+0000484638	TET(40)	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000056156	TET(A)	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	RGI
+0000544308	TET(B)	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	DeepARG/RGI
+0000401857	TET(W/N/W)	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000195590	TET(W/N/W)	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000320154	TET(W/N/W)	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000415657	TET(W/N/W)	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000177570	TET(W/N/W)	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000311067	TET(W/N/W)	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000321091	TET(W/N/W)	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000361375	TET(X3)	n/a	tetracycline	glycylcycline;tetracycline antibiotic	antibiotic inactivation	RGI
+0000180017	TET(X3)	n/a	tetracycline	glycylcycline;tetracycline antibiotic	antibiotic inactivation	RGI
+0000000542	TET(X3)	n/a	tetracycline	glycylcycline;tetracycline antibiotic	antibiotic inactivation	RGI
+0000180014	TET(X4)	n/a	tetracycline	glycylcycline;tetracycline antibiotic	antibiotic inactivation	RGI
+0000343797	TET(Y)	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux	RGI
+0000333930	TET32	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000000165	TET34	n/a	tetracycline	tetracycline antibiotic	antibiotic inactivation;antibiotic target alteration	DeepARG
+0000073242	TET34	n/a	tetracycline	tetracycline antibiotic	antibiotic inactivation;antibiotic target alteration	DeepARG
+0000260845	TET34	n/a	tetracycline	tetracycline antibiotic	antibiotic inactivation;antibiotic target alteration	DeepARG
+0000137992	TET34	n/a	tetracycline	tetracycline antibiotic	antibiotic inactivation;antibiotic target alteration	DeepARG
+0000473678	TET34	n/a	tetracycline	tetracycline antibiotic	antibiotic inactivation;antibiotic target alteration	DeepARG
+0000481349	TETA(48)	n/a	tetracycline	tetracycline antibiotic	-	DeepARG
+0000227107	TETB(P)	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000491821	TETB(P)	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000544309	TETC	n/a	tetracycline	tetracycline antibiotic	-	DeepARG
+0000260570	TETD	n/a	tetracycline	tetracycline antibiotic	-	DeepARG
+0000544310	TETD	n/a	tetracycline	tetracycline antibiotic	-	DeepARG
+0000373921	TETM	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000085475	TETO	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000055640	TETO	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000268356	TETO	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000227108	TETP	n/a	tetracycline	tetracycline antibiotic	-	DeepARG
+0000045431	TETQ	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000073081	TETQ	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000073080	TETQ	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000544307	TETR	n/a	tetracycline	tetracycline antibiotic	antibiotic efflux;antibiotic target alteration	DeepARG/RGI
+0000146830	TETS	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	DeepARG/RGI
+0000420351	TETW	n/a	tetracycline	tetracycline antibiotic	antibiotic target protection	RGI
+0000444741	THIN-B	n/a	beta-lactam	carbapenem;cephalosporin;penam	antibiotic inactivation	RGI
+0000433868	TMB-2	n/a	beta-lactam	carbapenem;cephalosporin;cephamycin	antibiotic inactivation	RGI
+0000146024	TMB-2	n/a	beta-lactam	carbapenem;cephalosporin;cephamycin	antibiotic inactivation	RGI
+0000274801	TOLC	n/a	multidrug	aminocoumarin antibiotic;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;macrolide antibiotic;penam;penem;peptide antibiotic;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG/RGI
+0000415209	TOLC	n/a	multidrug	aminocoumarin antibiotic;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;macrolide antibiotic;penam;penem;peptide antibiotic;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000141146	TOLC	n/a	multidrug	aminocoumarin antibiotic;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;macrolide antibiotic;penam;penem;peptide antibiotic;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000240686	TOLC	n/a	multidrug	aminocoumarin antibiotic;aminoglycoside antibiotic;carbapenem;cephalosporin;cephamycin;fluoroquinolone antibiotic;glycylcycline;macrolide antibiotic;penam;penem;peptide antibiotic;phenicol antibiotic;rifamycin antibiotic;tetracycline antibiotic;triclosan	antibiotic efflux	DeepARG
+0000422431	TRANSCRIPTIONAL_REGULATORY_PROTEIN_CPXR_CPXR	n/a	unclassified	unclassified	-	DeepARG
+0000391858	TRANSCRIPTIONAL_REGULATORY_PROTEIN_CPXR_CPXR	n/a	unclassified	unclassified	-	DeepARG
+0000540603	TRANSCRIPTIONAL_REGULATORY_PROTEIN_CPXR_CPXR	n/a	unclassified	unclassified	-	DeepARG
+0000225536	TRANSCRIPTIONAL_REGULATORY_PROTEIN_CPXR_CPXR	n/a	unclassified	unclassified	-	DeepARG
+0000299495	TRANSCRIPTIONAL_REGULATORY_PROTEIN_CPXR_CPXR	n/a	unclassified	unclassified	-	DeepARG
+0000074912	TRIA	n/a	triclosan	triclosan	antibiotic efflux	DeepARG
+0000204075	TRIA	n/a	triclosan	triclosan	antibiotic efflux	DeepARG
+0000074913	TRIB	n/a	triclosan	triclosan	antibiotic efflux	DeepARG
+0000204074	TRIB	n/a	triclosan	triclosan	antibiotic efflux	DeepARG
+0000204073	TRIC	n/a	triclosan	triclosan	antibiotic efflux	DeepARG
+0000351401	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000001340	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000208752	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000196914	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000438909	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000382763	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000185553	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000102613	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000444261	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000496414	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000095748	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000379900	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000453544	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000505774	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000017919	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000324129	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000520468	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000503745	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000181555	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000185579	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000239537	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000552949	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000523734	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000129297	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000290302	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000179903	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000467924	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000025451	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000007809	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000462297	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000103993	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000025014	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000438508	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000103700	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000530527	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000273560	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000389858	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000276070	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000074493	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000561524	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000319236	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000023725	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000353310	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000274559	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000371019	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000334717	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000334621	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000194514	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000533991	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000290700	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000124798	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000269399	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000266616	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000450789	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000455419	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000498497	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000413383	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000378403	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000011076	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000341363	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000328616	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000163037	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000503955	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000097147	TRUNCATED_PUTATIVE_RESPONSE_REGULATOR_ARLR	n/a	unclassified	unclassified	-	DeepARG
+0000409108	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000166672	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000416714	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000202314	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000487893	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000563509	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000159224	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000496379	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000227630	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000549003	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000457103	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000395717	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000372778	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000068306	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000350907	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000319133	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000057096	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000463260	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000351991	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000165706	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000041807	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000227796	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000463480	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000513786	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000213704	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000048193	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000171134	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000092371	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000524926	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000125857	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000200463	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000558013	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000540427	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000258486	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000265771	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000375471	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000132813	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000464455	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000021288	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000093345	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000022364	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000274305	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000465352	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000052985	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	RGI
+0000253881	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000011577	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000097612	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000240442	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000307159	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000302945	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000384963	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000126026	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000214376	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000071974	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000139264	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000288111	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000403258	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000262359	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000183426	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000181828	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000234807	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000135442	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000221808	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000538959	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000276111	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000479049	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000085884	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000202754	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000069369	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000471953	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000335671	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000076925	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000176227	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000188395	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000031575	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000482079	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000489039	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000268293	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000404127	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000328349	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000497627	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000312766	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000492399	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000553727	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000211236	UGD	n/a	peptide	peptide antibiotic	antibiotic target alteration	DeepARG
+0000016574	VANA	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000384610	VANC	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000428297	VAND	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000025591	VAND	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000374879	VAND	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000170680	VANH	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000016573	VANHA	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000374880	VANHD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000490764	VANHD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000428296	VANHD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000395521	VANI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000359890	VANI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000378530	VANI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000164616	VANI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000048463	VANI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000374878	VANI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000516791	VANN	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000448467	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000356526	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000288362	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000372980	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000544976	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000430075	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000515434	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000226573	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000419324	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000497958	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000102007	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000162061	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000182942	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000300147	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000001736	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000052997	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000488063	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000140869	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000336475	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000130843	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000435281	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000292607	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000313134	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000404525	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000527686	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000375682	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000555781	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000392357	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000164028	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000359892	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000011883	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000004064	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000472521	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000317227	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000252656	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000026411	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000101273	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000186193	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000441717	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000149217	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000022070	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000247115	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000026257	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000212424	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000048461	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000357202	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000358938	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000063621	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000189517	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000091963	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000043653	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000164596	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000081687	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000447397	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000266366	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000554783	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000453158	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000076657	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000377840	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000411604	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000264826	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000416924	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000334861	VANR	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000016571	VANRA	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000384607	VANRC	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000025590	VANRD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000370473	VANRD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000002228	VANRD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000381552	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000009750	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000019757	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000305414	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000195942	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000499691	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000212460	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000206719	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000308896	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000378663	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000445762	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000482617	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000078873	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000554890	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000368910	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000025230	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000510941	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000216816	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000227177	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000278677	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000548754	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000521680	VANRI	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG
+0000215709	VANRM	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000446515	VANRM	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000384606	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000065972	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000450515	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000236185	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000335858	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000527431	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000160543	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000488064	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000084693	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000018542	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000313133	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000019533	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000164597	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000333713	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000301022	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000380468	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000328879	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000189518	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000359891	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000231042	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000316634	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000435280	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000219151	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000115835	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000555782	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000407715	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000494199	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000033102	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000048462	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000369426	VANS	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000016572	VANSA	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000490766	VANSD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000384608	VANT	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000498511	VANTG	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000538129	VANTML	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	RGI
+0000184696	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000171890	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000384074	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000149414	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000481241	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000239745	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000111056	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000272203	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000050626	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000078571	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000257996	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000498057	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000172122	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000102367	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000326333	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000088740	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000036267	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000222386	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000398081	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000170377	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000320497	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000118671	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000541884	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000296758	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000024149	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000200094	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000074195	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000301491	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000127294	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000541359	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000482370	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000173324	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000515488	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000322578	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000247114	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000067544	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000553828	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000202179	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000491555	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000235320	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000214403	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000257751	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000549255	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000423443	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000013663	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000547564	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000194806	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000454191	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000059417	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000313237	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000457844	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000257691	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000239427	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000204712	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000270264	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000306654	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000344678	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000017190	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000376875	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000370249	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000291602	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000555063	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000373932	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000239532	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000323384	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000554133	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000132271	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000112337	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000293259	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000501557	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000132265	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000168392	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000520693	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000052176	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000351842	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000297754	VANU	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000422282	VANW	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000016575	VANXA	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000428298	VANXD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000374877	VANXD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000384609	VANXYC	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000025592	VANY	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000016576	VANYA	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000490765	VANYD	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000514956	VANZ	n/a	glycopeptide	glycopeptide antibiotic	-	DeepARG
+0000016577	VANZA	n/a	glycopeptide	glycopeptide antibiotic	antibiotic target alteration	DeepARG/RGI
+0000158641	VATB	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000443591	VATB	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000484118	VATB	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000174879	VATB	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000443865	VATB	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000562030	VATB	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000280797	VATB	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000458459	VATB	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000125877	VATE	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	RGI
+0000005848	VATE	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000401511	VATE	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000301213	VATE	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000251518	VATG	n/a	MLS	streptogramin antibiotic	antibiotic inactivation	DeepARG
+0000317073	VGAA	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	RGI
+0000266058	VGAC	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000471223	VGAC	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000266055	VGAC	n/a	multidrug	lincosamide antibiotic;macrolide antibiotic;oxazolidinone antibiotic;phenicol antibiotic;pleuromutilin antibiotic;streptogramin antibiotic;tetracycline antibiotic	antibiotic target protection	DeepARG
+0000370097	YKKC	n/a	multidrug	aminoglycoside antibiotic;phenicol antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000522077	YKKD	n/a	multidrug	aminoglycoside antibiotic;phenicol antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000442303	YKKD	n/a	multidrug	aminoglycoside antibiotic;phenicol antibiotic;tetracycline antibiotic	antibiotic efflux	DeepARG
+0000025546	YOJI	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG/RGI
+0000231058	YOJI	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG
+0000188426	YOJI	n/a	peptide	peptide antibiotic	antibiotic efflux	DeepARG

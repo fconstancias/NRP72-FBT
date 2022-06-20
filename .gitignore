@@ -80,3 +80,5 @@ vignettes/*.pdf
 *chicken1_full_SQM.rds
 *human1_SQM.rds
 *_modules.txt
+*_prediction_detailed.tsv
+
