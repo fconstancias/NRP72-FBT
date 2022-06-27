@@ -12,7 +12,7 @@ suppressPackageStartupMessages(library("optparse"))
 
 ## ------------------------------------------------------------------------
 
-prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL, # 
+prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL, # aa_file_path = "~/Desktop/03.chicken.faa" 
                                           fasta_file_path = NULL, # fasta_file_path = "~/Desktop/01.chicken.fasta"
                                           output_dir = "~/Desktop/",
                                           length_fil = 1000,
@@ -68,7 +68,7 @@ prepare_faa_fna_PathoFact_orf <- function(aa_file_path = NULL, #
 
   df %>% 
     mutate(CONTIG = sub("(.*?_.*?)_.*", "\\1", names.sequences.)) %>% 
-    rename("ORF" = "names.sequences.") %>% 
+    dplyr::rename("ORF" = "names.sequences.") %>% 
     rownames_to_column("id") %>% 
     select(CONTIG, ORF) %>% 
     filter(CONTIG %in% df_fasta$names.fna_contigs.) -> df
