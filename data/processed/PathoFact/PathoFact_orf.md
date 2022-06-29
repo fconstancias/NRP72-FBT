@@ -34,5 +34,12 @@ From SQM:
 
 functions/prepare_faa_fna_PAthoFact_orf.Rscript.R
 
+ Rscript ~/Documents/GitHub/NRP72-FBT/functions/prepare_faa_fna_PAthoFact_orf.Rscript.R --contig_fasta_file_path  ~/Desktop/01.chicken.fasta --aa_file_path ~/Desktop/03.chicken.faa -l 1000 -s chicken1_l1000_test
+ 
  conda activate PathoFact
  snakemake -s Snakefile --use-conda --reason --cores 5 -p --configfile orfs_chicken1_Tox/config.yaml
+ 
+ 
+tar \
+ --exclude='contig_splitted' --exclude='renamed' --exclude='splitted' --exclude='*.faa' \
+ --exclude='*.fna' --exclude='*.contig' -zcvf PathoFact_chicken1_AMR.tar.gz .

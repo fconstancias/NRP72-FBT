@@ -1,7 +1,7 @@
 ---
 title: "SQM to phyloseq"
 output: html_document
-date: '2022-05-19'
+date: "`r Sys.Date()`"
 ---
 
 ```{r setup, include=FALSE}
@@ -14,7 +14,7 @@ rm(list= ls())
 library('dplyr')
 library("tidyverse")
 library('here')
-library("SQMtools")
+# library("SQMtools")
 library("phyloseq")
 library("readxl")
 
@@ -26,29 +26,54 @@ source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/p
 source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R")
 source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R")
 source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_heatmap.R")
-
-
 ```
 
 Load dataset:
 
 ```{r}
+Model_type <- c("protein homolog model", "protein variant model", "protein overexpression model", "rRNA gene variant model")
+Cut_Off <- c("Strict", "Perfect")
+Best_Identities = 0.95
+Percent_length = 0.80
 
-human <- "~/Documents/MSc_Thesis-NRP72/data/human_SQM.rds" %>% readRDS()
+SQMR <- "data/raw/SQM/human1_SQM.rds"
 
-"~/Documents/NRP72-FBT/data/raw/25.11.2021_metadata_updated.tsv" %>% 
-  read_tsv() %>% 
-  data.frame() %>% 
-  filter(!is.na(metagenomic_sample_name), Model == "Human") -> human_meta
+metadata <- "data/raw/25.11.2021_metadata_updated.tsv"
 
+
+RGI_CARD <- "data/raw/CARD/rgi_contig_human1.txt"
+Viralverify <- "data/raw/mobilome/viralverify/01.human1_result_table.csv"
+isescan <- "data/raw/mobilome/isescan/01.SqueezeHuman1.fasta.tsv"
+
+
+DAS_collection <- "data/processed/anvio/human1/MAGS/SUMMARY/DAS/bins_summary.tx"
+GTDB_tax <- "data/processed/gtdb/GTDB_all.xlsx"
+Manual_bins <- "data/processed/anvio/human1/MAGS/SUMMARY/concoct_10_refined_2/bins_summary.txt"
+SQM_DAS <- "data/raw/SQM/19.human1.bintable"
+
+
+contigs.lgt.tsv <- "~/Documents/MSc_Thesis-NRP72/data/HGT/human.contigs.lgt.tsv"
+contigs.no_lgt.tsv <- "~/Documents/MSc_Thesis-NRP72/data/HGT/human.contigs.no_lgt.tsv"
+contigs.unclassified.tsv <- "~/Documents/MSc_Thesis-NRP72/data/HGT/human.contigs.unclassified.tsv"
 
 ```
 
-Modify meta data:
+```{r}
+SQMR %>% 
+  here::here() %>% 
+  readRDS() -> human
+
+metadata %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  data.frame() %>%
+  filter(!is.na(metagenomic_sample_name), Model == "Human") -> human_meta
+```
+
+Modify metadata:
 
 ```{r}
 # create Period column
-
 human_meta %>%
   mutate(Reactor_Treatment = base::replace(Reactor_Treatment, Reactor_Treatment == "TR_2CTX", "TR2_CTX")) %>%
   mutate(Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment)) %>% 
@@ -62,7 +87,6 @@ human_meta %>%
   mutate(Day_of_Treatment = addNA(Day_of_Treatment)) %>%
   column_to_rownames("metagenomic_sample_name") -> human_meta
 
-
 #human_meta$Treatment_Dose <- factor(human_meta$Treatment_Dose, ordered = TRUE, 
 #                                 levels = c("DONOR", "UNTREATED", "CTX+HV292.120", "CTX+HV292.1200",
 #                                            "CTX20", "CTX200", "HV292.1", "VAN+CCUG5916890", "VAN+CCUG59168600",
@@ -75,7 +99,6 @@ Extract infos for otu table
 ```{r}
 # TPM
 human$orfs$table %>% as.data.frame() %>% select(starts_with("TPM")) -> human_otu_tpm
-
 
 colnames(human_otu_tpm) <- colnames(human_otu_tpm) %>% str_remove_all("TPM ") %>% str_replace_all("-", "_")
 rownames(human_otu_tpm) <- paste0("h_", rownames(human_otu_tpm))
@@ -95,41 +118,47 @@ rownames(human_otu_rr) <- paste0("h_", rownames(human_otu_rr))
 
 Extract information for tax table:
 ```{r}
-
-
 # Resistome data:
-"~/Documents/MSc_Thesis-NRP72/data/resistome/rgi_contig_human.txt" %>% 
-  read.delim() %>%
+RGI_CARD %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  # read.delim() %>%
   select(-ORF_ID) %>%
-  filter(Model_type %in% "protein homolog model",
-       Cut_Off %in% c("Strict", "Perfect"),
+  filter(Model_type %in% Model_type ,
+       Cut_Off %in% Cut_Off,
        Nudged %!in% c("TRUE"),
-       Best_Identities > 95, # plot distribution of bestID vs percentage length ref and color bitscore and symbol class AMR
-       Percentage.Length.of.Reference.Sequence > 80) %>%
+       Best_Identities > Best_Identities, # plot distribution of bestID vs percentage length ref and color bitscore and symbol class AMR
+       'Percentage Length of Reference Sequence' > Percent_length) %>%
   separate(Contig, c("Megahit", "Contig", "Split"), sep = "_", fill = "right") %>%
   mutate(ORF_ID = paste(Megahit, Contig, paste(Start, Stop, sep = "-"), sep = "_")) %>%
   #mutate(Contig = paste(Megahit, Contig, sep = "_")) %>%
   select(-c(Megahit, Split, CARD_Protein_Sequence, Predicted_DNA, Predicted_Protein, Contig)) -> card
+```
 
-
-
+```{r}
 # HGT events
-hgt <- "~/Documents/MSc_Thesis-NRP72/data/HGT/human.contigs.lgt.tsv" %>% read_tsv() %>% select(CONTIG_NAME, CALL)
-no_hgt <- "~/Documents/MSc_Thesis-NRP72/data/HGT/human.contigs.no_lgt.tsv" %>% read_tsv() %>% select(CONTIG_NAME, CALL)
-unclassified_hgt <- "~/Documents/MSc_Thesis-NRP72/data/HGT/human.contigs.unclassified.tsv" %>% read_tsv() %>% select(CONTIG_NAME, CALL)
+contigs.lgt.tsv %>% 
+  read_tsv() %>% 
+  select(CONTIG_NAME, CALL) -> hgt
+
+
+contigs.no_lgt.tsv %>% 
+  read_tsv() %>% 
+  select(CONTIG_NAME, CALL) -> no_hgt
+
+contigs.unclassified.tsv %>% 
+  read_tsv() %>% 
+  select(CONTIG_NAME, CALL) -> unclassified_hgt
 
 hgt_events <- rbind(hgt, no_hgt, unclassified_hgt)
 
 # Viralverify 
-"~/Documents/MSc_Thesis-NRP72/data/mobilome/01.SqueezeHuman_result_table_viralverify.csv" %>%
+Viralverify  %>%
   read_csv() -> viralverify
 
-
 # Isescan
-"~/Documents/MSc_Thesis-NRP72/data/mobilome/human_isescan.tsv" %>%
-  read_tsv() -> isescan
-
 isescan %>%
+  read_tsv() %>% 
    group_by(seqID) %>%
    top_n(1, wt = `E-value4copy`) %>%
    top_n(1, wt = isBegin) %>%
@@ -142,7 +171,7 @@ MAG information:
 
 ```{r}
 # MAGs DAS 
-"~/Documents/MSc_Thesis-NRP72/data/anvio/human_DAS.txt" %>% 
+DAS_collection %>% 
   read_tsv(col_names = c("split", "DAS_bin")) %>% 
   separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
   mutate(cont_id = paste0(cont,"_", cont_num)) %>% 
@@ -150,7 +179,7 @@ MAG information:
   select(cont_id, DAS_bin) -> DAS
 
 # DAS tax info 
-"~/Documents/MSc_Thesis-NRP72/data/anvio/GTDB_all.xlsx" %>%
+GTDB_tax %>%
   read_excel() %>%
   filter(dataset == "human1") %>%
   mutate(user_genome = str_remove_all(user_genome, c("human1_|-contigs|refined_2_"))) %>%
@@ -169,7 +198,7 @@ colnames(DAS_tax) <- paste0("DAS_", colnames(DAS_tax))
 
 # HQ MAGs DAS
 
-"~/Documents/MSc_Thesis-NRP72/data/anvio/chicken_DAS-info.txt" %>% 
+SQM_DAS %>% 
   read.delim() -> DAS_info
 
 colnames(DAS_info) <- paste0("DAS_", colnames(DAS_info))
@@ -181,7 +210,7 @@ DAS_info %>%
   select(DAS_bins_HQ)-> DAS_HQ
 
 # MAGs CONCOCT
-"~/Documents/MSc_Thesis-NRP72/data/anvio/human_concoct.txt" %>% 
+Manual_bins %>% 
   read_tsv(col_names = c("split", "CONCOCT_bin")) %>% 
   separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
   mutate(cont_id = paste0(cont,"_", cont_num)) %>% 

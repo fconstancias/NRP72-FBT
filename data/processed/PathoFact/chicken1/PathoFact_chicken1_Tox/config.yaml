@@ -1,0 +1,25 @@
+pathofact:
+  sample: ["chicken_l1000"] # requires user input
+  project: PathoFact_results_orf # requires user input
+  datadir:  /datadrive05/Flo/tools/PathoFact_orf/orfs_chicken1_Tox # requires user input
+  workflow: "Tox" #options: "complete", "AMR", "Tox", "Vir"
+  format: "orf" #options: "orf", "assembly"
+  size_fasta: 10000 #Adjustable to preference
+  scripts: "scripts"
+  signalp: "/datadrive05/Flo/tools/signalp-5.0b/bin/" # requires user input
+  deepvirfinder: "submodules/DeepVirFinder/dvf.py"
+  tox_hmm: "databases/toxins/combined_Toxin.hmm"
+  tox_lib: "databases/library_HMM_Toxins.csv"
+  tox_threshold: 40 #Bitscore threshold of the toxin prediction, adjustable by user to preference
+  vir_hmm: "databases/virulence/Virulence_factor.hmm"
+  vir_domains: "databases/models_and_domains"
+  plasflow_threshold: 0.7
+  plasflow_minlen: 1000
+  runtime:
+    short: "00:24:00"
+    medium: "7:00:00"
+    long: "12:00:00"
+  mem:
+    normal_mem_per_core_gb: "4G"
+    big_mem_cores: 4
+    big_mem_per_core_gb: "30G"

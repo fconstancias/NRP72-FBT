@@ -81,4 +81,11 @@ vignettes/*.pdf
 *human1_SQM.rds
 *_modules.txt
 *_prediction_detailed.tsv
+*_all_splits.tsv
+*all-gene_calls.txt
+*_full_gene_catalog_phyloseq.RDS
+*ull_gene_catalog_full_metrics_table*
+*full_gene_catalog_full_metrics_table.tsv.gz
+*_compressed.zip
+*PathoFact_intermediate*
 
