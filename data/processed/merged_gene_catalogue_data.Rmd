@@ -47,6 +47,9 @@ Viralverify <- "data/raw/mobilome/viralverify/01.human1_result_table.csv"
 isescan <- "data/raw/mobilome/isescan/01.SqueezeHuman1.fasta.tsv"
 PathoFact_AMR <- "data/processed/PathoFact/humann1/AMR/AMR_MGE_prediction_sample_l1000_report.tsv"
 PathoFact_Tox <- "data/processed/PathoFact/humann1/Tox/Toxin_prediction_sample_l1000_report.tsv"
+# PathoFact_Tox_fam <- "data/processed/PathoFact/humann1/Tox/Toxin_gene_library_sample_l1000_report.tsv" ###TODO#### -> add NAME and Description for the 2: Non-secreted Toxin or 1: secreted Toxin from PathoFact_Tox
+
+
 anvio_nobin_summary <- "data/processed/anvio/human1/summary_no_bins/bin_by_bin/all/all-gene_calls.txt"
 
 DAS_collection <- "data/processed/anvio/human1/DAS.txt"
@@ -154,6 +157,7 @@ PathoFact_Tox %>%
          ORF_ID = PathoFact_Tox_ORF) -> PathoFact_Tox
 ```
 
+# PathoFact_Tox_fam <- "data/processed/PathoFact/humann1/Tox/Toxin_gene_library_sample_l1000_report.tsv" ###TODO#### -> add NAME and Description for the 2: Non-secreted Toxin or 1: secreted Toxin from PathoFact_Tox
 
 ## rgi CARD:
 
@@ -192,9 +196,10 @@ card %>%
 
 ## Waffle HGT: 
 
+Not here since as to be on a per sample basis
 
 ```{r}
-# TODO move to more appropriate section
+# TODO move to more appropriate section not 
 
 # # HGT events
 # contigs.lgt.tsv %>% 
