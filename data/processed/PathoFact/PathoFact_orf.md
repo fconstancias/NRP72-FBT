@@ -43,3 +43,56 @@ functions/prepare_faa_fna_PAthoFact_orf.Rscript.R
 tar \
  --exclude='contig_splitted' --exclude='renamed' --exclude='splitted' --exclude='*.faa' \
  --exclude='*.fna' --exclude='*.contig' -zcvf PathoFact_chicken1_AMR.tar.gz .
+ 
+ 
+# human1-chicken1 single assemblies:
+ 
+cd /Volumes/Pegasus3R4/NRP72/individual_SQM_binning/chicken1/scelse/SQM
+#
+out=/Volumes/Pegasus3R4/NRP72/individual_SQM_binning/chicken1/scelse/PathoFact_1000_ready
+
+mkdir ${out}
+
+for dir in ls -lh *; do
+#
+echo ${dir}
+#
+ls -lh ${dir}/results/01.${dir}.fasta  ${dir}/results/03.${dir}.faa
+#
+Rscript ~/Documents/GitHub/NRP72-FBT/functions/prepare_faa_fna_PAthoFact_orf.Rscript.R \
+--contig_fasta_file_path ${dir}/results/01.${dir}.fasta \
+--aa_file_path ${dir}/results/03.${dir}.faa \
+-l 1000 \
+-o ${out} \
+-s ${dir}_PathoFact_1000
+#
+done
+#
+cd /Volumes/Pegasus3R4/NRP72/individual_SQM_binning/human1/scelse/SQM
+#
+for dir in ls  *; do
+#
+echo ${dir}
+#
+ls -lh ${dir}/results/01.${dir}.fasta  ${dir}/results/03.${dir}.faa
+#
+Rscript ~/Documents/GitHub/NRP72-FBT/functions/prepare_faa_fna_PAthoFact_orf.Rscript.R \
+--contig_fasta_file_path ${dir}/results/01.${dir}.fasta \
+--aa_file_path ${dir}/results/03.${dir}.faa \
+-l 1000 \
+-o ${out} \
+-s ${dir}_PathoFact_1000
+#
+done
+#
+cd ${out}
+#
+rename s/_PathoFact_1000// *PathoFact_1000*
+#
+tar --exclude='*_report.tsv' -zcvf PathoFact_chicken1_human1_PathoFact_Ready.tar.gz .
+#
+rsync -Pv PathoFact_chicken1_human1_PathoFact_Ready.tar.gz constancias@10.97.121.93:/datadrive05/Flo/tools/orf_coinf/human1_chicken1_SS/ 
+
+| thene text edit trick.
+From list to coma spearated for pathofact 
+ls *faa | sed 's/^\|$/"/g'|paste -sd, -
