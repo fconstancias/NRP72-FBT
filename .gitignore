@@ -88,4 +88,7 @@ vignettes/*.pdf
 *full_gene_catalog_full_metrics_table.tsv.gz
 *_compressed.zip
 *PathoFact_intermediate*
+*unnamed-*.png
+*all_splits.tsv
+*plasx-scores.txt
 

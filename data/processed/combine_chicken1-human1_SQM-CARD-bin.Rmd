@@ -1,0 +1,449 @@
+---
+title: "Merge chicken1 + human1 gene catalogue + quantification + bins"
+author: "Hannah Li Hägi & Florentin Constancias "
+date: " `r format(Sys.time(), '%B %d, %Y')` "
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+rm(list= ls())
+gc()
+library("tidyverse")
+library('here')
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+```
+
+# Define inputs:
+
+## tables/ data:
+
+
+```{r}
+metadata <- "data/raw/25.11.2021_metadata_updated.tsv"
+```
+
+
+```{r}
+metadata %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  data.frame() %>%
+  dplyr::filter(!is.na(metagenomic_sample_name), Model %in% c("Human", "Chicken")) -> meta
+```
+
+Modify metadata: **this should be done once on the metadata**
+
+```{r}
+# create Period column
+meta %>%
+  mutate(Treatment2 = factor(Treatment2, levels = c("DONOR", "UNTREATED", "AB+E. coli", "AB", "E. coli", "AB+E. faecium", "E. faecium")),
+         Reactor_Treatment = base::replace(Reactor_Treatment, Reactor_Treatment == "TR_2CTX", "TR2_CTX"),
+         Phase = factor(Phase, levels = c("Stab", "Treat")),
+         Model = factor(Model, levels = c("Chicken", "Human")),
+         Fermentation = factor(Fermentation, levels = c("1", "2")),
+         Period = case_when( # if chicken we have period if human
+           Day_of_Treatment == -2 | Day_of_Treatment == -3 | Day_of_Treatment == -6 | Day_of_Treatment == -7 ~ "pret",
+           Day_of_Treatment < 10 & Day_of_Treatment >= 0 ~ "t1",
+           Day_of_Treatment < 20 & Day_of_Treatment >= 10 ~ "t2",
+           Day_of_Treatment < 30 & Day_of_Treatment >= 20 ~ "t3",
+           Day_of_Treatment < 40 & Day_of_Treatment >= 30 ~ "t4",
+           Day_of_Treatment < 50 & Day_of_Treatment >= 40 ~ "t5"),
+         Period = factor(Period, levels = c("pret", "t1", "t2", "t3", "t4", "t5")),
+         Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment),
+         Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Treatment, `Antibiotic_mg.mL`), Treatment),
+         Treatment = base::replace(Treatment, Experiment == "Cecum", "DONOR"),
+         Treatment = factor(Treatment, levels = c("negative","positive","STRAIN", "DONOR", "UNTREATED", "CTX", "CTX+HV292.1", "HV292.1", "VAN", "VAN+CCUG59168", "CCUG59168")),
+         # Reactor = factor(Reactor, levels = c("negative","positive","STRAIN", "DONOR", "IR1", "IR2", "CR", "TR1", "TR2", "TR3", "TR4", "TR5", "TR6","Batch3","Batch4")),
+         Experiment = factor(Experiment, levels = c( "NTC","Mock", "HV292.1", "CCUG59168", "Cecum","Continuous","Batch")),
+         
+         # mutate( Treatment  = case_when(Experiment == "Cecum" ~ "DONOR",
+         #                               TRUE ~ Treatment)) %>% 
+         # mutate(Treatment = ifelse(Experiment == "Cecum", "Donor", Treatment)) %>% 
+         
+  ) %>% 
+  # mutate(Day_of_Treatment = addNA(Day_of_Treatment)) %>%
+  column_to_rownames("metagenomic_sample_name") -> meta
+
+#human_meta$Treatment_Dose <- factor(human_meta$Treatment_Dose, ordered = TRUE, 
+#                                 levels = c("DONOR", "UNTREATED", "CTX+HV292.120", "CTX+HV292.1200",
+#                                            "CTX20", "CTX200", "HV292.1", "VAN+CCUG5916890", "VAN+CCUG59168600",
+#                                            "VAN90", "VAN600", "CCUG59168"))
+meta
+```
+
+
+
+```{r}
+"data/processed/chicken1_full_gene_catalog_full_metrics_table.tsv.gz"%>% 
+  here::here() %>% 
+  read_tsv() -> chicken1
+
+```
+
+
+```{r}
+"data/processed/human1_full_gene_catalog_full_metrics_table.tsv.gz" %>% 
+  here::here() %>% 
+  read_tsv() -> human1
+
+```
+
+```{r}
+chicken1 %>% 
+  head() -> toy_chicken1
+
+human1 %>% 
+  head() -> toy_human1
+```
+
+```{r}
+toy_chicken1 %>% 
+  colnames() %>% 
+  head()
+# contains plasX_score
+```
+
+
+```{r}
+toy_human1 %>% 
+  colnames() %>% 
+  head()
+```
+
+
+```{r}
+human1 %>% 
+  colnames() %>% 
+  intersect(chicken1 %>% colnames()) -> commun_cols
+```
+
+```{r}
+human1 %>% 
+  select(commun_cols) %>% 
+  rbind(chicken1 %>% 
+          select(all_of(commun_cols))) -> common_col_bind
+```
+
+
+Extract quantitative data:
+
+```{r}
+human1 %>% 
+  select(ORF_ID, contains(c("TPM.","Coverage.", "Num_Gi.", "Num_Gi_pc.", "Raw.read.count.", "Raw.base.count"))) -> human1_quant
+# select(ORF_ID, contains(c("Num_Gi_pc."))) -> human1_quant
+```
+
+```{r}
+chicken1 %>% 
+  select(ORF_ID, contains(c("TPM.","Coverage.", "Num_Gi.", "Num_Gi_pc.", "Raw.read.count.", "Raw.base.count"))) -> chicken1_quant
+# select(ORF_ID, contains(c("Num_Gi_pc."))) -> chicken1_quant
+```
+
+
+```{r}
+common_col_bind %>% 
+  left_join(chicken1_quant,
+            by = c("ORF_ID" = "ORF_ID")) %>% 
+  left_join(human1_quant,
+            by = c("ORF_ID" = "ORF_ID")) %>% 
+  mutate_at(vars(contains(c("TPM.","Coverage.", "Num_Gi.", "Num_Gi_pc.", "Raw.read.count.", "Raw.base.count"))), ~replace_na(., 0)) -> combined_full
+```
+
+```{r}
+combined_full %>% 
+  mutate_if(is.character, as.factor) -> combined_full_fct
+```
+
+```{r}
+combined_full_fct %>% 
+  glimpse()
+```
+
+```{r}
+combined_full %>% 
+  head(n = 1000) %>% 
+  rbind(combined_full %>% 
+          tail(n = 1000) ) %>% 
+  write_tsv("~/Desktop/test_comb_h1_c1.tsv")
+```
+
+```{r}
+combined_full %>% 
+  filter(!is.na(PathoFact_AMR_ARG) | !is.na(rgi_CARD_ARO) | !is.na(PathoFact_Tox_Toxin_classification)) %>% 
+  write_tsv("~/Desktop/AMR_TOX_comb_h1_c1.tsv")
+
+combined_full %>% 
+  filter(!is.na(PathoFact_AMR_ARG) | !is.na(rgi_CARD_ARO)) %>% 
+  write_tsv("~/Desktop/AMR_comb_h1_c1.tsv")
+```
+
+
+Generate phyloseq objects:
+
+
+sample_data:
+
+```{r}
+meta 
+```
+```{r}
+meta %>% 
+  select(-sample:-index2) -> meta
+```
+
+```{r}
+rownames(meta) <- str_replace(rownames(meta),
+                              "_", ".")
+```
+
+
+```{r}
+rownames(meta) <- str_replace(rownames(meta),
+                              "^C.", "C")
+```
+
+
+Adjust plasmid - MAGs annnotations:
+
+
+```{r}
+combined_full_fct %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(Contig_ID:ANVIO_CONCOCT_HQ) %>% 
+  mutate(PathoFact_AMR_Resistance_mechanism_multi = ifelse(grepl(";", PathoFact_AMR_Resistance_mechanism), "multi-mech", PathoFact_AMR_Resistance_mechanism)) %>%
+  mutate(PathoFact_AMR_AMR_sub_class_multi = ifelse(grepl(";", PathoFact_AMR_AMR_sub_class), "multidrug", PathoFact_AMR_AMR_sub_class)) %>%
+  mutate(ANVIO_CONCOCT_HQ_clean = ifelse(PathoFact_AMR_MGE_prediction == "plasmid", NA, ANVIO_CONCOCT_HQ)) %>%
+  mutate(GTDB_tax_CONCOCT_clean = ifelse(PathoFact_AMR_MGE_prediction == "plasmid", NA, GTDB_tax_CONCOCT)) %>%
+  mutate(PathoFact_AMR_MGE_prediction_clean = ifelse(!is.na(ANVIO_CONCOCT_HQ), "MAG", PathoFact_AMR_MGE_prediction)) %>%
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG", "chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) -> combined_full_fct_plas_clean
+```
+
+  
+tax_table:
+
+```{r}
+combined_full_fct_plas_clean %>% 
+  as.matrix() %>% 
+  phyloseq::tax_table() -> tax
+```
+
+ORFs:
+
+TPM:
+
+```{r}
+combined_full %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_TPM.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_TPM."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_TPM.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  # rename_at(
+  #   # select all variables with "factor.sample" in the name
+  #   vars(contains("."))
+  #   , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  phyloseq::otu_table(taxa_are_rows = TRUE) -> tpm
+```
+
+
+Num_Gi_pc
+
+```{r}
+combined_full %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_Num_Gi_pc.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Num_Gi_pc."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Num_Gi_pc.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  # rename_at(
+  #   # select all variables with "factor.sample" in the name
+  #   vars(contains("."))
+  #   , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  phyloseq::otu_table(taxa_are_rows = TRUE) -> Num_Gi_pc
+```
+
+Num_Gi
+
+```{r}
+combined_full %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_Num_Gi.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Num_Gi."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Num_Gi.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  # rename_at(
+  #   # select all variables with "factor.sample" in the name
+  #   vars(contains("."))
+  #   , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  phyloseq::otu_table(taxa_are_rows = TRUE) -> Num_Gi
+```
+
+Coverage
+
+```{r}
+combined_full %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_Coverage.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Coverage."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Coverage.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  # rename_at(
+  #   # select all variables with "factor.sample" in the name
+  #   vars(contains("."))
+  #   , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  phyloseq::otu_table(taxa_are_rows = TRUE) -> cov
+```
+
+ORF_Raw.read
+
+```{r}
+combined_full %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_Raw.read.count.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Raw.read.count."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Raw.read.count.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  # rename_at(
+  #   # select all variables with "factor.sample" in the name
+  #   vars(contains("."))
+  #   , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  phyloseq::otu_table(taxa_are_rows = TRUE) -> read_count
+```
+
+
+
+Create phyloseq objects and tsv files:
+
+```{r}
+dim(tpm); dim(meta)
+
+physeq_tpm <- phyloseq::phyloseq(tpm,
+                                 tax,
+                                 meta %>% phyloseq::sample_data())
+
+
+physeq_tpm
+```
+
+```{r}
+dim(cov); dim(meta)
+
+physeq_cov <- phyloseq::phyloseq(cov,
+                                 tax,
+                                 meta %>% phyloseq::sample_data())
+
+physeq_cov
+```
+
+
+```{r}
+dim(Num_Gi_pc); dim(meta)
+
+physeq_Num_Gi_pc <- phyloseq::phyloseq(Num_Gi_pc,
+                                       tax,
+                                       meta %>% phyloseq::sample_data())
+
+physeq_Num_Gi_pc
+```
+
+```{r}
+dim(Num_Gi); dim(meta)
+
+physeq_Num_Gi<- phyloseq::phyloseq(Num_Gi,
+                                   tax,
+                                   meta %>% phyloseq::sample_data())
+
+physeq_Num_Gi
+```
+
+
+```{r}
+dim(read_count); dim(meta)
+
+physeq_read_count <- phyloseq::phyloseq(read_count,
+                                        tax,
+                                        meta %>% phyloseq::sample_data())
+
+physeq_read_count
+```
+
+
+```{r}
+phyloseq_list_out = list("read_count" = physeq_read_count,
+                         "Num_Gi" = physeq_Num_Gi,
+                         "Num_Gi_pc" = physeq_Num_Gi_pc,
+                         "cov" = physeq_cov,
+                         "tpm" = physeq_tpm)
+
+```
+
+
+Export outputs:
+
+```{r}
+phyloseq_list_out %>% 
+  saveRDS(here::here("data/processed/exp1_full_gene_catalog_phyloseq.RDS"))
+
+combined_full_fct_plas_clean %>% 
+  saveRDS(here::here("data/processed/exp1_full_gene_catalog_full_metrics_table.RDS"))
+
+# combined_full_fct_plas_clean %>% 
+#   write_tsv(here::here("data/processed/exp1_full_gene_catalog_full_metrics_table.tsv.gz"))
+```
+
+
+```{r}
+# combined_full %>% 
+#   filter(grepl("integrase",anvio_PFAM)) %>% 
+#   write_tsv("~/Desktop/anvio_pfam_integrase.tsv")
+```
+
+Export only AMR and Tox:
+
+```{r}
+# combined_full_fct_plas_clean %>% 
+#   filter(!is.na(PathoFact_AMR_ARG) | !is.na(rgi_CARD_ARO) | !is.na(PathoFact_Tox_Toxin_classification)) %>% 
+#   write_tsv(here::here("data/processed/exp1_full_gene_catalog_full_metrics_table_AMR_tox.tsv.gz"))
+```
+
+
+```{r}
+devtools::session_info()
+```
+

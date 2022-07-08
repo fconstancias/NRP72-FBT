@@ -218,7 +218,7 @@ physeq</code></pre>
 ## [6] &quot;AB24-3E-S25&quot;</code></pre>
 <pre class="r"><code># here::here(&quot;data/raw/metabarcoding/merged_chicken_human_04.08.2021.tsv&quot;) %&gt;%
 here::here(&quot;data/raw/25.11.2021_metadata_updated.tsv&quot;) %&gt;%
-                        readr::read_tsv() %&gt;% 
+  readr::read_tsv() %&gt;% 
   pull(&quot;sample&quot;) %&gt;% 
   sort() %&gt;% 
   head()</code></pre>
@@ -261,11 +261,11 @@ here::here(&quot;data/raw/25.11.2021_metadata_updated.tsv&quot;) %&gt;%
   physeq_add_metadata(physeq = .,
                       metadata = here::here(&quot;data/raw/25.11.2021_metadata_updated.tsv&quot;) %&gt;%
                         readr::read_tsv() %&gt;% 
-    mutate(Reactor_Treatment_Dose = ifelse(!is.na(`Antibiotic_mg/mL`),
-       paste0(Reactor_Treatment, `Antibiotic_mg/mL`), Reactor_Treatment),
-    Treatment_Dose = ifelse(!is.na(`Antibiotic_mg/mL`),
-       paste0(Treatment, `Antibiotic_mg/mL`), Reactor_Treatment))
-  , sample_column = &quot;sample&quot;) -&gt; physeq_meta</code></pre>
+                        mutate(Reactor_Treatment_Dose = ifelse(!is.na(`Antibiotic_mg/mL`),
+                                                               paste0(Reactor_Treatment, `Antibiotic_mg/mL`), Reactor_Treatment),
+                               Treatment_Dose = ifelse(!is.na(`Antibiotic_mg/mL`),
+                                                       paste0(Treatment, `Antibiotic_mg/mL`), Reactor_Treatment))
+                      , sample_column = &quot;sample&quot;) -&gt; physeq_meta</code></pre>
 <pre><code>## Rows: 604 Columns: 61
 ## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;\t&quot;
@@ -307,7 +307,7 @@ physeq;physeq_meta</code></pre>
   length()</code></pre>
 <pre><code>## [1] 600</code></pre>
 <pre class="r"><code>difference &lt;- function(x, y) {
-c(setdiff(x, y), setdiff(y, x))
+  c(setdiff(x, y), setdiff(y, x))
 }
 
 difference(
@@ -326,21 +326,24 @@ difference(
          Model = factor(Model, levels = c(&quot;Chicken&quot;, &quot;Human&quot;)),
          Fermentation = factor(Fermentation, levels = c(&quot;1&quot;, &quot;2&quot;)),
          Period = case_when( # if chicken we have period if human
-      Day_of_Treatment == -2 | Day_of_Treatment == -3 | Day_of_Treatment == -6 | Day_of_Treatment == -7 ~ &quot;pret&quot;,
-      Day_of_Treatment &lt; 10 &amp; Day_of_Treatment &gt;= 0 ~ &quot;t1&quot;,
-      Day_of_Treatment &lt; 20 &amp; Day_of_Treatment &gt;= 10 ~ &quot;t2&quot;,
-      Day_of_Treatment &lt; 30 &amp; Day_of_Treatment &gt;= 20 ~ &quot;t3&quot;,
-      Day_of_Treatment &lt; 40 &amp; Day_of_Treatment &gt;= 30 ~ &quot;t4&quot;,
-      Day_of_Treatment &lt; 50 &amp; Day_of_Treatment &gt;= 40 ~ &quot;t5&quot;),
+           Day_of_Treatment == -2 | Day_of_Treatment == -3 | Day_of_Treatment == -6 | Day_of_Treatment == -7 ~ &quot;pret&quot;,
+           Day_of_Treatment &lt; 10 &amp; Day_of_Treatment &gt;= 0 ~ &quot;t1&quot;,
+           Day_of_Treatment &lt; 20 &amp; Day_of_Treatment &gt;= 10 ~ &quot;t2&quot;,
+           Day_of_Treatment &lt; 30 &amp; Day_of_Treatment &gt;= 20 ~ &quot;t3&quot;,
+           Day_of_Treatment &lt; 40 &amp; Day_of_Treatment &gt;= 30 ~ &quot;t4&quot;,
+           Day_of_Treatment &lt; 50 &amp; Day_of_Treatment &gt;= 40 ~ &quot;t5&quot;),
          Period = factor(Period, levels = c(&quot;pret&quot;, &quot;t1&quot;, &quot;t2&quot;, &quot;t3&quot;, &quot;t4&quot;, &quot;t5&quot;)),
          Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment),
          Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Treatment, `Antibiotic_mg.mL`), Treatment),
          Treatment = base::replace(Treatment, Experiment == &quot;Cecum&quot;, &quot;DONOR&quot;),
-         Treatment = factor(Treatment, levels = c(&quot;DONOR&quot;, &quot;UNTREATED&quot;, &quot;CTX+HV292.1&quot;, &quot;CTX&quot;, &quot;HV292.1&quot;, &quot;VAN+CCUG59168&quot;, &quot;VAN&quot;, &quot;CCUG59168&quot;))
-  # mutate( Treatment  = case_when(Experiment == &quot;Cecum&quot; ~ &quot;DONOR&quot;,
-  #                               TRUE ~ Treatment)) %&gt;% 
-  # mutate(Treatment = ifelse(Experiment == &quot;Cecum&quot;, &quot;Donor&quot;, Treatment)) %&gt;% 
-
+         Treatment = factor(Treatment, levels = c(&quot;negative&quot;,&quot;positive&quot;,&quot;STRAIN&quot;, &quot;DONOR&quot;, &quot;UNTREATED&quot;, &quot;CTX&quot;, &quot;CTX+HV292.1&quot;, &quot;HV292.1&quot;, &quot;VAN&quot;, &quot;VAN+CCUG59168&quot;, &quot;CCUG59168&quot;)),
+         # Reactor = factor(Reactor, levels = c(&quot;negative&quot;,&quot;positive&quot;,&quot;STRAIN&quot;, &quot;DONOR&quot;, &quot;IR1&quot;, &quot;IR2&quot;, &quot;CR&quot;, &quot;TR1&quot;, &quot;TR2&quot;, &quot;TR3&quot;, &quot;TR4&quot;, &quot;TR5&quot;, &quot;TR6&quot;,&quot;Batch3&quot;,&quot;Batch4&quot;)),
+         Experiment = factor(Experiment, levels = c( &quot;NTC&quot;,&quot;Mock&quot;, &quot;HV292.1&quot;, &quot;CCUG59168&quot;, &quot;Cecum&quot;,&quot;Continuous&quot;,&quot;Batch&quot;)),
+         
+         # mutate( Treatment  = case_when(Experiment == &quot;Cecum&quot; ~ &quot;DONOR&quot;,
+         #                               TRUE ~ Treatment)) %&gt;% 
+         # mutate(Treatment = ifelse(Experiment == &quot;Cecum&quot;, &quot;Donor&quot;, Treatment)) %&gt;% 
+         
   ) -&gt; sample_data(physeq_meta)
 # mutate(Reactor_Treatment = base::replace(Reactor_Treatment, Reactor_Treatment == &quot;TR_2CTX&quot;, &quot;TR2_CTX&quot;)) %&gt;%
 #   mutate(Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment)) %&gt;% 

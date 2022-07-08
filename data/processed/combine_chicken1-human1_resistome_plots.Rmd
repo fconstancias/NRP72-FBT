@@ -1,0 +1,1016 @@
+---
+title: "Resistome data exploration"
+author: "Hannah Li Hägi & Florentin Constancias "
+date: " `r format(Sys.time(), '%B %d, %Y')` "
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# knitr::opts_chunk$set(dev = "ragg_png") # https://ragg.r-lib.org/index.html
+knitr::opts_chunk$set(fig.width = 6) #https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing
+knitr::opts_chunk$set(fig.asp = 0.618)
+knitr::opts_chunk$set(fig.show = "hold")
+knitr::opts_chunk$set(fig.show = "70%")
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+```{r}
+
+rm(list= ls())
+# gc()
+require("tidyverse")
+require('speedyseq')
+
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_varia.R")  # source the functions from github.
+
+```
+
+
+```{r}
+export_ppt_width = NULL
+export_ppt_height = NULL
+out_pptx = here::here("output/plots_2.pptx")
+```
+
+# Load data:
+
+## 16S:
+
+```{r}
+"data/processed/16S/1/ps_silva_dada2_human_chicken_meta_fact.RDS" %>% 
+  here::here() %>% 
+  readRDS() %>% 
+  subset_samples(Enrichment == "NotEnriched" ) %>% 
+  subset_samples(Sample_description %!in% c("TR5-15", "TR4-1")) %>% 
+  subset_samples(Day_from_Inoculum >= 30 | Experiment == "Cecum") %>% 
+  subset_samples(Experiment != "Batch") %>% 
+  subset_samples(is.na(Paul)) %>% 
+  subset_samples(Day_of_Treatment >= -4 | Experiment == "Cecum") %>% 
+  # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> ps_16S
+```
+
+## Export metadata:
+
+To be merged with phyloseq data. TODO: Would be better to do that before in the gene phyloseq data generation.
+
+```{r}
+ps_16S %>% 
+  sample_data() %>% 
+  data.frame() %>% 
+  filter(!is.na(metagenomic_sample_name)) %>% 
+  rownames_to_column('tmp') %>% 
+  select(-tmp) -> metadata
+```
+
+## phyloseq object of SQM + Pathofact + bins + ... with Num_Gi_pc quantif:
+
+```{r}
+# "data/processed/exp1_full_gene_catalog_phyloseq.RDS" %>% 
+#   here::here() %>% 
+#   readRDS() %>% 
+#   .[["Num_Gi_pc"]] -> ps_coass
+# 
+# ps_coass
+```
+
+## extract on only AMR gene catalogue - qauntification on all gene catalogue:
+
+```{r}
+# ps_coass %>% 
+#   subset_taxa(!is.na(PathoFact_AMR_ARG)) %>% 
+#   subset_taxa(PathoFact_AMR_AMR_category != "unclassified") -> ps_AMR
+```
+
+
+```{r}
+"data/processed/exp1_ps_AMR.RDS" %>% 
+  here::here() %>% 
+  readRDS() -> ps_AMR
+```
+
+```{r}
+# ps_AMR %>% 
+#   tax_table() %>% 
+#   data.frame() %>% 
+#   glimpse()
+```
+
+I hvae to do that otherwise it is not stored as proper chr when filtering... no clue what is happening here.
+
+
+```{r}
+ps_AMR %>%
+  tax_table() %>%
+  data.frame() %>%
+  mutate(PathoFact_AMR_Resistance_mechanism_multi = ifelse(grepl(";", PathoFact_AMR_Resistance_mechanism), "multi-mech", PathoFact_AMR_Resistance_mechanism)) %>%
+  mutate(PathoFact_AMR_AMR_sub_class_multi = ifelse(grepl(";", PathoFact_AMR_AMR_sub_class), "multidrug", PathoFact_AMR_AMR_sub_class)) %>%
+  mutate(ANVIO_CONCOCT_HQ_clean = ifelse(PathoFact_AMR_MGE_prediction == "plasmid", NA, ANVIO_CONCOCT_HQ)) %>%
+  mutate(GTDB_tax_CONCOCT_clean = ifelse(PathoFact_AMR_MGE_prediction == "plasmid", NA, GTDB_tax_CONCOCT)) %>%
+  mutate(PathoFact_AMR_MGE_prediction_clean = ifelse(!is.na(ANVIO_CONCOCT_HQ), "MAG", PathoFact_AMR_MGE_prediction)) %>%
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean)) %>%
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG", "chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) %>%
+  # mutate(Treatment = factor(Treatment, levels = c)) %>%
+  # mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
+  
+  as.matrix() -> tax_table(ps_AMR)
+```
+
+
+
+```{r}
+# ps_AMR %>% 
+#   tax_table() %>% 
+#   colnames()
+```
+
+# Define astetics:
+
+## Treatment colors:
+
+<https://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=6>
+```{r, out.width = "50%",fig.width = 4.3}  
+treat_col <- c("#3CB371", "#7C8181",'#d73027','#fc8d59','#fee090','#4575b4','#91bfdb', '#e0f3f8')
+
+names(treat_col) <- get_variable(ps_AMR, "Treatment") %>%  
+  levels()
+
+treat_col %>% 
+  scales::show_col(cex_label = 0.5)
+```
+
+## Drug classes colors:
+
+```{r, out.width = "50%",fig.width = 4.3}  
+ps_AMR %>% 
+  generate_color_palette(var = "PathoFact_AMR_AMR_sub_class_multi", seed = 280386) -> drug_classe_multi
+```
+
+
+```{r, out.width = "50%",fig.width = 4.3}  
+# ps_AMR %>% 
+#   generate_color_palette(var = "Model_type", pal = "jco") -> model_type
+
+```
+
+```{r, out.width = "50%",fig.width = 4.3}  
+ps_AMR %>% 
+  generate_color_palette(var = "PathoFact_AMR_Resistance_mechanism_multi",  pal = "npg") -> resistance_type
+```
+
+```{r, out.width = "50%",fig.width = 4.3}  
+ps_AMR %>% 
+  generate_color_palette(var = "PathoFact_AMR_MGE_prediction_clean_2", seed = 72) -> MGE
+```
+
+## Others:
+
+<https://r-graphics.org/recipe-scatter-shapes>
+```{r}
+fermentaion_shape <- c(22, 21)
+names(fermentaion_shape) <- sample_data(ps_AMR)$Fermentation %>%  levels()
+
+model_shape <- c(22, 21)
+names(model_shape) <- sample_data(ps_AMR)$Model %>%  levels()
+
+antibio_shape <- c(22, 21)
+names(antibio_shape) <- sample_data(ps_AMR)$Antibiotic %>%  levels()
+
+
+conc_stroke <- c(1, 2, 3, 4, 5)
+names(conc_stroke) <- sample_data(ps_AMR)$Antibiotic_mg.mL %>%  levels()
+# scale_discrete_manual(
+#   aesthetics = "stroke",
+#   values = c(`A` = 2, `B` = 1, `C` = 2)
+# )
+
+theme_set(theme_classic() + theme(legend.position = 'bottom'))
+```
+
+<https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing>
+
+<https://www.tidyverse.org/blog/2020/08/taking-control-of-plot-scaling/>
+
+
+## Others:
+```{r}
+ps_AMR %>% 
+  tax_table() %>% 
+  data.frame() %>% 
+  rownames_to_column("ORF_ID") -> tax_mapping
+```
+
+
+```{r}
+ps_AMR %>% 
+  sample_data() %>% 
+  data.frame() %>% 
+  rownames_to_column("sample_id") -> metadata_mapping
+```
+
+
+```{r}
+tax_mapping %>% 
+  select(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi",
+           "PathoFact_AMR_ARG")) %>% 
+  distinct(PathoFact_AMR_ARG, .keep_all = TRUE) %>% 
+  add_count(PathoFact_AMR_ARG) %>% 
+  arrange(-n) %>% 
+  column_to_rownames('PathoFact_AMR_ARG')
+
+```
+
+```{r}
+# ps_AMR %>% 
+#   physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi", "rgi_CARD_Best_Hit_ARO",
+#                          "PathoFact_AMR_ARG")) %>% 
+ps_AMR %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_ARG")) %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG") %>%
+  # physeq_simplify_tax("PathoFact_AMR_ARG")
+  psmelt() %>% 
+  group_by(Sample,PathoFact_AMR_ARG) %>% 
+  add_count() %>% 
+  ungroup() %>% 
+  select(-OTU, -Sample:-Treatment_Dose) %>% 
+  arrange(-n)
+```
+
+```{r}
+ps_AMR %>%
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG")) %>%
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG") %>% 
+  tax_table() %>% 
+  data.frame()
+  psmelt() %>% 
+  group_by(Sample,PathoFact_AMR_ARG) %>% 
+  add_count() %>% 
+  ungroup() %>% 
+  select(-OTU, -Sample:-Treatment_Dose) %>% 
+  arrange(-n)
+```
+
+
+
+```{r}
+ps_AMR %>% 
+  physeq_sel_tax_table(c("Contig_ID","ANVIO_CONCOCT_HQ_clean", "PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi", 
+                         "GTDB_tax_CONCOCT_clean", 
+                         "PathoFact_AMR_MGE_prediction_clean", "rgi_CARD_Best_Hit_ARO",
+                         "PathoFact_AMR_ARG"))  %>% 
+  # speedyseq::tax_glom(., taxrank = "PathoFact_AMR_MGE_prediction_clean")  %>% tax_table()
+  # speedyseq::tax_glom(., taxrank = "PathoFact_AMR_Resistance_mechanism_multi") %>%   #%>% tax_table()
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG") -> phyloseq_AMR_MAG_MGE
+
+phyloseq_AMR_MAG_MGE
+```
+
+```{r}
+ps_AMR %>% 
+  tax_table() %>% 
+  data.frame()
+```
+
+```{r}
+phyloseq_AMR_MAG_MGE %>% 
+  tax_table() %>% 
+  data.frame()
+```
+
+
+Looks good, let's go.
+
+
+## Reproducing https://www.nature.com/articles/s41467-022-29919-9.pdf
+
+
+<file:///Users/fconstan/Documents/GitHub/NRP72-FBT/Figures/Figures_beta.html>
+
+
+```{r}
+treat_col <- c("#3CB371", "#7C8181",'#d73027','#fc8d59','#fee090','#4575b4','#91bfdb', '#e0f3f8')
+
+names(treat_col) <- get_variable(phyloseq_AMR_MAG_MGE, "Treatment") %>%  
+  levels()
+
+treat_col %>% 
+  scales::show_col(cex_label = 0.5)
+```
+
+
+```{r}
+antibio_shape <- c(22, 21)
+names(antibio_shape) <- sample_data(phyloseq_AMR_MAG_MGE)$Antibiotic_mg.mL %>%  levels()
+```
+
+### Fig. 2a
+
+```{r}
+phyloseq_AMR_MAG_MGE %>% 
+  # physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi", 
+  #                        "PathoFact_AMR_MGE_prediction_clean", "rgi_CARD_Best_Hit_ARO",
+  #                        "PathoFact_AMR_ARG"))  %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi", "PathoFact_AMR_ARG"))  %>% 
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() %>% 
+  select(-Lactose_mM:-Total_SCFA_mM) %>% 
+  group_by(Sample) %>% 
+  summarise(sum_abundance = sum(Abundance), .groups = "drop") %>% 
+  mutate(sum_abundance = na_if(sum_abundance, 0)) %>%
+  left_join(metadata_mapping,
+            by = c("Sample" = "sample_id")) %>% 
+  # filter(Model == "Chicken") %>% 
+  mutate(Day_of_Treatment_num = as.double(Day_of_Treatment)) %>% 
+  # mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
+  mutate(Antibiotic_mg.mL = factor(Antibiotic_mg.mL, levels = c(NA, 20, 200,90, 600))) %>%
+  ggplot(aes_string(x = "Day_of_Treatment", y = "sum_abundance", color = "Treatment", fill  = "Treatment", shape = "Antibiotic_mg.mL")) + #shape = Fermentation
+  geom_point(size = 2.5) + 
+  geom_line(linetype = 2,  size = 0.5,  aes_string(group = "interaction(Model, Reactor_Treatment_Dose)")) +
+  labs(y = "sum Rnum_Gi", x = "Day_of_Treatment") +
+  scale_color_manual(name = "", values = treat_col,
+                     na.value = "black") +
+  scale_fill_manual(name = "", values = treat_col,
+                    na.value = "black") +
+  scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
+  # scale_alpha_continuous(name = "", range=c(0.6, 1), na.value =  1) +
+  geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") +
+  theme_light() + 
+  scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) -> p1
+
+p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL ~  Model  ")), scales = "free", space = "fixed", drop = TRUE) -> ptmp
+
+ptmp
+
+ptmp %>%
+  export::graph2ppt(append = TRUE, width = 8, height = 4,
+                    file = out_pptx)
+
+p1 + facet_grid(as.formula(paste0(". ~  Model  ")), scales = "free", space = "fixed", drop = TRUE) -> ptmp
+
+ptmp
+
+ptmp %>%
+  export::graph2ppt(append = TRUE, width = 8, height = 4,
+                    file = out_pptx)
+```
+
+```{r}
+# plot_univ_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point_size = 2.5, color = "Treatment", fill  = "Treatment", shape = "Antibiotic", alpha = "Antibiotic_mg.mL", facet_formula = paste0("alphadiversiy ~  Model "), ylab = "Resistome alpha-diversity", xlab = "Days (Treatment)", measures = c("Observed"), path_group = "interaction(Model, Fermentation, Reactor_Treatment)"){
+#   
+#   df %>% 
+#     pivot_longer(cols = all_of(measures), values_to = "value", names_to = 'alphadiversiy', values_drop_na  = TRUE) %>%
+#     mutate(alphadiversiy = fct_relevel(alphadiversiy, measures)) -> df_ready
+#   
+#   df_ready %>% 
+#     ggplot(aes_string(x = x, y = y, color = color, fill = fill, shape = shape, alpha = alpha)) + #shape = Fermentation
+#     geom_point(size = point_size) + 
+#     geom_line(linetype = 2,  size = 0.5,  aes_string(group = path_group)) +
+#     labs(y = ylab, x = xlab) +
+#     scale_color_manual(name = "", values = treat_col,
+#                        na.value = "black") +
+#     scale_fill_manual(name = "", values = treat_col,
+#                       na.value = "black") +
+#     facet_grid(as.formula(facet_formula), scales = "free", space = "fixed", drop = TRUE) +
+#     scale_shape_manual(name = "" ,values = antibio_shape, na.value =  17) +
+#     scale_alpha_discrete(name = "", range=c(0.6, 1), na.value =  0.6) + 
+#     geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") -> p_alpha_both
+#   
+#   return(p_alpha_both)
+# }
+```
+
+### Heatmap:
+
+file:///Users/fconstan/Documents/GitHub/NRP72-FBT/tmp/human_resistome_visualization.html
+
+```{r}
+# phyloseq_AMR_MAG_MGE %>% 
+#   # physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi", 
+#   #                        "PathoFact_AMR_MGE_prediction_clean", "rgi_CARD_Best_Hit_ARO",
+#   #                        "PathoFact_AMR_ARG"))  %>% 
+#   physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+#   # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+#   speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG") %>% 
+#   speedyseq::psmelt() %>% 
+#   # left_join(tax_mapping,
+#   #           by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+#   #           suffix = c("_x", "")) %>% 
+#   # mutate(Sample = fct_reorder(Sample, Model,Treatment,Fermentation,Antibiotic_mg.mL, Day_of_Treatment )) %>%
+#   mutate(Abundance = na_if(Abundance, 0)) %>%
+#   mutate(logTPM = log10(Abundance + 1)) -> pheatmap_df
+# 
+# 
+# pheatmap_df %>% 
+#   # replace(is.na(.), 0)  %>% 
+#   # select(Sample, Best_Hit_ARO, logTPM) %>% 
+#   group_by(Sample, PathoFact_AMR_ARG) %>%
+#   pivot_wider(names_from =  Sample, PathoFact_AMR_ARG,
+#               values_from = logTPM) %>% 
+#   column_to_rownames("PathoFact_AMR_ARG") -> pheatmap_samples
+# 
+# pheatmap_samples %>% 
+#   replace(is.na(.), 0)  %>% 
+#   t() %>% 
+#   vegan::vegdist(na.rm = TRUE) %>% 
+#   hclust() -> clust_t
+# 
+# # pheatmap_samples %>% 
+# #     replace(is.na(.), 0)  %>%
+# #     vegdist(na.rm = TRUE) %>% 
+# #   # cor() %>% 
+# #   hclust() -> clust
+# 
+# pheatmap_samples %>% 
+#   pheatmap::pheatmap(cluster_rows = FALSE ,
+#                      cluster_cols = clust_t,
+#                      na_col = "transparent",
+#                      annotation_row = tax_mapping %>% rownames_to_column('tmp_col') %>% 
+#                        filter(PathoFact_AMR_ARG %in% rownames(pheatmap_samples)) %>% 
+#                        distinct(PathoFact_AMR_ARG, .keep_all = TRUE) %>% 
+#                        column_to_rownames("PathoFact_AMR_ARG") %>% 
+#                        select(PathoFact_AMR_Resistance_mechanism_multi, PathoFact_AMR_AMR_sub_class_multi),
+#                      # annotation_colors = list("PathoFact_AMR_AMR_sub_class_multi" = col,
+#                      #                          "Treatment" = treat_col),
+#                      annotation_col = pheatmap_df %>% 
+#                        select(Model,Treatment,Fermentation,Antibiotic_mg.mL, Day_of_Treatment)) -> p_pheat
+# 
+# 
+# p_pheat %>% 
+# print()
+```
+
+Histogram:
+
+AMR drug classes
+
+```{r}
+# https://newbedev.com/how-to-control-ordering-of-stacked-bar-chart-using-identity-on-ggplot2
+
+phyloseq_AMR_MAG_MGE %>% 
+  # physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi", 
+  #                        "PathoFact_AMR_MGE_prediction_clean", "rgi_CARD_Best_Hit_ARO",
+  #                        "PathoFact_AMR_ARG"))  %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi","PathoFact_AMR_ARG"))  %>% 
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() %>% 
+  select(-Lactose_mM:-Total_SCFA_mM) %>% 
+  # left_join(tax_mapping,
+  #         by = c("PathoFact_AMR_ARG" = "PathoFact_AMR_ARG"),
+  #         suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # physeq_AMRgn %>%
+  #   microbiome::transform(transform = "log10p") %>% 
+  #   speedyseq::psmelt() %>% 
+  #   left_join(tax_mapping,
+  #             by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #             suffix = c("_x", "")) %>%
+  #   mutate(Abundance = na_if(Abundance, 0)) %>%
+  #   mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = reorder(PathoFact_AMR_AMR_sub_class_multi, Abundance, FUN=median, na.rm = TRUE))) +   
+  geom_bar( stat = "identity", position = "fill", colour="black", size=0.0125) +
+  facet_grid(Model ~ Treatment + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("Proportion") + 
+  theme_light() +
+  ggpubr::rotate_x_text(60) -> p_mec
+
+p_mec %>%
+  ggpubr::set_palette(drug_classe_multi)-> p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 12, height = 8,
+                    file = out_pptx)
+```
+
+```{r}
+# https://newbedev.com/how-to-control-ordering-of-stacked-bar-chart-using-identity-on-ggplot2
+
+phyloseq_AMR_MAG_MGE %>% 
+  # physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi", 
+  #                        "PathoFact_AMR_MGE_prediction_clean", "rgi_CARD_Best_Hit_ARO",
+  #                        "PathoFact_AMR_ARG"))  %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi","PathoFact_AMR_ARG"))  %>% 
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() %>% 
+  select(-Lactose_mM:-Total_SCFA_mM) %>% 
+  # left_join(tax_mapping,
+  #         by = c("PathoFact_AMR_ARG" = "PathoFact_AMR_ARG"),
+  #         suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # physeq_AMRgn %>%
+  #   microbiome::transform(transform = "log10p") %>% 
+  #   speedyseq::psmelt() %>% 
+  #   left_join(tax_mapping,
+  #             by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #             suffix = c("_x", "")) %>%
+  #   mutate(Abundance = na_if(Abundance, 0)) %>%
+  #   mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = PathoFact_AMR_AMR_sub_class_multi)) +   
+  geom_bar( stat = "identity", colour="black", size=0.0125) +
+  facet_grid(Model ~ Treatment + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("Rnum_Gi") + 
+  theme_light() +
+  ggpubr::rotate_x_text(60) -> p_mec
+
+p_mec %>%
+  ggpubr::set_palette(drug_classe_multi)-> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 12, height = 8,
+                    file = out_pptx)
+```
+
+Genetic material
+
+```{r}
+# https://newbedev.com/how-to-control-ordering-of-stacked-bar-chart-using-identity-on-ggplot2
+
+phyloseq_AMR_MAG_MGE %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_MGE_prediction_clean",
+                         # "PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG"))  %>%
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG", "chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) %>% 
+  select(-Lactose_mM:-Total_SCFA_mM) %>% 
+  # left_join(tax_mapping,
+  #         by = c("PathoFact_AMR_ARG" = "PathoFact_AMR_ARG"),
+  #         suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # physeq_AMRgn %>%
+  #   microbiome::transform(transform = "log10p") %>% 
+  #   speedyseq::psmelt() %>% 
+  #   left_join(tax_mapping,
+  #             by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #             suffix = c("_x", "")) %>%
+  #   mutate(Abundance = na_if(Abundance, 0)) %>%
+  #   mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = PathoFact_AMR_MGE_prediction_clean_2)) +   
+  geom_bar( stat = "identity", position = "fill", colour="black", size = 0.0125) +
+  facet_grid(Model ~ Treatment + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  ylab("Proportion") + 
+  theme_light() +
+  ggpubr::rotate_x_text(60) -> p_mec
+
+p_mec %>%
+  ggpubr::set_palette(MGE)-> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 12, height = 8,
+                    file = out_pptx)
+```
+
+```{r}
+phyloseq_AMR_MAG_MGE %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_MGE_prediction_clean",
+                         # "PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG"))  %>%
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG", "chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) %>% 
+  select(-Lactose_mM:-Total_SCFA_mM) %>% 
+  # left_join(tax_mapping,
+  #         by = c("PathoFact_AMR_ARG" = "PathoFact_AMR_ARG"),
+  #         suffix = c("_x", "")) %>%
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # physeq_AMRgn %>%
+  #   microbiome::transform(transform = "log10p") %>% 
+  #   speedyseq::psmelt() %>% 
+  #   left_join(tax_mapping,
+  #             by = c("Best_Hit_ARO" = "Best_Hit_ARO"),
+  #             suffix = c("_x", "")) %>%
+  #   mutate(Abundance = na_if(Abundance, 0)) %>%
+  #   mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = PathoFact_AMR_MGE_prediction_clean_2)) +   
+  geom_bar( stat = "identity", colour="black", size = 0.0125) +
+  facet_grid(Model ~ Treatment + Antibiotic_mg.mL , scales = "free", space = "free_x") +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  # ylab("Proportion") + 
+  theme_light() +
+  ggpubr::rotate_x_text(60) -> p_mec
+
+p_mec %>%
+  ggpubr::set_palette(MGE)-> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 12, height = 8,
+                    file = out_pptx)
+```
+
+```{r}
+phyloseq_AMR_MAG_MGE %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_ARG",
+                         # "PathoFact_AMR_AMR_sub_class_multi",
+                         "GTDB_tax_CONCOCT_clean"))  %>%
+  subset_taxa(!is.na("GTDB_tax_CONCOCT_clean")) %>% 
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "GTDB_tax_CONCOCT_clean")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  microbiome::transform("compositional") %>% 
+  speedyseq::psmelt() %>% 
+  separate(GTDB_tax_CONCOCT_clean, into = c("domain", "phylum", "class", "order", "family", "genus", "species"), sep  = ";" , remove = FALSE) -> df
+```
+
+```{r}
+df %>% 
+  # filter(Model == "Human") %>% 
+  filter(genus %in% c("g__Enterococcus", "g__Escherichia")) %>% 
+  mutate(Abundance = na_if(Abundance, 0)) %>%
+  mutate(logTPM = log10(Abundance + 1))  %>% 
+  # separate_rows(., Resistance_Mechanism,sep = '; ',convert = TRUE) %>% 
+  # ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = fct_reorder(Strain, logTPM))) +   
+  ggplot(aes(x = as.factor(Day_of_Treatment), y = Abundance, fill = GTDB_tax_CONCOCT_clean)) +#reorder(genus, Abundance, FUN=median, na.rm = TRUE))) +
+  geom_bar( stat = "identity", colour="black", size=0.025) +
+  facet_grid(Model  ~ Treatment + Fermentation + Antibiotic_mg.mL , scales = "free", space = "free_x", drop = TRUE) +
+  ggtitle("ARG Type Abundance per Sample") +
+  xlab("Day (Treatment)")  +
+  # ylab("Proportion") + 
+  theme_light() +
+  # scale_fill_manual(name = "", values = col_strains) +
+  theme(legend.position = "bottom") +
+  ggpubr::rotate_x_text(60) -> p_mec
+
+# p_mec %>% 
+#   ggpubr::set_palette("jco") -> p_mec
+
+p_mec
+
+p_mec %>%
+  export::graph2ppt(append = TRUE, width = 12, height = 8,
+                    file = out_pptx)
+```
+
+
+
+### Fig. 2b
+
+```{r}
+phyloseq_AMR_MAG_MGE %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG"))  %>%
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() -> df  #%>% 
+# filter(grepl('unclassified', PathoFact_AMR_AMR_sub_class_multi))  -> df
+
+results <- vector("list", length(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique()))
+names(results) = c(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+
+for (dd in df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+{
+  print(dd)
+  df %>% 
+    filter(PathoFact_AMR_AMR_sub_class_multi == !!dd) %>% 
+    select(-Lactose_mM:-Total_SCFA_mM) %>% 
+    group_by(Sample, PathoFact_AMR_AMR_sub_class_multi) %>% 
+    summarise(sum_abundance = sum(Abundance), .groups = "drop") %>% 
+    mutate(sum_abundance = na_if(sum_abundance, 0)) %>%
+    left_join(metadata_mapping,
+              by = c("Sample" = "sample_id")) %>% 
+    # filter(Model == "Chicken") %>% 
+    # mutate(Day_of_Treatment_num = as.double(Day_of_Treatment)) %>% 
+    # mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
+    mutate(Antibiotic_mg.mL = factor(Antibiotic_mg.mL, levels = c(NA, 20, 200,90, 600))) %>%
+    ggplot(aes_string(x = "Day_of_Treatment", y = "sum_abundance", color = "Treatment", fill  = "Treatment", shape = "Antibiotic_mg.mL")) + #shape = Fermentation
+    geom_point(size = 2.5) + 
+    geom_line(linetype = 2,  size = 0.5,  aes_string(group = "interaction(Model, Reactor_Treatment_Dose)")) +
+    labs(y = paste0("sum Rnum_Gi ") , x = "Day_of_Treatment") +
+    scale_color_manual(name = "", values = treat_col,
+                       na.value = "black") +
+    scale_fill_manual(name = "", values = treat_col,
+                      na.value = "black") +
+    scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
+    # scale_alpha_continuous(name = "", range=c(0.6, 1), na.value =  1) +
+    geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") +
+    ggtitle(dd) +
+    theme_light() + 
+    scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) -> p1
+  
+  # p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL + PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "fixed", space = "fixed", drop = TRUE)
+  # 
+  # p1 + facet_wrap(as.formula(paste0("PathoFact_AMR_AMR_sub_class_multi ~  Model  ")),scales = "free"
+  #)
+  results[[dd]] <- p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL ~  Model  ")),  scales = "free", space = "fixed", drop = TRUE)
+  
+  results[[dd]]  %>% 
+    export::graph2ppt(append = TRUE, width = 8, height = 4,
+                      file = out_pptx)
+  
+  print(p1 + facet_grid(as.formula(paste0(" Antibiotic_mg.mL ~  Model  ")), scales = "free", space = "fixed", drop = TRUE))
+  print(p1 + facet_grid(as.formula(paste0("PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "free", space = "fixed", drop = TRUE))
+  
+}
+```
+
+
+
+Vancomycin is a glycopeptide antibiotic used in the prophylaxis and treatment of infections caused by Gram-positive bacteria. Vancomycin inhibits the synthesis of peptidoglycan, the major component of the cell wall of gram-positive bacteria. Its mechanism of action is unusual in that it acts by binding precursors of peptidoglycan, rather than by interacting with an enzyme. -> glycopeptide antibiotic
+
+```{r}
+results$`glycopeptide antibiotic`
+
+results$`glycopeptide antibiotic` %>% 
+  export::graph2ppt(append = TRUE, width = 8, height = 4,
+                    file = out_pptx)
+```
+
+Cefotaxime is a semisynthetic cephalosporin taken parenterally. It is resistant to most beta-lactamases and active against Gram-negative rods and cocci due to its aminothiazoyl and methoximino functional groups. -> cephalosporin
+
+```{r}
+results$cephalosporin 
+
+results$cephalosporin %>% 
+  export::graph2ppt(append = TRUE, width = 8, height = 4,
+                    file = out_pptx)
+```
+
+### Fig. 2c
+
+```{r}
+phyloseq_AMR_MAG_MGE %>% 
+  physeq_sel_tax_table(c("GTDB_tax_CONCOCT_clean",
+                         "PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG"))  %>%
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() %>% 
+  # filter(!is.na(CONCOCT_bin )) %>% 
+  separate(GTDB_tax_CONCOCT_clean, into = c("domain", "phylum", "class", "order", "family", "genus", "species"), sep  = ";" ) -> df
+
+```
+
+
+### Fig. 3
+
+```{r}
+phyloseq_AMR_MAG_MGE %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_MGE_prediction_clean",
+                         "PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG"))  %>%
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG", "chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) -> df  #%>% 
+# filter(grepl('unclassified', PathoFact_AMR_AMR_sub_class_multi))  -> df
+
+results <- vector("list", length(df$PathoFact_AMR_MGE_prediction_clean_2 %>%  unique()))
+names(results) = c(df$PathoFact_AMR_MGE_prediction_clean_2 %>%  unique())
+
+for (dd in df$PathoFact_AMR_MGE_prediction_clean_2 %>%  unique())
+{
+  print(dd)
+  df %>% 
+    filter(PathoFact_AMR_MGE_prediction_clean_2 == !!dd) %>% 
+    select(-Lactose_mM:-Total_SCFA_mM) %>% 
+    group_by(Sample, PathoFact_AMR_MGE_prediction_clean_2) %>% 
+    summarise(sum_abundance = sum(Abundance), .groups = "drop") %>% 
+    mutate(sum_abundance = na_if(sum_abundance, 0)) %>%
+    left_join(metadata_mapping,
+              by = c("Sample" = "sample_id")) %>% 
+    # filter(Model == "Chicken") %>% 
+    mutate(Day_of_Treatment_num = as.double(Day_of_Treatment)) %>% 
+    # mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
+    mutate(Antibiotic_mg.mL = factor(Antibiotic_mg.mL, levels = c(NA, 20, 200,90, 600))) %>%
+    ggplot(aes_string(x = "Day_of_Treatment", y = "sum_abundance", color = "Treatment", fill  = "Treatment", shape = "Antibiotic_mg.mL")) + #shape = Fermentation
+    geom_point(size = 2.5) + 
+    geom_line(linetype = 2,  size = 0.5,  aes_string(group = "interaction(Model, Reactor_Treatment_Dose)")) +
+    labs(y = paste0("sum Rnum_Gi ") , x = "Day_of_Treatment") +
+    scale_color_manual(name = "", values = treat_col,
+                       na.value = "black") +
+    scale_fill_manual(name = "", values = treat_col,
+                      na.value = "black") +
+    scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
+    # scale_alpha_continuous(name = "", range=c(0.6, 1), na.value =  1) +
+    geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") +
+    ggtitle( dd ) +
+    theme_light() -> p1
+  
+  results[[dd]] <- p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL ~  Model  ")), scales = "free", space = "fixed", drop = TRUE)
+  
+  
+  results[[dd]] %>% 
+    export::graph2ppt(append = TRUE, width = 8, height = 4,
+                      file = out_pptx)
+  
+  print(p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL  ~  Model  ")), scales = "free", space = "fixed", drop = TRUE))
+}
+# print(p1 + facet_grid(as.formula(paste0("PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "free", space = "free", drop = TRUE))
+
+
+```
+
+```{r}
+results
+```
+
+per MGE per class...
+
+
+```{r}
+phyloseq_AMR_MAG_MGE %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_MGE_prediction_clean",
+                         "PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG"))  %>%
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG", "chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) -> df  #%>%
+```
+
+
+```{r}
+for(MGE  in c("MAG", "chromosome", "plasmid", "phage", "ambiguous", "unclassified"))
+{
+  
+  print(MGE)
+  df %>% 
+    filter(PathoFact_AMR_MGE_prediction_clean_2 == !!MGE) -> df_tmp
+  
+  results <- vector("list", length(df_tmp$PathoFact_AMR_AMR_sub_class_multi %>%  unique()))
+  
+  names(results) = c(df_tmp$PathoFact_AMR_AMR_sub_class_multi %>% unique())
+  
+  
+  
+  
+  for (dd in df_tmp$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+  {
+    print(dd)
+    df_tmp %>% 
+      filter(PathoFact_AMR_AMR_sub_class_multi == !!dd) %>% 
+      select(-Lactose_mM:-Total_SCFA_mM) %>% 
+      group_by(Sample, PathoFact_AMR_AMR_sub_class_multi) %>% 
+      summarise(sum_abundance = sum(Abundance), .groups = "drop") %>% 
+      mutate(sum_abundance = na_if(sum_abundance, 0)) %>%
+      left_join(metadata_mapping,
+                by = c("Sample" = "sample_id")) %>% 
+      # filter(Model == "Chicken") %>% 
+      mutate(Day_of_Treatment_num = as.double(Day_of_Treatment)) %>% 
+      # mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
+      mutate(Antibiotic_mg.mL = factor(Antibiotic_mg.mL, levels = c(NA, 20, 200,90, 600))) %>%
+      ggplot(aes_string(x = "Day_of_Treatment", y = "sum_abundance", color = "Treatment", fill  = "Treatment", shape = "Antibiotic_mg.mL")) + #shape = Fermentation
+      geom_point(size = 2.5) + 
+      geom_line(linetype = 2,  size = 0.5,  aes_string(group = "interaction(Model, Reactor_Treatment_Dose)")) +
+      labs(y = paste0("sum Rnum_Gi ") , x = "Day_of_Treatment") +
+      scale_color_manual(name = "", values = treat_col,
+                         na.value = "black") +
+      scale_fill_manual(name = "", values = treat_col,
+                        na.value = "black") +
+      scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
+      # scale_alpha_continuous(name = "", range=c(0.6, 1), na.value =  1) +
+      geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") +
+      ggtitle(paste0( dd, "- ", MGE )) +
+      theme_light() -> p1
+    
+    # p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL + PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "fixed", space = "fixed", drop = TRUE)
+    # 
+    # p1 + facet_wrap(as.formula(paste0("PathoFact_AMR_AMR_sub_class_multi ~  Model  ")),scales = "free"
+    #)
+    
+    results[[dd]] <- p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL ~  Model  ")),  scales = "free", space = "fixed", drop = TRUE)
+    
+    results[[dd]] %>% 
+      export::graph2ppt(append = TRUE, width = 8, height = 4,
+                        file = out_pptx)
+    
+    # print(p1 + facet_grid(as.formula(paste0(" Antibiotic_mg.mL ~  Model  ")), scales = "fixed", space = "fixed", drop = TRUE))
+    # 
+    # print(p1 + facet_grid(as.formula(paste0("PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "free", space = "free", drop = TRUE)
+  }
+  assign(MGE, results)
+}
+```
+
+
+```{r}
+MAG
+```
+
+```{r}
+chromosome
+```
+
+```{r}
+plasmid
+```
+
+```{r}
+phage
+```
+
+
+
+```{r}
+# phyloseq_AMR_MAG_MGE %>% 
+#   physeq_sel_tax_table(c("PathoFact_AMR_MGE_prediction_clean",
+#                          "PathoFact_AMR_AMR_sub_class_multi",
+#                          "PathoFact_AMR_ARG"))  %>%
+#   # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+#   speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+#   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+#   speedyseq::psmelt() %>% 
+#   mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean)) %>% 
+#   mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG", "chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) -> df  #%>% 
+# # filter(grepl('unclassified', PathoFact_AMR_AMR_sub_class_multi))  -> df
+# 
+# results <- vector("list", length(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique()))
+# names(results) = c(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+# 
+# for (dd in df$PathoFact_AMR_MGE_prediction_clean_2 %>%  unique())
+# {
+#   print(dd)
+#   df %>% 
+#     filter(PathoFact_AMR_AMR_sub_class_multi == !!dd) %>% 
+#     
+#     results <- vector("list", length(df$PathoFact_AMR_MGE_prediction_clean_2 %>%  unique()))
+#   names(results) = c(df$PathoFact_AMR_MGE_prediction_clean_2 %>%  unique())
+#   
+#   for (dd in df$PathoFact_AMR_MGE_prediction_clean_2 %>%  unique())
+#   {
+#     print(dd)
+#     df %>% 
+#       filter(PathoFact_AMR_MGE_prediction_clean_2 == !!dd) %>% 
+#       select(-Lactose_mM:-Total_SCFA_mM) %>% 
+#       group_by(Sample, PathoFact_AMR_MGE_prediction_clean_2) %>% 
+#       summarise(sum_abundance = sum(Abundance), .groups = "drop") %>% 
+#       mutate(sum_abundance = na_if(sum_abundance, 0)) %>%
+#       left_join(metadata_mapping,
+#                 by = c("Sample" = "sample_id")) %>% 
+#       # filter(Model == "Chicken") %>% 
+#       mutate(Day_of_Treatment_num = as.double(Day_of_Treatment)) %>% 
+#       mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
+#       mutate(Antibiotic_mg.mL = factor(Antibiotic_mg.mL, levels = c(NA, 20, 200,90, 600))) %>%
+#       ggplot(aes_string(x = "Day_of_Treatment", y = "sum_abundance", color = "Treatment", fill  = "Treatment", shape = "Antibiotic_mg.mL")) + #shape = Fermentation
+#       geom_point(size = 2.5) + 
+#       geom_line(linetype = 2,  size = 0.5,  aes_string(group = "interaction(Model, Reactor_Treatment_Dose)")) +
+#       labs(y = paste0("sum Rnum_Gi ") , x = "Day_of_Treatment") +
+#       scale_color_manual(name = "", values = treat_col,
+#                          na.value = "black") +
+#       scale_fill_manual(name = "", values = treat_col,
+#                         na.value = "black") +
+#       scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
+#       # scale_alpha_continuous(name = "", range=c(0.6, 1), na.value =  1) +
+#       geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") +
+#       ggtitle( dd ) +
+#       theme_light() -> p1
+#     
+#     results[[dd]] <- p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL ~  Model  ")), scales = "fixed", space = "fixed", drop = TRUE)
+#     
+#     print(p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL  ~  Model  ")), scales = "free", space = "fixed", drop = TRUE))
+#   }
+#   # print(p1 + facet_grid(as.formula(paste0("PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "free", space = "free", drop = TRUE))
+#   
+# }
+```
+
+
+
+```{r}
+devtools::session_info()
+```
+

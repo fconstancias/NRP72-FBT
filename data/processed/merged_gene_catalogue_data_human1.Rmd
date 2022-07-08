@@ -1,0 +1,1158 @@
+---
+title: "Merge human gene catalogue + quantification "
+author: "Hannah Li Hägi & Florentin Constancias "
+date: " `r format(Sys.time(), '%B %d, %Y')` "
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+rm(list= ls())
+library('dplyr')
+library("tidyverse")
+library('here')
+# library("SQMtools")
+library("phyloseq")
+library("readxl")
+
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+#source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R")
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R")
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R")
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R")
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_heatmap.R")
+```
+
+
+# preliminary:
+
+anvio no bin:
+
+```{r}
+  
+# cd /Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/human1/
+# # anvi-get-split-coverages -p PROFILE.db  -c CONTIGS.db --list-splits  > all_splits.tsv
+# "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/human1/all_splits.tsv" %>%
+#   read_tsv(col_names = c("split", "bin")) %>%
+#   mutate(bin = "all") %>%
+#   data.frame() ->  Manual_bins_tmp
+# # # 
+# # # 
+# Manual_bins_tmp %>%
+#   write_tsv(here::here("data/processed/anvio/human1/collection_all_splits.tsv"), col_names = FALSE)
+# 
+# 
+# anvi-import-collection -p PROFILE.db  -c CONTIGS.db  -C all_splits collection_all_splits.tsv
+# anvi-summarize  -p PROFILE.db  -c CONTIGS.db  --list-collections
+# anvi-summarize  -p PROFILE.db  -c CONTIGS.db -C all_splits -o summary_no_bins 
+
+#anvi-summarize  -p PROFILE.db  -c CONTIGS.db  -C concoct_10_raw -o summary_no_bins # **actually this is al the splits : NOT SURE**
+```
+
+* FYI: A subset of split sequences are being initialized (to be precise, only
+57125 of 261459 splits the contigs database knows about). Nothing to worry
+about. Probably.
+
+
+
+# Define inputs:
+
+
+
+
+## tables/ data:
+
+```{r}
+SQMR <- "data/raw/SQM/human1_SQM.rds"
+
+metadata <- "data/raw/25.11.2021_metadata_updated.tsv"
+
+
+RGI_CARD <- "data/raw/CARD/rgi_contig_human1.txt"
+Viralverify <- "data/raw/mobilome/viralverify/01.human1_result_table.csv"
+isescan <- "data/raw/mobilome/isescan/01.SqueezeHuman1.fasta.tsv"
+PathoFact_AMR <- "data/processed/PathoFact/humann1/AMR/AMR_MGE_prediction_sample_l1000_report.tsv"
+PathoFact_Tox <- "data/processed/PathoFact/humann1/Tox/Toxin_prediction_sample_l1000_report.tsv"
+PathoFact_Tox_fam <- "data/processed/PathoFact/humann1/Tox/Toxin_gene_library_sample_l1000_report.tsv"
+
+
+anvio_nobin_summary <- "data/processed/anvio/human1/summary_no_bins/bin_by_bin/all/all-gene_calls.txt"
+
+DAS_collection <- "data/processed/anvio/human1/DAS.txt"
+Manual_bins <- "data/processed/anvio/human1/MAGS/concoct_10_collection_refined_2.txt"
+
+ANVIO_SUMMARY_DAS  <- "data/processed/anvio/human1/MAGS/SUMMARY/DAS/bins_summary.txt"
+ANVIO_SUMMARY_CONCOCT <- "data/processed/anvio/human1/MAGS/SUMMARY/concoct_10_refined_2/bins_summary.txt"
+
+GTDB_tax <- "data/processed/gtdb/GTDB_all.xlsx"
+SQM_DAS <- "data/raw/SQM/19.human1.bintable"
+
+# contigs.lgt.tsv <- "~/Documents/MSc_Thesis-NRP72/data/HGT/human.contigs.lgt.tsv"
+# contigs.no_lgt.tsv <- "~/Documents/MSc_Thesis-NRP72/data/HGT/human.contigs.no_lgt.tsv"
+# contigs.unclassified.tsv <- "~/Documents/MSc_Thesis-NRP72/data/HGT/human.contigs.unclassified.tsv"
+
+```
+
+
+
+## parameters:
+
+```{r}
+Model_type <- c("protein homolog model", "protein variant model", "protein overexpression model", "rRNA gene variant model")
+Cut_Off <- c("Strict", "Perfect")
+besid = 95
+Percent_length = 0.80
+```
+
+# Gene/annotation - contig classification:
+
+## Load SQM:
+```{r}
+SQMR %>% 
+  here::here() %>% 
+  readRDS() -> human
+```
+
+## Load metadata:
+
+```{r}
+metadata %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  data.frame() %>%
+  filter(!is.na(metagenomic_sample_name), Model == "Human") -> human_meta
+```
+
+Modify metadata: **this should be done once on the metadata**
+
+```{r}
+# create Period column
+human_meta %>%
+  mutate(Reactor_Treatment = base::replace(Reactor_Treatment, Reactor_Treatment == "TR_2CTX", "TR2_CTX")) %>%
+  mutate(Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment)) %>% 
+  mutate(Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Treatment, `Antibiotic_mg.mL`), Treatment)) %>%
+  mutate(
+    Period = case_when(
+      Day_of_Treatment <= 0  ~ "pret",
+      Day_of_Treatment > 0 ~ as.character(Day_of_Treatment)
+    )) %>%
+  mutate(Period = base::replace(Period, Treatment == "DONOR", "pret")) %>%
+  mutate(Day_of_Treatment = addNA(Day_of_Treatment)) %>%
+  column_to_rownames("metagenomic_sample_name") -> human_meta
+
+#human_meta$Treatment_Dose <- factor(human_meta$Treatment_Dose, ordered = TRUE, 
+#                                 levels = c("DONOR", "UNTREATED", "CTX+HV292.120", "CTX+HV292.1200",
+#                                            "CTX20", "CTX200", "HV292.1", "VAN+CCUG5916890", "VAN+CCUG59168600",
+#                                            "VAN90", "VAN600", "CCUG59168"))
+
+```
+
+
+
+## PathoFact:
+
+### PathoFact_AMR:
+
+```{r}
+PathoFact_AMR %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  select(-Contig, -Contig_ID, -ORF_ID) %>% 
+  na_if("-") %>% 
+  na_if("n/a") -> PathoFact_AMR
+
+colnames(PathoFact_AMR) <- paste0("PathoFact_AMR_", colnames(PathoFact_AMR))
+
+
+PathoFact_AMR %>% 
+  rename(ORF_ID = PathoFact_AMR_ORF) -> PathoFact_AMR
+```
+
+### PathoFact_Tox:
+
+```{r}
+PathoFact_Tox %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  select(-ORF_ID, -Number_of_hits, -Signal_peptide, -Toxin_prediction) %>% 
+  na_if("-") %>% 
+  na_if("n/a") %>% 
+  filter(!is.na(Toxin_confidence_level)) -> PathoFact_Tox
+
+PathoFact_Tox %>% 
+  dim()
+```
+
+```{r}
+PathoFact_Tox_fam %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  # add_count(ORF, name = "count_ORF") %>% arrange(-count_ORF)
+  group_by(ORF) %>% 
+  top_n(1, wt = `Significance_evalue`) %>% 
+  top_n(1, wt = NAME) %>% #add_count(ORF, name = "count_ORF") %>% arrange(-count_ORF)
+  select(-ORF_ID, -Database, -Alternative_name) -> PathoFact_Tox_fam
+
+
+PathoFact_Tox_fam %>% 
+  dim()
+```
+
+```{r}
+PathoFact_Tox %>% 
+  left_join(PathoFact_Tox_fam,
+            by = c("ORF" = "ORF")) -> PathoFact_Tox
+
+
+PathoFact_Tox %>% 
+  dim()
+```
+
+
+```{r}
+colnames(PathoFact_Tox) <- paste0("PathoFact_Tox_", colnames(PathoFact_Tox))
+
+PathoFact_Tox %>% 
+  rename(PathoFact_Tox_Toxin_classification = PathoFact_Tox_Toxin_confidence_level,
+         ORF_ID = PathoFact_Tox_ORF) -> PathoFact_Tox
+
+
+PathoFact_Tox %>% 
+  head() %>% 
+  DT::datatable()
+```
+## rgi CARD:
+
+```{r}
+# Resistome data:
+RGI_CARD %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  # read.delim() %>%
+  select(-ORF_ID) %>%
+  dplyr::filter(Model_type %in% Model_type ,
+                Cut_Off %in% Cut_Off,
+                Nudged %!in% c("TRUE"),
+                Best_Identities > besid, # plot distribution of bestID vs percentage length ref and color bitscore and symbol class AMR
+                `Percentage Length of Reference Sequence` > Percent_length) %>%
+  separate(Contig, c("Megahit", "Contig", "Split"), sep = "_", fill = "right") %>%
+  mutate(ORF_ID = paste(Megahit, Contig, paste(Start, Stop, sep = "-"), sep = "_")) %>%
+  #mutate(Contig = paste(Megahit, Contig, sep = "_")) %>%
+  select(-c(Megahit, Split, CARD_Protein_Sequence, Predicted_DNA, Predicted_Protein, Contig)) %>% 
+  na_if("NA") %>% 
+  na_if("n/a") %>% 
+  na_if("<NA>") %>% 
+  na_if("") %>% 
+  select(-Start, -Stop, -Orientation) %>% 
+  select(ORF_ID, everything()) -> card
+
+colnames(card) <- paste0("rgi_CARD_", colnames(card))
+
+card %>% 
+  rename(ORF_ID = rgi_CARD_ORF_ID) -> card
+
+card %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+## Waffle HGT: 
+
+Not here since as to be on a per sample basis
+
+```{r}
+# TODO move to more appropriate section not 
+
+# # HGT events
+# contigs.lgt.tsv %>% 
+#   read_tsv() %>% 
+#   select(CONTIG_NAME, CALL) -> hgt
+# 
+# 
+# contigs.no_lgt.tsv %>% 
+#   read_tsv() %>% 
+#   select(CONTIG_NAME, CALL) -> no_hgt
+# 
+# contigs.unclassified.tsv %>% 
+#   read_tsv() %>% 
+#   select(CONTIG_NAME, CALL) -> unclassified_hgt
+# 
+# hgt_events <- rbind(hgt, no_hgt, unclassified_hgt)
+```
+
+## Viralverify:
+
+```{r}
+# Viralverify 
+Viralverify  %>%
+  read_csv() %>% 
+  rename(Contig_ID = `Contig name`,
+         viralverify_Prediction = Prediction) %>% 
+  select(Contig_ID, viralverify_Prediction) -> viralverify
+```
+
+
+# isescan:
+
+```{r}
+isescan %>%
+  read_tsv() %>% 
+  group_by(seqID) %>%
+  add_count(cluster, name = "count_IS_contig") %>% 
+  top_n(1, wt = `E-value4copy`) %>%
+  top_n(1, wt = isBegin) %>%
+  mutate(IS = "yes") %>%
+  select(seqID:cluster, type, count_IS_contig) -> top_isescan
+
+colnames(top_isescan) <- paste0("isescan_", colnames(top_isescan))
+
+top_isescan %>% 
+  rename(Contig_ID = isescan_seqID) -> top_isescan
+
+
+top_isescan %>% 
+  head() %>% 
+  DT::datatable()
+```
+## plasx:
+
+
+```{r}
+# plasx %>% 
+#   here::here() %>% 
+#   read_tsv(col_names = c("Contig_ID", "plasX_score")) -> pasx_score
+```
+
+## Combine all:
+
+```{r}
+human$orfs$table %>%
+  rownames_to_column("ORF_ID") %>% 
+  data.frame() %>% 
+  na_if("") %>% 
+  # left_join(
+  # human$orfs$tax %>% 
+  #   as.data.frame() %>% 
+  #   rownames_to_column("ORF_ID") %>%
+  #   separate(ORF_ID, c("Megahit", "Contig", "Range"), sep = "_", fill = "right", remove = FALSE) %>%
+  #   # mutate(Contig = as.numeric(Contig)) %>%
+  #   mutate(Contig = paste(Megahit, Contig, sep = "_")) %>% 
+  #   left_join(human$orfs$seqs %>%
+  #     as.data.frame() %>%
+  #   rownames_to_column("ORF_ID")) %>% 
+  #   select(-Megahit) %>% 
+#   rename(seq = ".",
+#          Contig_ID = Contig,
+#          superkingdom_ORF = superkingdom,
+#          phylum_ORF = phylum,
+#          class_ORF= class,
+#          order_ORF = order,
+#          family_orf = family,
+#          genus_orf = genus,
+#          species_orf = species)
+# ) %>% 
+select(-Method, -Molecule) %>% 
+  rename(Contig_ID = `Contig.ID`,
+         Tax_orf = Tax) %>% 
+  select(-TPM.D.1:-Hits) -> orf_tmp
+
+
+orf_tmp %>% 
+  select(-(starts_with(c("TPM.","Raw.base.count.","Coverage.", "Raw.read.count")))) -> orf
+# starts_with(c("Petal", "Sepal"))
+# orf %>% 
+#   write_tsv("~/Desktop/unitedhuman1.tsv")
+# orf %>% 
+#   write_tsv("~/Desktop/unitedhuman1.tsv")
+colnames(orf) <- paste0("SQM_", colnames(orf))
+
+orf %>% 
+  rename(Contig_ID = SQM_Contig_ID,
+         ORF_ID = SQM_ORF_ID) -> orf
+
+orf %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+```{r}
+human$contigs$table %>%
+  rownames_to_column("Contig_ID") %>% 
+  data.frame() %>% 
+  rename(Tax_contig = `Tax`,
+         Disparity_contig = Disparity,
+         GC_perc_contig = GC.perc,
+         Length_contig = Length,
+         Num_genes_contig = Num.genes) %>% 
+  select(-(starts_with(c("TPM.","Raw.base.count.","Coverage.", "Raw.read.count")))) %>% 
+  select(-Bin.ID) -> contigs
+
+
+colnames(contigs) <- paste0("SQM_", colnames(contigs))
+
+contigs %>% 
+  rename(Contig_ID = SQM_Contig_ID) -> contigs
+
+contigs %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+
+```{r}
+orf %>% 
+  left_join(card,
+            by = c("ORF_ID" = "ORF_ID")) %>% 
+  left_join(PathoFact_AMR,
+            by = c("ORF_ID" = "ORF_ID")) %>% 
+  left_join(PathoFact_Tox,
+            by = c("ORF_ID" = "ORF_ID")) %>% 
+  left_join(viralverify,
+            by = c("Contig_ID" = "Contig_ID")) %>% 
+  left_join(top_isescan,
+            by = c("Contig_ID" = "Contig_ID")) %>% 
+  left_join(contigs,
+            by = c("Contig_ID" = "Contig_ID")) -> orf_contig
+
+orf_contig %>% 
+  head() %>% 
+  DT::datatable()
+```
+## Test anvio no bin:
+
+```{r}
+anvio_nobin_summary %>% 
+  here::here() %>%  
+  read_tsv() -> anvi_no_bin_annot
+```
+
+Link anvio gene id with SQM gene id:
+```{r}
+anvi_no_bin_annot %>% 
+  mutate(orf_id = paste0(contig, "_", start+1, "-", stop)) %>% 
+  select(-gene_callers_id) -> anvi_no_bin_annot
+
+colnames(anvi_no_bin_annot) <- paste0("anvio_", colnames(anvi_no_bin_annot))
+
+anvi_no_bin_annot %>% 
+  select(anvio_orf_id, everything()) %>% 
+  select(-anvio_contig, -anvio_start, -anvio_stop, -anvio_direction ,-anvio_dna_sequence) -> anvi_no_bin_annot
+```
+
+```{r}
+# anvi_no_bin_annot$anvio_orf_id %>% 
+#   head()
+```
+
+```{r}
+# orf_contig %>%
+#   filter(Contig_ID == "megahit_37") %>%
+#   distinct(ORF_ID, .keep_all = TRUE)
+```
+
+```{r}
+# orf_contig %>%
+#   filter(ORF_ID == "megahit_37_124-318")
+```
+```{r}
+# anvi_no_bin_annot %>% 
+#     filter(anvio_contig == "megahit_37") %>%
+#   distinct(anvio_orf_id, .keep_all = TRUE)
+```
+
+```{r}
+# anvi_no_bin_annot %>% 
+#     filter(anvio_orf_id == "megahit_37_124-318")
+```
+
+```{r}
+orf_contig %>% 
+  left_join(anvi_no_bin_annot,
+            by = c("ORF_ID" = "anvio_orf_id")) -> orf_contig
+
+```
+
+```{r}
+# orf_contig %>%
+#   filter(anvio_contig == "megahit_37")
+```
+
+## MAG informations:
+
+### Collections:
+
+#### SQM DAS collection:
+
+```{r}
+DAS_collection %>% 
+  here::here() %>% 
+  read_tsv(col_names = c("split", "DAS_bin")) %>% 
+  separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
+  mutate(Contig_ID = paste0(cont,"_", cont_num)) %>% 
+  distinct(Contig_ID, .keep_all = TRUE) %>% 
+  select(Contig_ID, DAS_bin) -> DAS
+
+DAS %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+#### Manual MAGs CONCOCT:
+
+```{r}
+Manual_bins %>% 
+  read_tsv(col_names = c("split", "CONCOCT_bin")) %>% 
+  separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
+  mutate(Contig_ID = paste0(cont,"_", cont_num)) %>% 
+  distinct(Contig_ID, .keep_all = TRUE) %>% 
+  select(Contig_ID, CONCOCT_bin) -> CONCOCT
+
+CONCOCT  %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+Generate fake bin for all contigs -> export kegg annotations from anvio?
+
+```{r}
+# Manual_bins %>%
+#   read_tsv(col_names = c("split", "bin")) %>%
+#   mutate(bin = "all") %>% 
+#   data.frame() ->  Manual_bins_tmp
+# 
+# # names(Manual_bins_tmp) <- NULL
+# 
+# Manual_bins_tmp %>% 
+#   write_tsv(here::here("data/processed/anvio/human1/collection_all_splits.tsv"), col_names = FALSE)
+```
+
+Let's add the contig <-> bin to the merged data:
+
+```{r}
+orf_contig %>% 
+  left_join(CONCOCT) %>% 
+  left_join(DAS) -> orf_contig_2
+```
+
+### MAGs summary:
+
+#### MAGs GDTB taxonomy:
+
+```{r}
+GTDB_tax %>%
+  read_excel() %>%
+  filter(dataset == "human1") %>%
+  mutate(user_genome = str_remove_all(user_genome, c("human1_|-contigs|refined_2_"))) %>%
+  filter(str_detect(user_genome, c("DAS|concoct"))) %>%
+  select(user_genome, classification) %>%
+  # separate(classification, 
+  #          into = c("domain", "phylum", "class", "order", "family", "genus", "species"), 
+  #          sep = ";", 
+  #          fill = "right") %>% 
+  rename(GTDB_tax = classification) %>% 
+  mutate(user_genome = str_remove_all(user_genome, "concoct_10_")) %>% 
+  mutate(user_genome = str_remove_all(user_genome, "DAS_")) -> GTDB_tax
+
+# TODO clean taxonomy and add highest resolution.
+
+GTDB_tax %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+```{r}
+orf_contig_2 %>% 
+  left_join(GTDB_tax,
+            by = c("CONCOCT_bin" = "user_genome")) %>%  #,
+  # suffix = c("", "CONCOCT")) %>% 
+  rename(GTDB_tax_CONCOCT = GTDB_tax) %>% 
+  left_join(GTDB_tax,
+            by = c("DAS_bin" = "user_genome")) %>% #,
+  # suffix = c("", "_DAS")) %>% 
+  rename(GTDB_tax_DAS = GTDB_tax) -> orf_contig_3
+```
+
+
+```{r}
+## CONCOCT tax info
+
+# GTDB_tax %>%
+#   filter(str_detect(user_genome, "concoct")) %>%
+#   mutate(user_genome = str_remove_all(user_genome, "concoct_10_")) -> CONCOCT_tax
+# 
+# colnames(CONCOCT_tax) <- paste0("CONCOCT_", colnames(CONCOCT_tax))
+
+```
+
+#### SQM DAS info:
+
+```{r}
+SQM_DAS %>% 
+  read_tsv(skip = 1) -> SQM_DAS
+
+colnames(SQM_DAS) <- paste0("SQM_DAS_", colnames(SQM_DAS))
+
+SQM_DAS %>%
+  mutate(SQM_DAS_HQ = ifelse(SQM_DAS_Completeness >= 80 & SQM_DAS_Contamination <= 10, "HQ", NA)) %>% 
+  select(-SQM_DAS_Method, -`SQM_DAS_Coverage D-1`:-`SQM_DAS_TPM HV-24`) -> SQM_DAS_HQ
+
+# filter(SQM_DAS_Completeness >= 80,
+#        SQM_DAS_Contamination <= 10) %>% 
+# mutate(SQM_DAS_bins_HQ = `SQM_DAS_Bin ID`) -> SQM_DAS_HQ
+
+SQM_DAS_HQ %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+```{r}
+orf_contig_3 %>% 
+  left_join(SQM_DAS_HQ,
+            by = c("DAS_bin" = "SQM_DAS_Bin ID")) -> orf_contig_3
+```
+
+#### ANVIO DAS info:
+
+```{r}
+ANVIO_SUMMARY_DAS %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  select(-t_domain:-t_species) -> ANVIO_SUMMARY_DAS
+
+colnames(ANVIO_SUMMARY_DAS) <- paste0("ANVIO_SUMMARY_DAS_", colnames(ANVIO_SUMMARY_DAS))
+
+ANVIO_SUMMARY_DAS %>%
+  # filter(ANVIO_SUMMARY_DAS_percent_completion >= 80,
+  #        ANVIO_SUMMARY_DAS_percent_redundancy <= 10) %>% 
+  mutate(ANVIO_DAS_HQ = ifelse(ANVIO_SUMMARY_DAS_percent_completion >= 80 & ANVIO_SUMMARY_DAS_percent_redundancy <= 10, "HQ", NA)) -> ANVIO_SUMMARY_DAS
+
+ANVIO_SUMMARY_DAS %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+```{r}
+orf_contig_3 %>% 
+  left_join(ANVIO_SUMMARY_DAS,
+            by = c("DAS_bin" = "ANVIO_SUMMARY_DAS_bins")) -> orf_contig_3
+```
+
+#### ANVIO CONCOCT info:
+
+```{r}
+ANVIO_SUMMARY_CONCOCT %>% 
+  here::here() %>% 
+  read_tsv() %>% 
+  select(-t_domain:-t_species) -> ANVIO_SUMMARY_CONCOCT
+
+colnames(ANVIO_SUMMARY_CONCOCT) <- paste0("ANVIO_SUMMARY_CONCOCT_", colnames(ANVIO_SUMMARY_CONCOCT))
+
+ANVIO_SUMMARY_CONCOCT %>% 
+  mutate(ANVIO_CONCOCT_HQ = ifelse(ANVIO_SUMMARY_CONCOCT_percent_completion >= 80 & ANVIO_SUMMARY_CONCOCT_percent_redundancy <= 10, "HQ", NA)) -> ANVIO_SUMMARY_CONCOCT
+
+ANVIO_SUMMARY_CONCOCT %>% 
+  head() %>% 
+  DT::datatable()
+```
+
+```{r}
+orf_contig_3 %>% 
+  left_join(ANVIO_SUMMARY_CONCOCT,
+            by = c("CONCOCT_bin" = "ANVIO_SUMMARY_CONCOCT_bins")) -> orf_contig_3
+```
+
+
+Rename ORF and contig ID:
+```{r}
+orf_contig_3 %>% 
+  mutate(ORF_ID = paste0("h1_", ORF_ID),
+         Contig_ID = paste0("h1_", Contig_ID)) -> full_gene_catalogue
+```
+
+
+
+```{r}
+full_gene_catalogue %>% 
+  filter(PathoFact_AMR_MGE_prediction %in% c("plasmid", "ambiguous (plasmid/phage)") &
+         viralverify_Prediction %in% c("Uncertain - too short", "Plamid", "Uncertain - plasmid or chromosomal", "Plasmid")  ) %>% 
+  filter(!is.na(PathoFact_AMR_AMR_category)) %>% 
+  # filter(PathoFact_AMR_MGE_prediction %in% c("plasmid", "ambiguous (plasmid/phage)", "phage","ambiguous (phage/chromosome)" )) %>% 
+  select(ORF_ID, PathoFact_AMR_ARG, PathoFact_AMR_AMR_category, viralverify_Prediction,PathoFact_AMR_MGE_prediction,  DAS_bin, CONCOCT_bin) %>% 
+  DT::datatable()
+
+```
+
+**We have to clarify some cases before saving: e.g.: plasmid but in MAG... it should be plasmid and not MAG -> need to update anvio collection and summarise again to get genomes without plamid contigs... Would like to include plasX as well: https://github.com/michaelkyu/PlasX and build consensus prediction, plasmids are key here.**
+
+**If per sample assembly is retained it is gonna be a huge amount of work. Let's keep all this in mind**
+
+
+```{r}
+# full_gene_catalogue %>% 
+#   mutate(Classification_mobilome_DAS = case_when(
+#     PathoFact_AMR_MGE_prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(DAS_bin) ~ "MAG", Would like to include
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_DAS_HQ = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(DAS_bins_HQ) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_CONCOCT = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(CONCOCT_bin) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_CONCOCT_HQ = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(CONCOCT_bins_HQ) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   as.matrix(rownames = TRUE)
+```
+
+
+```{r}
+# 
+# 
+# left_join(card, by = "ORF_ID") %>%
+#   left_join(hgt_events, by = c("Contig" = "CONTIG_NAME")) %>%
+#   left_join(viralverify, by = c("Contig" = "Contig name")) %>%
+#   left_join(top_isescan, by = c("Contig" = "seqID")) %>%
+#   left_join(DAS, by = c("Contig" = "cont_id")) %>%
+#   left_join(DAS_tax, by = c("DAS_bin" ="DAS_user_genome")) %>%
+#   left_join(DAS_HQ, by = c("DAS_bin" = "DAS_bins_HQ"), keep = TRUE) %>%
+#   left_join(CONCOCT, by = c("Contig" = "cont_id")) %>%
+#   left_join(CONCOCT_tax, by = c("CONCOCT_bin" ="CONCOCT_user_genome")) %>%
+#   left_join(CONCOCT_HQ, by = c("CONCOCT_bin" = "CONCOCT_bins_HQ"), keep = TRUE) %>%
+#   select(-c(Megahit, Range)) %>%
+#   column_to_rownames("ORF_ID") %>%
+#   mutate(Classification_mobilome_DAS = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(DAS_bin) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_DAS_HQ = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(DAS_bins_HQ) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_CONCOCT = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(CONCOCT_bin) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_CONCOCT_HQ = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(CONCOCT_bins_HQ) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   as.matrix(rownames = TRUE) -> human_tax
+# 
+# 
+# rownames(human_tax) <- paste0("h_",rownames(human_tax))
+# 
+# # Check for hgt events in resistome
+# human_tax %>% as.data.frame() %>% filter(!is.na(ARO), CALL == "lgt")
+
+
+```
+
+
+
+
+##  Extract quantitative information from SQM:
+
+### ORFs:
+
+
+```{r}
+human$orfs$table %>%
+  rownames_to_column("ORF_ID") %>% 
+  data.frame() %>% 
+  # select(ORF_ID, TPM.D.1:Raw.base.count.HV.24) %>% 
+    select(ORF_ID, starts_with(c("TPM", "Coverage", "Raw.base.count", "Raw.read.count."))) %>% 
+  # select(starts_with("TPM"), "ORF_ID") %>% 
+  column_to_rownames("ORF_ID") -> quant_orfs
+
+# colnames(quant) <- colnames(quant) %>% 
+#   str_replace_all("//.", "//_")
+
+rownames(quant_orfs) <- paste0("h1_",
+                               rownames(quant_orfs))
+
+quant_orfs %>% 
+  rownames_to_column("ORF_ID") -> quant_orfs
+
+quant_orfs %>% 
+  head() %>% 
+  DT::datatable()
+
+# colnames(human_otu_tpm) <- colnames(human_otu_tpm) %>% str_remove_all("TPM ") %>% str_replace_all("-", "_")
+# rownames(human_otu_tpm) <- paste0("h_", rownames(human_otu_tpm))
+# 
+# # Coverage
+# human$orfs$table %>% as.data.frame() %>% select(starts_with("Coverage")) -> human_otu_cov
+# 
+# colnames(human_otu_cov) <- colnames(human_otu_cov) %>% str_remove_all("Coverage ") %>% str_replace_all("-", "_")
+# rownames(human_otu_cov) <- paste0("h_", rownames(human_otu_cov))
+# 
+# # Raw reads
+# human$orfs$table %>% as.data.frame() %>% select(starts_with("Raw read count")) -> human_otu_rr
+# 
+# colnames(human_otu_rr) <- colnames(human_otu_rr) %>% str_remove_all("Raw read count ") %>% str_replace_all("-", "_")
+# rownames(human_otu_rr) <- paste0("h_", rownames(human_otu_rr))
+```
+
+### contigs:
+
+```{r}
+human$contigs$table %>%
+  rownames_to_column("Contig_ID") %>% 
+  data.frame() %>% 
+    select(Contig_ID, starts_with(c("TPM", "Coverage", "Raw.base.count", "Raw.read.count."))) %>% 
+  # select(starts_with("TPM"), "ORF_ID") %>% 
+  column_to_rownames("Contig_ID") -> quant_contigs
+
+# colnames(quant_contigs) <- colnames(quant_contigs) %>% 
+#   str_replace_all("//.", "//_")
+
+rownames(quant_contigs) <- paste0("h1_",
+                                  rownames(quant_contigs))
+
+quant_contigs %>% 
+  rownames_to_column("Contig_ID") -> quant_contigs
+
+# colnames(human_otu_tpm) <- colnames(human_otu_tpm) %>% str_remove_all("TPM ") %>% str_replace_all("-", "_")
+# rownames(human_otu_tpm) <- paste0("h_", rownames(human_otu_tpm))
+# 
+# # Coverage
+# human$orfs$table %>% as.data.frame() %>% select(starts_with("Coverage")) -> human_otu_cov
+# 
+# colnames(human_otu_cov) <- colnames(human_otu_cov) %>% str_remove_all("Coverage ") %>% str_replace_all("-", "_")
+# rownames(human_otu_cov) <- paste0("h_", rownames(human_otu_cov))
+# 
+# # Raw reads
+# human$orfs$table %>% as.data.frame() %>% select(starts_with("Raw read count")) -> human_otu_rr
+# 
+# colnames(human_otu_rr) <- colnames(human_otu_rr) %>% str_remove_all("Raw read count ") %>% str_replace_all("-", "_")
+# rownames(human_otu_rr) <- paste0("h_", rownames(human_otu_rr))
+
+
+quant_contigs %>% 
+  head() %>% 
+  DT::datatable()
+
+```
+
+Combine quantification data with annotations:
+
+```{r}
+colnames(quant_orfs) <- paste0("ORF_" ,colnames(quant_orfs))
+
+colnames(quant_contigs) <- paste0("contig_" ,colnames(quant_contigs))
+```
+
+
+```{r}
+full_gene_catalogue %>% 
+  left_join(quant_orfs,
+            by = c("ORF_ID" = "ORF_ORF_ID")) -> full_gene_catalogue_orf_quant
+
+full_gene_catalogue_orf_quant %>% 
+  left_join(quant_contigs,
+            by = c("Contig_ID" = "contig_Contig_ID")) -> full_quant_full_gene_catalogue
+```
+
+```{r}
+full_gene_catalogue_orf_quant %>% 
+  dplyr::select(ORF_ID, SQM_Length.NT, starts_with("ORF_Raw.read.count.")) %>% 
+  pivot_longer(cols = starts_with("ORF_Raw.read.count."),
+               values_to = "read_counts", 
+               names_to = "sample") %>% # -> test  test %>%  group_by(sample, ORF_ID) %>%  dplyr::summarise(count = n()) -> test test %>%  arrange(count)
+  ## group_by(sample) %>% 
+  mutate(Num_Gi = read_counts / SQM_Length.NT) %>% 
+  ## ungroup() %>% 
+  select(-read_counts) %>%
+  #  dplyr::group_by(ORF_ID, SQM_Length.NT, sample) %>%
+  # dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
+  # dplyr::filter(n > 1L)
+  pivot_wider(names_from =  sample,
+              values_from = Num_Gi) %>% 
+  replace(is.na(.), 0) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Raw.read.count."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Raw.read.count.", "ORF_Num_Gi."))) %>% 
+  select(-SQM_Length.NT) -> full_gene_catalogue_orf_Num_Gi
+
+full_gene_catalogue_orf_Num_Gi %>%  
+  head() %>% 
+  DT::datatable()
+```
+
+```{r}
+full_gene_catalogue_orf_Num_Gi %>% 
+  pivot_longer(cols = starts_with("ORF_Num_Gi"),
+               values_to = "Num_Gi", 
+               names_to = "sample") %>% 
+  group_by(sample) %>% 
+  mutate(Num_Gi_pc = Num_Gi / sum(Num_Gi)) %>% 
+  ungroup() %>% 
+  select(-Num_Gi) %>% 
+  pivot_wider(names_from =  sample,
+              values_from = Num_Gi_pc) %>% 
+  replace(is.na(.), 0) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Num_Gi."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Num_Gi.", "ORF_Num_Gi_pc."))) -> full_gene_catalogue_orf_Num_Gi_pc
+
+full_gene_catalogue_orf_Num_Gi_pc %>%  
+  head() %>% 
+  DT::datatable()
+```
+
+```{r}
+full_gene_catalogue_orf_quant %>% 
+  left_join(full_gene_catalogue_orf_Num_Gi_pc,
+            by = c("ORF_ID" = "ORF_ID")) %>% 
+  left_join(full_gene_catalogue_orf_Num_Gi,
+            by = c("ORF_ID" = "ORF_ID")) -> full_gene_catalogue_orf_quant_all_metrics
+
+```
+
+
+Generate phyloseq objects:
+
+
+sample_data:
+
+```{r}
+human_meta %>% 
+  select(-sample:-index2) -> human_meta
+```
+
+
+tax_table:
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(Contig_ID:ANVIO_CONCOCT_HQ) %>% 
+  as.matrix() %>% 
+  tax_table() -> tax
+```
+
+
+ORFs:
+
+TPM:
+
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_TPM.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_TPM."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_TPM.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("."))
+    , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  otu_table(taxa_are_rows = TRUE) -> tpm
+```
+
+
+Num_Gi_pc
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_Num_Gi_pc.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Num_Gi_pc."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Num_Gi_pc.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("."))
+    , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  otu_table(taxa_are_rows = TRUE) -> Num_Gi_pc
+```
+
+Num_Gi
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_Num_Gi.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Num_Gi."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Num_Gi.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("."))
+    , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  otu_table(taxa_are_rows = TRUE) -> Num_Gi
+```
+
+Coverage
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_Coverage.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Coverage."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Coverage.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("."))
+    , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  otu_table(taxa_are_rows = TRUE) -> cov
+```
+
+ORF_Raw.read
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  column_to_rownames("ORF_ID") %>% 
+  select(starts_with("ORF_Raw.read.count.")) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Raw.read.count."))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Raw.read.count.", ""))) %>% 
+  # stringr::str_replace_all("\\s","_")
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("."))
+    , funs(str_replace_all(., "\\.", "_")))  %>% 
+  as.matrix() %>% 
+  otu_table(taxa_are_rows = TRUE) -> read_count
+```
+
+
+
+Create phyloseq objects and tsv files:
+
+```{r}
+dim(tpm)
+
+physeq_tpm <- phyloseq(tpm,
+                       tax,
+                       human_meta %>% sample_data())
+
+
+physeq_tpm
+```
+
+```{r}
+dim(cov)
+
+physeq_cov <- phyloseq(cov,
+                       tax,
+                       human_meta %>% sample_data())
+
+physeq_cov
+```
+
+
+```{r}
+dim(Num_Gi_pc)
+
+physeq_Num_Gi_pc <- phyloseq(Num_Gi_pc,
+                             tax,
+                             human_meta %>% sample_data())
+
+physeq_Num_Gi_pc
+```
+
+```{r}
+dim(Num_Gi)
+
+physeq_Num_Gi<- phyloseq(Num_Gi,
+                         tax,
+                         human_meta %>% sample_data())
+
+physeq_Num_Gi
+```
+
+
+```{r}
+dim(read_count)
+
+physeq_read_count <- phyloseq(read_count,
+                              tax,
+                              human_meta %>% sample_data())
+
+physeq_read_count
+```
+
+
+```{r}
+phyloseq_list_out = list("read_count" = physeq_read_count,
+                         "Num_Gi" = physeq_Num_Gi,
+                         "Num_Gi_pc" = physeq_Num_Gi_pc,
+                         "cov" = physeq_cov,
+                         "tpm" = physeq_tpm)
+
+```
+
+
+Export outputs:
+
+```{r}
+
+phyloseq_list_out %>% 
+  saveRDS(here::here("data/processed/human1_full_gene_catalog_phyloseq.RDS"))
+
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  saveRDS(here::here("data/processed/human1_full_gene_catalog_full_metrics_table.RDS"))
+
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  write_tsv(here::here("data/processed/human1_full_gene_catalog_full_metrics_table.tsv.gz"))
+```
+
+
+Export only AMR and Tox:
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  filter(!is.na(PathoFact_AMR_ARG) | !is.na(rgi_CARD_ARO) | !is.na(PathoFact_Tox_Toxin_classification)) %>% 
+  write_tsv(here::here("data/processed/human1_full_gene_catalog_full_metrics_table_AMR_tox.tsv"))
+```
+
+
+```{r}
+devtools::session_info()
+```
+

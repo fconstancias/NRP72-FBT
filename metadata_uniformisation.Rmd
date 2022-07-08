@@ -1,5 +1,5 @@
 ---
-title: "NTP72 - CARD 16S alpha div"
+title: "NTP72 - CARD + 16S uniformisation"
 author: "Florentin Constancias"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
@@ -48,18 +48,31 @@ source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/p
 
 ```
 
-
-```{r}
-export_ppt = TRUE
-export_ppt_width = NULL
-export_ppt_height = NULL
-out_pptx = here::here("output/plots.pptx")
-```
-
 # Import data + cleaning/ colors/ factors:
 
-## Data
+## Data:
+
+### metadata:
+
+```{r}
+
+```
+
 ### Resistome:
+
+```{r}
+"data/processed/exp1_full_gene_catalog_phyloseq.RDS" %>% 
+  here::here() %>% 
+  readRDS() %>% 
+  .[["Num_Gi"]] -> ps_resistome
+```
+
+### 16S:
+
+```{r}
+
+```
+
 ```{r}
 "data/processed/resistome/ps_combined_tax_clean.rds" %>% 
   here::here() %>% 
