@@ -88,7 +88,6 @@ ps_16S %>%
 #   subset_taxa(PathoFact_AMR_AMR_category != "unclassified") -> ps_AMR
 ```
 
-
 ```{r}
 "data/processed/exp1_ps_AMR.RDS" %>% 
   here::here() %>% 
