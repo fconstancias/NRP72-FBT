@@ -122,8 +122,7 @@ ps_all %>%
          # mutate( Treatment  = case_when(Experiment == "Cecum" ~ "DONOR",
          #                               TRUE ~ Treatment)) %>% 
          # mutate(Treatment = ifelse(Experiment == "Cecum", "Donor", Treatment)) %>% 
-         
-  ) -> sample_data(ps_all)
+  ) %>%  select(-id) -> sample_data(ps_all)
 # mutate(Reactor_Treatment = base::replace(Reactor_Treatment, Reactor_Treatment == "TR_2CTX", "TR2_CTX")) %>%
 #   mutate(Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment)) %>% 
 #   mutate(Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Treatment, `Antibiotic_mg.mL`), Treatment)) %>%
@@ -182,16 +181,17 @@ ps_all_clean %>%
 ps_all_clean %>% 
   saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct.RDS")
 ```
-
+ 
+ 
 
 ```{r}
 ps_all_clean %>% 
   subset_samples(Enrichment == "NotEnriched" ) %>% 
   subset_samples(Sample_description %!in% c("TR5-15", "TR4-1")) %>% # mislabel
-  subset_samples(Day_from_Inoculum >= 30 | Experiment == "Cecum") %>% 
-  subset_samples(Experiment != "Batch") %>% 
+  subset_samples(Day_from_Inoculum >= 30 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous")) %>% 
+  # subset_samples(Experiment != "Batch") %>% 
   subset_samples(is.na(Paul)) %>% 
-  subset_samples(Day_of_Treatment >= -4 | Experiment == "Cecum") %>% 
+  subset_samples(Day_of_Treatment >= -4 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous")) %>% 
   # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
     saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms.RDS")

@@ -43,16 +43,9 @@ out_pptx = here::here("output/plots_2.pptx")
 ## 16S:
 
 ```{r}
-"data/processed/16S/1/ps_silva_dada2_human_chicken_meta_fact.RDS" %>% 
+"data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms.RDS" %>% 
   here::here() %>% 
   readRDS() %>% 
-  subset_samples(Enrichment == "NotEnriched" ) %>% 
-  subset_samples(Sample_description %!in% c("TR5-15", "TR4-1")) %>% 
-  subset_samples(Day_from_Inoculum >= 30 | Experiment == "Cecum") %>% 
-  subset_samples(Experiment != "Batch") %>% 
-  subset_samples(is.na(Paul)) %>% 
-  subset_samples(Day_of_Treatment >= -4 | Experiment == "Cecum") %>% 
-  # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> ps_16S
 ```
 
@@ -192,6 +185,18 @@ names(conc_stroke) <- sample_data(ps_AMR)$Antibiotic_mg.mL %>%  levels()
 theme_set(theme_classic() + theme(legend.position = 'bottom'))
 ```
 
+save all ascetics parameters as Rdata which can be loaded afterwards:
+
+```{r}
+save(fermentaion_shape, 
+     dataframe2, dataframe3, file = "location.filename.Rdata")
+
+Then you can
+
+load("location.filename.RData") 
+
+```
+
 <https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing>
 
 <https://www.tidyverse.org/blog/2020/08/taking-control-of-plot-scaling/>
@@ -246,8 +251,8 @@ ps_AMR %>%
   physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi",
                          "PathoFact_AMR_ARG")) %>%
   speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG") %>% 
-  tax_table() %>% 
-  data.frame()
+  # tax_table() %>% 
+  # data.frame()
   psmelt() %>% 
   group_by(Sample,PathoFact_AMR_ARG) %>% 
   add_count() %>% 
@@ -291,23 +296,6 @@ Looks good, let's go.
 
 
 <file:///Users/fconstan/Documents/GitHub/NRP72-FBT/Figures/Figures_beta.html>
-
-
-```{r}
-treat_col <- c("#3CB371", "#7C8181",'#d73027','#fc8d59','#fee090','#4575b4','#91bfdb', '#e0f3f8')
-
-names(treat_col) <- get_variable(phyloseq_AMR_MAG_MGE, "Treatment") %>%  
-  levels()
-
-treat_col %>% 
-  scales::show_col(cex_label = 0.5)
-```
-
-
-```{r}
-antibio_shape <- c(22, 21)
-names(antibio_shape) <- sample_data(phyloseq_AMR_MAG_MGE)$Antibiotic_mg.mL %>%  levels()
-```
 
 ### Fig. 2a
 

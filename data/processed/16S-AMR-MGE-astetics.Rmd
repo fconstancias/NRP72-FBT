@@ -1,0 +1,218 @@
+---
+title: "Plotting preparation"
+author: "Florentin Constancias "
+date: " `r format(Sys.time(), '%B %d, %Y')` "
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# knitr::opts_chunk$set(dev = "ragg_png") # https://ragg.r-lib.org/index.html
+knitr::opts_chunk$set(fig.width = 6) #https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing
+knitr::opts_chunk$set(fig.asp = 0.618)
+knitr::opts_chunk$set(fig.show = "hold")
+knitr::opts_chunk$set(fig.show = "70%")
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+```{r}
+
+rm(list= ls())
+# gc()
+require("tidyverse")
+require('speedyseq')
+
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_varia.R")  # source the functions from github.
+
+```
+
+
+```{r}
+export_ppt_width = NULL
+export_ppt_height = NULL
+out_pptx = here::here("output/plots_2.pptx")
+```
+
+# Load data:
+
+## 16S:
+
+```{r}
+"data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms.RDS" %>% 
+  here::here() %>% 
+  readRDS() %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> ps_16S
+```
+
+## Export metadata:
+
+To be merged with phyloseq data. TODO: Would be better to do that before in the gene phyloseq data generation.
+
+```{r}
+ps_16S %>% 
+  sample_data() %>% 
+  data.frame() %>% 
+  filter(!is.na(metagenomic_sample_name)) %>% 
+  rownames_to_column('tmp') %>% 
+  select(-tmp) -> metadata
+```
+
+## phyloseq object of SQM + Pathofact + bins + ... with Num_Gi_pc quantif:
+
+```{r}
+# "data/processed/exp1_full_gene_catalog_phyloseq.RDS" %>% 
+#   here::here() %>% 
+#   readRDS() %>% 
+#   .[["Num_Gi_pc"]] -> ps_coass
+# 
+# ps_coass
+```
+
+## extract on only AMR gene catalogue - qauntification on all gene catalogue:
+
+```{r}
+# ps_coass %>% 
+#   subset_taxa(!is.na(PathoFact_AMR_ARG)) %>% 
+#   subset_taxa(PathoFact_AMR_AMR_category != "unclassified") -> ps_AMR
+```
+
+```{r}
+"data/processed/exp1_ps_AMR.RDS" %>% 
+  here::here() %>% 
+  readRDS() -> ps_AMR
+```
+
+```{r}
+# ps_AMR %>% 
+#   tax_table() %>% 
+#   data.frame() %>% 
+#   glimpse()
+```
+
+I hvae to do that otherwise it is not stored as proper chr when filtering... no clue what is happening here.
+
+
+```{r}
+ps_AMR %>%
+  tax_table() %>%
+  data.frame() %>%
+  mutate(PathoFact_AMR_Resistance_mechanism_multi = ifelse(grepl(";", PathoFact_AMR_Resistance_mechanism), "multi-mech", PathoFact_AMR_Resistance_mechanism)) %>%
+  mutate(PathoFact_AMR_AMR_sub_class_multi = ifelse(grepl(";", PathoFact_AMR_AMR_sub_class), "multidrug", PathoFact_AMR_AMR_sub_class)) %>%
+  mutate(ANVIO_CONCOCT_HQ_clean = ifelse(PathoFact_AMR_MGE_prediction == "plasmid", NA, ANVIO_CONCOCT_HQ)) %>%
+  mutate(GTDB_tax_CONCOCT_clean = ifelse(PathoFact_AMR_MGE_prediction == "plasmid", NA, GTDB_tax_CONCOCT)) %>%
+  mutate(PathoFact_AMR_MGE_prediction_clean = ifelse(!is.na(ANVIO_CONCOCT_HQ), "MAG", PathoFact_AMR_MGE_prediction)) %>%
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean)) %>%
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG", "chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) %>%
+  # mutate(Treatment = factor(Treatment, levels = c)) %>%
+  # mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
+  
+  as.matrix() -> tax_table(ps_AMR)
+
+ps_AMR %>% 
+  saveRDS(., file = here::here("data/processed/exp1_ps_AMR.RDS") )
+```
+
+
+
+```{r}
+# ps_AMR %>% 
+#   tax_table() %>% 
+#   colnames()
+```
+
+# Define astetics:
+
+## Treatment colors:
+
+<https://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=6>
+```{r, out.width = "50%",fig.width = 4.3}  
+treat_col <- c("#3CB371", "#7C8181",'#d73027','#fc8d59','#fee090','#4575b4','#91bfdb', '#e0f3f8')
+
+names(treat_col) <- get_variable(ps_AMR, "Treatment") %>%  
+  levels()
+
+treat_col %>% 
+  scales::show_col(cex_label = 0.5)
+```
+
+## Drug classes colors:
+
+```{r, out.width = "50%",fig.width = 4.3}  
+ps_AMR %>% 
+  generate_color_palette(var = "PathoFact_AMR_AMR_sub_class_multi", seed = 280386) -> drug_classe_multi
+```
+
+
+```{r, out.width = "50%",fig.width = 4.3}  
+# ps_AMR %>% 
+#   generate_color_palette(var = "Model_type", pal = "jco") -> model_type
+
+```
+
+```{r, out.width = "50%",fig.width = 4.3}  
+ps_AMR %>% 
+  generate_color_palette(var = "PathoFact_AMR_Resistance_mechanism_multi",  pal = "npg") -> resistance_type
+```
+
+```{r, out.width = "50%",fig.width = 4.3}  
+ps_AMR %>% 
+  generate_color_palette(var = "PathoFact_AMR_MGE_prediction_clean_2", seed = 72) -> MGE
+```
+
+## Others:
+
+<https://r-graphics.org/recipe-scatter-shapes>
+```{r}
+fermentaion_shape <- c(22, 21)
+names(fermentaion_shape) <- sample_data(ps_AMR)$Fermentation %>%  levels()
+
+model_shape <- c(22, 21)
+names(model_shape) <- sample_data(ps_AMR)$Model %>%  levels()
+
+antibio_shape <- c(22, 21)
+names(antibio_shape) <- sample_data(ps_AMR)$Antibiotic %>%  levels()
+
+
+conc_stroke <- c(1, 2, 3, 4, 5)
+names(conc_stroke) <- sample_data(ps_AMR)$Antibiotic_mg.mL %>%  levels()
+# scale_discrete_manual(
+#   aesthetics = "stroke",
+#   values = c(`A` = 2, `B` = 1, `C` = 2)
+# )
+
+theme_set(theme_classic() + theme(legend.position = 'bottom'))
+```
+
+save all ascetics parameters as Rdata which can be loaded afterwards:
+
+```{r}
+save(treat_col, 
+     antibio_shape,
+     drug_classe_multi,
+     conc_stroke,
+     MGE,
+     fermentaion_shape,
+     resistance_type,
+     model_shape, file = here::here("Figures/Rastetics.Rdata") )
+# 
+# Then you can
+# 
+# load("location.filename.RData") 
+
+```
+
+<https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing>
+
+<https://www.tidyverse.org/blog/2020/08/taking-control-of-plot-scaling/>
+
+
+
+```{r}
+devtools::session_info()
+```
+
