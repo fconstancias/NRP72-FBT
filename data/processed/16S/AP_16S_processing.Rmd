@@ -24,6 +24,8 @@ outersect <- function(x, y) {
          y[!y%in%x]))
 }
 
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
 # source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R") 
 source("https://raw.githubusercontent.com/fconstancias/metabaRpipe-source/master/Rscripts/functions.R")
 source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R") 
@@ -179,6 +181,20 @@ ps_all_clean %>%
 ```{r}
 ps_all_clean %>% 
   saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct.RDS")
+```
+
+
+```{r}
+ps_all_clean %>% 
+  subset_samples(Enrichment == "NotEnriched" ) %>% 
+  subset_samples(Sample_description %!in% c("TR5-15", "TR4-1")) %>% # mislabel
+  subset_samples(Day_from_Inoculum >= 30 | Experiment == "Cecum") %>% 
+  subset_samples(Experiment != "Batch") %>% 
+  subset_samples(is.na(Paul)) %>% 
+  subset_samples(Day_of_Treatment >= -4 | Experiment == "Cecum") %>% 
+  # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+    saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms.RDS")
 ```
 
 ```{r, message = FALSE, warning= FALSE}
