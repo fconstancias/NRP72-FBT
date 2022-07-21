@@ -151,7 +151,7 @@ plot + xlim(c(0, 50000))
 plot + xlim(c(0, 4000))
 ```
 
-BAsed on those plots I would suggest 
+Based on those plots I would suggest :
 ```{r}
 depth = 4000
 

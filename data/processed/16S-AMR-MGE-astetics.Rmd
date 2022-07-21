@@ -211,8 +211,10 @@ save(treat_col,
 <https://www.tidyverse.org/blog/2020/08/taking-control-of-plot-scaling/>
 
 
-
 ```{r}
+
 devtools::session_info()
+
 ```
+
 
