@@ -193,7 +193,7 @@ plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point
 
 
 
-```{r, message= FALSE, warnings = FALSE}
+```{r, message= FALSE, warnings = FALSE, eval = FALSE}
 physeq_rare %>% 
   phyloseq_alphas(phylo = FALSE) -> alpha_16S
 

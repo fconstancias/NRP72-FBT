@@ -1,0 +1,134 @@
+---
+title: ' 16S metadata update `r Sys.Date()`'
+author: "Florentin CONSTANCIAS"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 4
+---
+
+```{r setup, include=FALSE}
+rm(list = ls())
+# knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r packages, results=FALSE, warning=FALSE, include=TRUE}
+require(tidyverse); packageVersion("tidyverse")
+require(phyloseq); packageVersion("phyloseq")
+```
+
+```{r sourcing, results=FALSE, warning=FALSE, include=TRUE}
+outersect <- function(x, y) {
+  sort(c(x[!x%in%y],
+         y[!y%in%x]))
+}
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R") 
+source("https://raw.githubusercontent.com/fconstancias/metabaRpipe-source/master/Rscripts/functions.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R") 
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R") 
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R") 
+```
+
+
+
+```{r}
+"/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct.RDS" %>% 
+  readRDS() -> ps
+
+ps
+```
+
+
+Update metadata file:
+
+```{r}
+ps %>% 
+  physeq_add_metadata(physeq = .,
+                      metadata = ( "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/04.08.2022_metadata_all_merged.xlsx") %>%
+                        readxl::read_excel(sheet = 1), sample_column = "sample_name") -> ps_all
+
+
+ps_all
+```
+
+
+```{r}
+ps_all %>% 
+  sample_data() %>% 
+  data.frame() %>% 
+  na_if("NA") %>% na_if(NA) %>%  na_if("") %>% 
+  # select(-input:-length_filtered_pc,-I7_Index_ID:-index2) %>% 
+  # mutate(Reactor_Treatment_Dose = ifelse(!is.na(`Antibiotic_mg.mL`),
+  #                                        paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment),
+  #        Treatment_Dose = ifelse(!is.na(`Antibiotic_mg.mL`),
+  #                                paste0(Treatment, `Antibiotic_mg.mL`), Reactor_Treatment)) %>% 
+  mutate(Treatment2 = factor(Treatment2, levels = c("DONOR", "UNTREATED", "AB+E. coli", "AB", "E. coli", "AB+E. faecium", "E. faecium")),
+         Reactor_Treatment = base::replace(Reactor_Treatment, Reactor_Treatment == "TR_2CTX", "TR2_CTX"),
+         Phase = factor(Phase, levels = c("Stab", "Treat")),
+         Model = factor(Model, levels = c("Chicken", "Human")),
+         Model2 = factor(Model2, levels = c("Chicken1", "Chicken2", "Human1", "Human2")),
+         Fermentation = factor(Fermentation, levels = c("1", "2")),
+         Period = case_when( # if chicken we have period if human
+           Day_of_Treatment == -2 | Day_of_Treatment == -3 | Day_of_Treatment == -6 | Day_of_Treatment == -7 ~ "pret",
+           Day_of_Treatment < 10 & Day_of_Treatment >= 0 ~ "t1",
+           Day_of_Treatment < 20 & Day_of_Treatment >= 10 ~ "t2",
+           Day_of_Treatment < 30 & Day_of_Treatment >= 20 ~ "t3",
+           Day_of_Treatment < 40 & Day_of_Treatment >= 30 ~ "t4",
+           Day_of_Treatment < 50 & Day_of_Treatment >= 40 ~ "t5"),
+         Period = factor(Period, levels = c("pret", "t1", "t2", "t3", "t4", "t5")),
+         Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.L`), paste0(Reactor_Treatment, `Antibiotic_mg.L`), Reactor_Treatment),
+         Treatment_Dose = if_else(!is.na(`Antibiotic_mg.L`), paste0(Treatment, `Antibiotic_mg.L`), Treatment),
+         Treatment = base::replace(Treatment, Experiment == "Cecum", "DONOR"),
+         Treatment = factor(Treatment, levels = c("negative","positive","STRAIN", "DONOR", "UNTREATED", "CTX", "CTX+HV292.1", "HV292.1", "VAN", "VAN+CCUG59168", "CCUG59168")),
+         # Reactor = factor(Reactor, levels = c("negative","positive","STRAIN", "DONOR", "IR1", "IR2", "CR", "TR1", "TR2", "TR3", "TR4", "TR5", "TR6","Batch3","Batch4")),
+         Experiment = factor(Experiment, levels = c( "NTC","Mock", "HV292.1", "CCUG59168", "Cecum","Continuous","Batch")),
+         
+         # mutate( Treatment  = case_when(Experiment == "Cecum" ~ "DONOR",
+         #                               TRUE ~ Treatment)) %>% 
+         # mutate(Treatment = ifelse(Experiment == "Cecum", "Donor", Treatment)) %>% 
+  ) %>%  select(-id) -> sample_data(ps_all)
+# mutate(Reactor_Treatment = base::replace(Reactor_Treatment, Reactor_Treatment == "TR_2CTX", "TR2_CTX")) %>%
+#   mutate(Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment)) %>% 
+#   mutate(Treatment_Dose = if_else(!is.na(`Antibiotic_mg.mL`), paste0(Treatment, `Antibiotic_mg.mL`), Treatment)) %>%
+#   mutate(
+#     Period = case_when(
+#       Day_of_Treatment <= 0  ~ "pret",
+#       Day_of_Treatment > 0 ~ as.character(Day_of_Treatment)
+#     )) %>%
+#   mutate(Period = base::replace(Period, Treatment == "DONOR", "pret")) %>%
+#   mutate(Day_of_Treatment = addNA(Day_of_Treatment)) %>%
+
+ps_all %>% 
+  sample_data() %>% 
+  data.frame() %>% 
+  DT::datatable()
+```
+
+
+```{r}
+ps_all %>% 
+  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_04.08.2022_up.RDS")
+```
+ 
+ 
+
+```{r}
+ps_all %>% 
+  subset_samples(Enrichment == "NotEnriched" ) %>% 
+  subset_samples(Sample_description %!in% c("TR5-15", "TR4-1")) %>% # mislabel
+  subset_samples(Day_from_Inoculum >= 30 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous")) %>% 
+  # subset_samples(Experiment != "Batch") %>% 
+  subset_samples(is.na(Paul)) %>% 
+  subset_samples(Day_of_Treatment >= -4 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous")) %>% 
+  # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+    saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_04.08.2022_up.RDS")
+```
+
+```{r, message = FALSE, warning= FALSE}
+sessionInfo()
+```
