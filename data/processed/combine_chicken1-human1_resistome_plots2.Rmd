@@ -71,7 +71,9 @@ ps_AMR %>%
   tax_table() %>% 
   data.frame()
 ```
+
 ## Others:
+
 ```{r}
 ps_AMR %>% 
   tax_table() %>% 
@@ -526,6 +528,57 @@ p2 %>%
 ```
 
 
+
+
+
+```{r}
+ps_AMR_all %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi", "PathoFact_AMR_ARG"))  %>%
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_AMR_sub_class_multi")  %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi")) %>% 
+  prune_samples(samples, .) %>% 
+  physeq_add_metadata(metadata_mapping,
+                      sample_column = "sample_id") %>% 
+  # ps_mutate(Day_of_Treatment = as.numeric(Day_of_Treatment)) %>% 
+  ps_arrange(-Day_of_Treatment) %>% 
+  comp_barplot(
+    tax_transform_for_plot = "identity",
+    tax_level = "PathoFact_AMR_AMR_sub_class_multi",
+    label = "Day_of_Treatment", # name an alternative variable to label axes
+    n_taxa = 20, # give more taxa unique colours
+    merge_other = FALSE, # split the "other" category to display alpha diversity
+    bar_width = 0.9, # reduce the bar width to 70% of one row
+    bar_outline_colour = "grey5",
+    sample_order = "default") +#,# is the default (use NA to remove outlines)
+  # facet_by = c("Model", "Antibiotic", "Antibiotic_mg.mL", "Treatment2")) +
+  # group_by = c("Model", "Antibiotic", "Antibiotic_mg.mL", "Treatment2"))
+  coord_flip() +  theme_light() +
+  scale_y_continuous(labels=percent,   limits = (c(0,0.01))) + 
+  facet_wrap(Model ~ Antibiotic + Antibiotic_mg.mL + Treatment2, scales = "free", ncol = 6, nrow = 4) -> p2
+# 
+# # Plot them side by side with the patchwork package.
+# patch <- patchwork::wrap_plots(plot_list, nrow = 1, guides = "collect")
+# patch & coord_flip() # make all plots horizontal (note: use & instead of +)
+#   
+
+p2
+
+
+p2 %>% 
+  ggsave(plot = .,bg = "transparent",scale = 2,
+         units = "mm",
+         dpi = 600,
+         height = 0.618 * 84 * 2,
+         width = 84 * 2,
+         filename = "~/Desktop/plot2_2.eps")
+
+p2 %>%
+  export::graph2ppt(append = TRUE, width = 317.48031496 * 2  , height = 0.618 * 317.48031496 * 2 , paper = "A4",  scaling = 2,
+                    file = "~/Desktop/plots.pptx")
+```
+
+
+
 ```{r}
 # p_mec$data %>%  select(PathoFact_AMR_AMR_sub_class_multi, PathoFact_AMR_AMR_sub_class, PathoFact_AMR_ARG) %>%  distinct(PathoFact_AMR_ARG,.keep_all = TRUE) %>% 
 #   write_tsv("~/Desktop/ARG_gn_check.tsv")
@@ -721,14 +774,14 @@ ppp$signenvfit %>%
 
 ```{r}
 ppp$plot + 
-    ggrepel::geom_text_repel(cex=2,
+  ggrepel::geom_text_repel(cex=2,
                            aes(label= Phase),
                            segment.color = 'black',
                            segment.size = 0.5,
                            # nudge_x =  -4,
                            # nudge_y = 0,
                            ppp$plot$data %>% filter(Phase %in% c("Stab")) %>% unique()
-                           ) -> pbeta
+  ) -> pbeta
 
 pbeta
 
@@ -764,17 +817,17 @@ ps_AMR_all %>%
 ps_tmp_envfit %>% 
   tax_table() %>% 
   data.frame() %>% 
- mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean_2) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
- mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - unbinned chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean_2) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
   as.matrix() -> tax_table(ps_tmp_envfit)
 
 ps_tmp_envfit %>% 
   phyloseq_add_taxa_vector_fix(dist = coda_resistome$aidist,
-                             phyloseq = . ,
-                            taxnames_rm = c("unclassified"),
-                             vector_color = "tomato",
-                             figure_ord = pbeta,
-                             taxrank_glom = "PathoFact_AMR_MGE_prediction_clean_2") -> ppp
+                               phyloseq = . ,
+                               taxnames_rm = c("unclassified"),
+                               vector_color = "tomato",
+                               figure_ord = pbeta,
+                               taxrank_glom = "PathoFact_AMR_MGE_prediction_clean_2") -> ppp
 
 
 
@@ -798,6 +851,31 @@ ppp$plot %>%
   export::graph2ppt(append = TRUE, width = 317.48031496  , height = 0.618 * 317.48031496  , paper = "A4",  scaling = 2,
                     file = "~/Desktop/plots.pptx")
 ```
+
+```{r}
+phyloseq_add_taxa_vector_fix(dist = coda_resistome$aidist,
+                             phyloseq = ps_tmp %>% physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% subset_samples(Model == "Chicken") %>%   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>%   filter_taxa(., function(x){sum(x > 0.000005) > 4}, prune = TRUE),
+                             figure_ord = ppp$plot,
+                             top_r = 20,
+                             vector_color = "chartreuse",
+                             taxrank_glom = "PathoFact_AMR_ARG") -> pca_env_ARG
+
+pca_env_ARG$signenvfit
+```
+
+
+```{r}
+pca_env_ARG$plot
+```
+
+```{r}
+pca_env_ARG$vectors 
+
+pca_env_ARG$vectors  %>% 
+  export::graph2ppt(append = TRUE, width = 317.48031496  , height = 0.618 * 317.48031496  , paper = "A4",  scaling = 2,
+                    file = "~/Desktop/plots.pptx")
+```
+
 
 human
 ```{r}
@@ -868,14 +946,14 @@ ppp$signenvfit %>%
 
 ```{r}
 ppp$plot + 
-    ggrepel::geom_text_repel(cex=2,
+  ggrepel::geom_text_repel(cex=2,
                            aes(label= Phase),
                            segment.color = 'black',
                            segment.size = 0.5,
                            # nudge_x =  -4,
                            # nudge_y = 0,
                            ppp$plot$data %>% filter(Phase %in% c("Stab")) %>% unique()
-                           ) -> pbeta
+  ) -> pbeta
 
 pbeta
 
@@ -909,17 +987,17 @@ ps_AMR_all %>%
 ps_tmp_envfit %>% 
   tax_table() %>% 
   data.frame() %>% 
- mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean_2) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
- mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - unbinned chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean_2) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
   as.matrix() -> tax_table(ps_tmp_envfit)
 
 ps_tmp_envfit %>% 
   phyloseq_add_taxa_vector_fix(dist = coda_resistome$aidist,
-                             phyloseq = . ,
-                            taxnames_rm = c("unclassified"),
-                             vector_color = "tomato",
-                             figure_ord = pbeta,
-                             taxrank_glom = "PathoFact_AMR_MGE_prediction_clean_2") -> ppp
+                               phyloseq = . ,
+                               taxnames_rm = c("unclassified"),
+                               vector_color = "tomato",
+                               figure_ord = pbeta,
+                               taxrank_glom = "PathoFact_AMR_MGE_prediction_clean_2") -> ppp
 
 
 
@@ -943,6 +1021,30 @@ ppp$plot %>%
   export::graph2ppt(append = TRUE, width = 317.48031496  , height = 0.618 * 317.48031496  , paper = "A4",  scaling = 2,
                     file = "~/Desktop/plots.pptx")
 ```
+
+
+```{r}
+phyloseq_add_taxa_vector_fix(dist = coda_resistome$aidist,
+                             phyloseq = ps_tmp %>% physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% subset_samples(Model == "Human") %>%   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>%   filter_taxa(., function(x){sum(x > 0.000005) > 4}, prune = TRUE),
+                             figure_ord = ppp$plot,
+                             top_r = 20,
+                             vector_color = "chartreuse",
+                             taxrank_glom = "PathoFact_AMR_ARG") -> pca_env_ARG
+
+pca_env_ARG$signenvfit
+```
+
+```{r}
+pca_env_ARG$plot
+```
+
+```{r}
+pca_env_ARG$vectors %>% 
+  export::graph2ppt(append = TRUE, width = 317.48031496  , height = 0.618 * 317.48031496  , paper = "A4",  scaling = 2,
+                    file = "~/Desktop/plots.pptx")
+```
+
+
 
 alfa-div resistome:
 
@@ -1210,10 +1312,10 @@ ps_AMR_all %>%
 ps_tmp %>% 
   tax_table() %>% 
   data.frame() %>% 
- mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean_2) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
- mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - unbinned chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean_2) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
   as.matrix() -> tax_table(ps_tmp)
- 
+
 ps_tmp %>% 
   ps_arrange(-Day_of_Treatment) %>% 
   comp_barplot(
@@ -1269,10 +1371,10 @@ ps_AMR_all %>%
 ps_tmp %>% 
   tax_table() %>% 
   data.frame() %>% 
- mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean_2) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
- mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - unbinned chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(grepl("ambiguous", PathoFact_AMR_MGE_prediction_clean_2) ~ "ambiguous", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
   as.matrix() -> tax_table(ps_tmp)
- 
+
 ps_tmp %>% 
   ps_arrange(-Day_of_Treatment) %>% 
   comp_barplot(
@@ -1287,7 +1389,7 @@ ps_tmp %>%
   # facet_by = c("Model", "Antibiotic", "Antibiotic_mg.mL", "Treatment2")) +
   # group_by = c("Model", "Antibiotic", "Antibiotic_mg.mL", "Treatment2"))
   coord_flip() +  theme_light() +
-    scale_y_continuous(labels=percent,   limits = (c(0,0.01))) + 
+  scale_y_continuous(labels=percent,   limits = (c(0,0.01))) + 
   facet_wrap(Model ~ Antibiotic + Antibiotic_mg.mL + Treatment2, scales = "free", ncol = 6, nrow = 4) -> p2
 # 
 # # Plot them side by side with the patchwork package.
@@ -1323,7 +1425,7 @@ ps_AMR_all %>%
                          "PathoFact_AMR_ARG"))  %>%
   # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
   speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
-    prune_samples(samples, .) %>% 
+  prune_samples(samples, .) %>% 
   physeq_add_metadata(metadata_mapping,
                       sample_column = "sample_id") %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
@@ -1362,7 +1464,7 @@ for (dd in df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
     ggtitle(dd) +
     theme_light() + 
     facet_grid(Antibiotic  ~ Model , scales = "free", drop = TRUE) +  scale_y_continuous(labels=percent) -> p1
-    # scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) -> p1
+  # scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) -> p1
   
   # p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL + PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "fixed", space = "fixed", drop = TRUE)
   # 
@@ -1370,18 +1472,18 @@ for (dd in df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
   #)
   results[[dd]] <- p1
   
-
-results[[dd]]  %>% 
-  ggsave(plot = .,bg = "transparent",scale = 2,
-         units = "mm",
-         dpi = 600,
-         height = 0.618 * 84,
-         width = 84,
-         filename = paste0("~/Desktop/", dd, ".eps"))
-
-results[[dd]]  %>%
-  export::graph2ppt(append = TRUE, width = 317.48031496 , height = 0.618 * 317.48031496, paper = "A4",  scaling = 2,
-                    file = "~/Desktop/plots.pptx")
+  
+  results[[dd]]  %>% 
+    ggsave(plot = .,bg = "transparent",scale = 2,
+           units = "mm",
+           dpi = 600,
+           height = 0.618 * 84,
+           width = 84,
+           filename = paste0("~/Desktop/", dd, ".eps"))
+  
+  results[[dd]]  %>%
+    export::graph2ppt(append = TRUE, width = 317.48031496 , height = 0.618 * 317.48031496, paper = "A4",  scaling = 2,
+                      file = "~/Desktop/plots.pptx")
   
 }
 ```
@@ -1414,7 +1516,7 @@ ps_AMR_all %>%
                          "PathoFact_AMR_ARG"))  %>%
   # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
   speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
-    prune_samples(samples, .) %>% 
+  prune_samples(samples, .) %>% 
   physeq_add_metadata(metadata_mapping,
                       sample_column = "sample_id") %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
@@ -1436,12 +1538,12 @@ for (dd in df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
     mutate(sum_abundance = na_if(sum_abundance, 0)) %>%
     left_join(metadata_mapping,
               by = c("Sample" = "sample_id")) %>% 
-      ungroup() %>% 
-  # mutate(Reactor_Treatment_Dose = paste0(Period, Reactor_Treatment_Dose)) %>% 
-  group_by(Model, Fermentation, 
-           Reactor_Treatment_Dose) %>% 
-  arrange(Day_of_Treatment) %>% 
-  mutate(per_cent_change = sum_abundance / first(sum_abundance)) %>% 
+    ungroup() %>% 
+    # mutate(Reactor_Treatment_Dose = paste0(Period, Reactor_Treatment_Dose)) %>% 
+    group_by(Model, Fermentation, 
+             Reactor_Treatment_Dose) %>% 
+    arrange(Day_of_Treatment) %>% 
+    mutate(per_cent_change = sum_abundance / first(sum_abundance)) %>% 
     # filter(Model == "Chicken") %>% 
     # mutate(Day_of_Treatment_num = as.double(Day_of_Treatment)) %>% 
     # mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
@@ -1460,7 +1562,7 @@ for (dd in df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
     ggtitle(dd) +
     theme_light() + 
     facet_grid(Antibiotic  ~ Model , scales = "free_x", drop = TRUE) -> p1
-    # scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) -> p1
+  # scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) -> p1
   
   # p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL + PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "fixed", space = "fixed", drop = TRUE)
   # 
@@ -1468,18 +1570,18 @@ for (dd in df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
   #)
   results[[dd]] <- p1
   
-
-results[[dd]]  %>% 
-  ggsave(plot = .,bg = "transparent",scale = 2,
-         units = "mm",
-         dpi = 600,
-         height = 0.618 * 84,
-         width = 84,
-         filename = paste0("~/Desktop/pc_", dd, ".eps"))
-
-results[[dd]]  %>%
-  export::graph2ppt(append = TRUE, width = 317.48031496 , height = 0.618 * 317.48031496, paper = "A4",  scaling = 2,
-                    file = "~/Desktop/plots.pptx")
+  
+  results[[dd]]  %>% 
+    ggsave(plot = .,bg = "transparent",scale = 2,
+           units = "mm",
+           dpi = 600,
+           height = 0.618 * 84,
+           width = 84,
+           filename = paste0("~/Desktop/pc_", dd, ".eps"))
+  
+  results[[dd]]  %>%
+    export::graph2ppt(append = TRUE, width = 317.48031496 , height = 0.618 * 317.48031496, paper = "A4",  scaling = 2,
+                      file = "~/Desktop/plots.pptx")
   
 }
 ```
@@ -1506,6 +1608,264 @@ results$cephalosporin
 #   export::graph2ppt(append = TRUE, width = 8, height = 4,
 #                     file = out_pptx)
 ```
+
+
+- line plot MAG-Chrosmosome - Plasmid - phage - unknown facet | quant & % 
+
+-- quant
+```{r}
+ps_AMR_all %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_MGE_prediction_clean_2",
+                         "PathoFact_AMR_ARG"))  %>%
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG",
+                         "PathoFact_AMR_MGE_prediction_clean_2"))  %>%
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_MGE_prediction_clean_2")  %>% 
+  prune_samples(samples, .) %>% 
+  physeq_add_metadata(metadata_mapping,
+                      sample_column = "sample_id") %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() -> df  #%>% 
+# filter(grepl('unclassified', PathoFact_AMR_AMR_sub_class_multi))  -> df
+
+results <- vector("list", length(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique()))
+names(results) = c(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+
+for (dd in df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+{
+  print(dd)
+  
+  df %>% 
+    filter(PathoFact_AMR_AMR_sub_class_multi == !!dd) %>% 
+    select(-Lactose_mM:-Total_SCFA_mM) %>% 
+    mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+    mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG - chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) %>% 
+    group_by(Sample, PathoFact_AMR_MGE_prediction_clean_2, PathoFact_AMR_AMR_sub_class_multi) %>% 
+    summarise(sum_abundance = sum(Abundance), .groups = "drop") %>% 
+    mutate(sum_abundance = na_if(sum_abundance, 0)) %>%
+    left_join(metadata_mapping,
+              by = c("Sample" = "sample_id")) %>% 
+    filter(! PathoFact_AMR_MGE_prediction_clean_2  %in% c("unclassified", "ambiguous")) %>% 
+    # filter(Model == "Chicken") %>% 
+    # mutate(Day_of_Treatment_num = as.double(Day_of_Treatment)) %>% 
+    # mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
+    mutate(Antibiotic_mg.mL = factor(Antibiotic_mg.mL, levels = c(NA, 20, 200,90, 600))) %>%
+    ggplot(aes_string(x = "Day_of_Treatment", y = "sum_abundance", color = "Treatment", fill  = "Treatment", shape = "Antibiotic_mg.mL")) + #shape = Fermentation
+    geom_point(size = 2.5) + 
+    geom_line(linetype = 2,  size = 0.5,  aes_string(group = "interaction(Model, Reactor_Treatment_Dose)")) +
+    labs(y = paste0("sum Rnum_Gi ") , x = "Day_of_Treatment") +
+    scale_color_manual(name = "", values = treat_col,
+                       na.value = "black") +
+    scale_fill_manual(name = "", values = treat_col,
+                      na.value = "black") +
+    scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
+    # scale_alpha_continuous(name = "", range=c(0.6, 1), na.value =  1) +
+    geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") +
+    ggtitle(dd) +
+    theme_light() + 
+    facet_grid(Antibiotic + PathoFact_AMR_MGE_prediction_clean_2 ~ Model, scales = "free", drop = TRUE) +  scale_y_continuous(labels=percent) -> p1
+  # scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) -> p1
+  
+  # p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL + PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "fixed", space = "fixed", drop = TRUE)
+  # 
+  # p1 + facet_wrap(as.formula(paste0("PathoFact_AMR_AMR_sub_class_multi ~  Model  ")),scales = "free"
+  #)
+  results[[dd]] <- p1
+  
+  
+  results[[dd]]  %>% 
+    ggsave(plot = .,bg = "transparent",scale = 2,
+           units = "mm",
+           dpi = 600,
+           height = 0.618 * 84,
+           width = 84,
+           filename = paste0("~/Desktop/", dd, ".eps"))
+  
+  results[[dd]]  %>%
+    export::graph2ppt(append = TRUE, width = 317.48031496 , height = 0.618 * 317.48031496, paper = "A4",  scaling = 2,
+                      file = "~/Desktop/plots.pptx")
+  
+}
+```
+
+-- then %
+
+```{r}
+ps_AMR_all %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_MGE_prediction_clean_2",
+                         "PathoFact_AMR_ARG"))  %>%
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG",
+                         "PathoFact_AMR_MGE_prediction_clean_2"))  %>%
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_MGE_prediction_clean_2")  %>% 
+  prune_samples(samples, .) %>% 
+  physeq_add_metadata(metadata_mapping,
+                      sample_column = "sample_id") %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() %>% 
+  select(-Lactose_mM:-Total_SCFA_mM) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+  mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG - chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) -> df  #%>% 
+# filter(grepl('unclassified', PathoFact_AMR_AMR_sub_class_multi))  -> df
+
+results <- vector("list", length(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique()))
+names(results) = c(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+
+for (dd in df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+{
+  print(dd)
+  
+  df %>% 
+    filter(PathoFact_AMR_AMR_sub_class_multi == !!dd) %>% 
+    select(Sample, PathoFact_AMR_AMR_sub_class_multi, PathoFact_AMR_MGE_prediction_clean_2, Abundance) %>%
+    group_by(PathoFact_AMR_AMR_sub_class_multi, PathoFact_AMR_MGE_prediction_clean_2, Sample) -> df_tmp
+  
+  df_tmp %>% 
+    summarise(sum_MGE = sum(Abundance), .groups = "drop") %>%
+    mutate(sum_MGE = na_if(sum_MGE, 0)) -> df_MGE_sum
+  
+  df_tmp %>% 
+    group_by(Sample) %>% 
+    summarise(sample_sum = sum(Abundance), .groups = "drop") %>% 
+    mutate(sample_sum = na_if(sample_sum, 0)) -> df_sample_sum 
+  
+  df_MGE_sum %>% 
+    left_join(df_sample_sum,
+               by = c("Sample" = "Sample")) %>% 
+    mutate(percent_MGE = sum_MGE / sample_sum) %>% 
+    # left_join()
+    left_join(metadata_mapping,
+              by = c("Sample" = "sample_id")) %>% 
+    filter(! PathoFact_AMR_MGE_prediction_clean_2  %in% c("unclassified", "ambiguous")) %>%
+    # filter(Model == "Chicken") %>% 
+    # mutate(Day_of_Treatment_num = as.double(Day_of_Treatment)) %>% 
+    # mutate(Day_of_Treatment = fct_relevel(Day_of_Treatment, c(NA, "-3", "-1", "1" , "3", "4", "5","7", "30", "47", "48")))  %>% 
+    mutate(Antibiotic_mg.mL = factor(Antibiotic_mg.mL, levels = c(NA, 20, 200,90, 600))) %>%
+    ggplot(aes_string(x = "Day_of_Treatment", y = "percent_MGE", color = "Treatment", fill  = "Treatment", shape = "Antibiotic_mg.mL")) + #shape = Fermentation
+    geom_point(size = 2.5) + 
+    geom_line(linetype = 2,  size = 0.5,  aes_string(group = "interaction(Model, Reactor_Treatment_Dose)")) +
+    labs(y = paste0(" proportion % ") , x = "Day_of_Treatment") +
+    scale_color_manual(name = "", values = treat_col,
+                       na.value = "black") +
+    scale_fill_manual(name = "", values = treat_col,
+                      na.value = "black") +
+    scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
+    # scale_alpha_continuous(name = "", range=c(0.6, 1), na.value =  1) +
+    geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") +
+    ggtitle(dd) +
+    theme_light() + 
+    facet_grid(Antibiotic + PathoFact_AMR_MGE_prediction_clean_2 ~ Model, scales = "free", drop = TRUE) +  scale_y_continuous(labels=percent) -> p1
+  # scale_y_continuous(labels = function(x) format(x, scientific = TRUE)) -> p1
+  
+  # p1 + facet_grid(as.formula(paste0("Antibiotic_mg.mL + PathoFact_AMR_AMR_sub_class_multi ~  Model  ")), scales = "fixed", space = "fixed", drop = TRUE)
+  # 
+  # p1 + facet_wrap(as.formula(paste0("PathoFact_AMR_AMR_sub_class_multi ~  Model  ")),scales = "free"
+  #)
+  results[[dd]] <- p1
+  
+  
+  results[[dd]]  %>% 
+    ggsave(plot = .,bg = "transparent",scale = 2,
+           units = "mm",
+           dpi = 600,
+           height = 0.618 * 84,
+           width = 84,
+           filename = paste0("~/Desktop/", dd, ".eps"))
+  
+  results[[dd]]  %>%
+    export::graph2ppt(append = TRUE, width = 317.48031496 , height = 0.618 * 317.48031496, paper = "A4",  scaling = 2,
+                      file = "~/Desktop/plots.pptx")
+  
+}
+```
+
+and then baseline ratio.
+
+```{r}
+
+ps_AMR_all %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_MGE_prediction_clean_2",
+                         "PathoFact_AMR_ARG"))  %>%
+  # physeq_sel_tax_table(c("PathoFact_AMR_ARG"))  %>% 
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_ARG")  %>% 
+  physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi",
+                         "PathoFact_AMR_ARG",
+                         "PathoFact_AMR_MGE_prediction_clean_2"))  %>%
+  speedyseq::tax_glom(., taxrank = "PathoFact_AMR_MGE_prediction_clean_2")  %>% 
+  prune_samples(samples, .) %>% 
+  physeq_add_metadata(metadata_mapping,
+                      sample_column = "sample_id") %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  speedyseq::psmelt() -> df  #%>% 
+# filter(grepl('unclassified', PathoFact_AMR_AMR_sub_class_multi))  -> df
+
+results <- vector("list", length(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique()))
+names(results) = c(df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+
+for (dd in df$PathoFact_AMR_AMR_sub_class_multi %>%  unique())
+{
+  print(dd)
+  
+  df %>% 
+    filter(PathoFact_AMR_AMR_sub_class_multi == !!dd) %>% 
+    select(-Lactose_mM:-Total_SCFA_mM) %>% 
+    mutate(PathoFact_AMR_MGE_prediction_clean_2 = case_when(PathoFact_AMR_MGE_prediction_clean_2 %in% c("MAG", "chromosome")  ~ "MAG - chromosome", TRUE ~ PathoFact_AMR_MGE_prediction_clean_2)) %>% 
+    mutate(PathoFact_AMR_MGE_prediction_clean_2 = fct_relevel(PathoFact_AMR_MGE_prediction_clean_2, c("MAG - chromosome", "plasmid", "phage", "ambiguous", "unclassified"))) %>% 
+    group_by(Sample, PathoFact_AMR_AMR_sub_class_multi, PathoFact_AMR_MGE_prediction_clean_2) %>% 
+        summarise(sum_abundance = sum(Abundance), .groups = "drop") %>% 
+    mutate(sum_abundance = na_if(sum_abundance, 0)) %>%
+        ungroup() %>% 
+left_join(metadata_mapping,
+              by = c("Sample" = "sample_id")) %>% 
+    group_by(PathoFact_AMR_AMR_sub_class_multi, PathoFact_AMR_MGE_prediction_clean_2, Model, Fermentation, Reactor_Treatment_Dose) %>% 
+  arrange(Day_of_Treatment) %>% 
+  mutate(per_cent_change = sum_abundance / first(sum_abundance)) %>% 
+    ggplot(aes_string(x = "Day_of_Treatment", y = "per_cent_change", color = "Treatment", fill  = "Treatment", shape = "Antibiotic_mg.L")) + #shape = Fermentation
+  geom_point(size = 2.5) + 
+  geom_line(linetype = 2,  size = 0.5,  aes_string(group = "interaction(Model, Reactor_Treatment_Dose)")) +
+  labs(y = "sum Rnum_Gi / baseline", x = "Day_of_Treatment") +
+  scale_color_manual(name = "", values = treat_col,
+                     na.value = "black") +
+  scale_fill_manual(name = "", values = treat_col,
+                    na.value = "black") +
+  scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
+  # scale_alpha_continuous(name = "", range=c(0.6, 1), na.value =  1) +
+  geom_vline(xintercept = 0, size = 0.5, linetype = 1, color = "grey60") +
+  geom_hline(yintercept = 1, size = 0.5, linetype = 2, color = "grey60") +
+  theme_light() + facet_grid(Antibiotic + PathoFact_AMR_MGE_prediction_clean_2 ~ Model, scales = "free", drop = TRUE) -> p1
+
+p1
+
+  results[[dd]] <- p1
+  
+  
+  results[[dd]]  %>% 
+    ggsave(plot = .,bg = "transparent",scale = 2,
+           units = "mm",
+           dpi = 600,
+           height = 0.618 * 84,
+           width = 84,
+           filename = paste0("~/Desktop/", dd, ".eps"))
+  
+  results[[dd]]  %>%
+    export::graph2ppt(append = TRUE, width = 317.48031496 , height = 0.618 * 317.48031496, paper = "A4",  scaling = 2,
+                      file = "~/Desktop/plots.pptx")
+  
+}
+
+
+```
+
+- line plot per category | MAG-Chrosmosome - Plasmid - phage - unknown facet | quant & % & baseline
+
+
 
 ######### below exploratory ######### 
 
@@ -1845,6 +2205,11 @@ results$cephalosporin
 <!-- ``` -->
 
 
+- blaCTXM van cassette
+- the top gene -> where line plot facet localisation? heatmap?
+
+- heatmap AMR class + genetic material + dendro
+- heatmap AMR GN + dendro
 
 ```{r}
 devtools::session_info()
