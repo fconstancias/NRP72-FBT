@@ -45,7 +45,7 @@ source("https://raw.githubusercontent.com/fconstancias/metabaRpipe-source/master
 export_ppt_width = NULL
 export_ppt_height = NULL
 # out_pptx = here::here("output/plots_ISME.pptx")
-out_pptx = "~/Desktop/plots_ISME.pptx"
+out_pptx = "~/Desktop/plots_ISME2.pptx"
 
 ```
 
@@ -1565,7 +1565,6 @@ p1 %>%
 ```
 
 
-
 ```{r}
 ps_AMR_all %>% 
   physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class", "PathoFact_AMR_AMR_sub_class_multi", "PathoFact_AMR_ARG", "PathoFact_AMR_MGE_prediction_clean_2"))  %>%
@@ -1995,7 +1994,6 @@ for (dd in df %>% filter(PathoFact_AMR_AMR_sub_class_multi %!in% c("pleuromutili
 and then baseline ratio.
 
 ```{r}
-
 ps_AMR_all %>% 
   physeq_sel_tax_table(c("PathoFact_AMR_AMR_sub_class_multi",
                          "PathoFact_AMR_MGE_prediction_clean_2",
@@ -2634,6 +2632,11 @@ ps_tmp %>%
   # mutate(MAG_plamid_gn = paste0(GN_id, MAG_plamid)) %>%
   column_to_rownames("GN_id") %>% 
   as.matrix() -> tax_table(ps_tmp)
+
+
+# tax_table(ps_tmp) %>% 
+#   data.frame() %>% 
+#   write_tsv("~/Desktop/MAG_taxa_ARG_h1_2_work_inprogress_first.tsv")
 ```
 
 
@@ -2646,7 +2649,7 @@ tax_table(ps_tmp) %>%
   filter(! grepl('nclassified', PathoFact_AMR_AMR_sub_class_multi)) %>% 
   separate(rowname,into = c("model", "mega", "contigid", "start", "stop"), sep = "_") %>% 
   filter(!is.na(CONCOCT_bin)) %>% 
-  filter(ANVIO_CONCOCT_HQ_clean == "HQ") %>% 
+  # filter(ANVIO_CONCOCT_HQ_clean == "HQ") %>% 
   select(GN, model, binid_phylum_species, PathoFact_AMR_ARG, species, genus, phylum, CONCOCT_bin, PathoFact_AMR_AMR_sub_class, PathoFact_AMR_AMR_sub_class_multi, GTDB_tax_CONCOCT_clean) %>% 
   select(model, CONCOCT_bin, binid_phylum_species, PathoFact_AMR_ARG, GTDB_tax_CONCOCT_clean) %>% 
   # separate_rows(PathoFact_AMR_AMR_sub_class, sep = ";") %>% 
@@ -2657,6 +2660,9 @@ MAGs_count_ARG
 
 
 MAGs_count_ARG %>%  filter(model == "h1") %>%  add_count(CONCOCT_bin) %>%  arrange(desc(n))
+
+# MAGs_count_ARG %>% 
+#   DT::datatable()
 ```
 
 
@@ -2714,7 +2720,7 @@ tax_table(ps_tmp) %>%
   rownames_to_column('rowname') %>% 
   separate(rowname,into = c("model", "mega", "contigid", "start", "stop"), sep = "_") %>% 
   filter(!is.na(CONCOCT_bin)) %>% 
-  filter(ANVIO_CONCOCT_HQ_clean == "HQ") %>% 
+  # filter(ANVIO_CONCOCT_HQ_clean == "HQ") %>% 
   filter(! grepl('nclassified', PathoFact_AMR_AMR_sub_class_multi)) %>% 
   select(GN, model, binid_phylum_species, PathoFact_AMR_ARG, species, genus, phylum, CONCOCT_bin, PathoFact_AMR_AMR_sub_class_multi, GTDB_tax_CONCOCT_clean) %>% 
   select(model, CONCOCT_bin, binid_phylum_species, CONCOCT_bin, PathoFact_AMR_AMR_sub_class_multi) %>% 
@@ -2730,6 +2736,8 @@ MAGs_count_class_multi
 
 MAGs_count_class_multi %>%  filter(model == "h1") %>%  add_count(CONCOCT_bin) %>%  arrange(desc(n))
 
+# MAGs_count_class_multi %>%
+#   DT::datatable()
 ```
 
 
@@ -2746,7 +2754,7 @@ MAGs_count_ARG %>%
             suffix = c("", "_multi")) %>% 
   # select(model,CONCOCT_bin, binid_phylum_species,num_ARG) %>% 
   # rename_at(vars(everything()), ~str_replace_all(., "\\s+", "")) %>% 
-  replace(is.na(.), 0) %>% 
+  # replace(is.na(.), 0) %>% 
   # left_join(ps_tmp %>%
   #             tax_table() %>%
   #             data.frame() %>% 
@@ -2755,7 +2763,7 @@ MAGs_count_ARG %>%
   select(CONCOCT_bin, everything()) %>% 
   filter(model == "h1" & model_multi == "h1") %>% 
   separate(GTDB_tax_CONCOCT_clean, into = c("domain", "phylum", "class", "order", "family", "genus", "species"), sep  = ";" , remove = FALSE) %>% 
-  write_tsv("~/Desktop/MAG_taxa_ARG_h1_2.tsv")
+  write_tsv("~/Desktop/MAG_taxa_ARG_h1_2_work_inprogress.tsv")
 
 ```
 
