@@ -59,16 +59,18 @@ out_pptx = here::here("output/plots.pptx")
 # Import data + cleaning/ colors/ factors:
 
 ```{r}
-"Figures/Rastetics.Rdata" %>%
-  here::here() %>% 
-  load()
+# "Figures/Rastetics.Rdata" %>%
+#   here::here() %>% 
+#   load()
+
+load(here::here("Figures/Rastetics.Rdata"))
 ```
 
 ## Data
 
 ### 16S:
 ```{r}
-"data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms.RDS" %>% 
+("data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_090922.RDS") %>% 
   here::here() %>% 
   readRDS() %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> ps_16S
@@ -107,7 +109,7 @@ out$df %>%
   nrow()
 ```
 
-62 samples lost 
+60 samples lost 
 
 
 ```{r}
@@ -116,6 +118,9 @@ out$df %>%
   filter(LibrarySize < 4000) %>% 
   nrow()
 ```
+
+62 samples lost 
+
 
 ```{r}
 require(parallel)
@@ -194,13 +199,17 @@ plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point
 
 
 ```{r, message= FALSE, warnings = FALSE, eval = FALSE}
-physeq_rare %>% 
-  phyloseq_alphas(phylo = FALSE) -> alpha_16S
+# physeq_rare %>% 
+#   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+#   phyloseq_alphas(phylo = FALSE) -> alpha_16S
 
-alpha_16S %>% 
-  group_by(Model, Fermentation, Antibiotic, Antibiotic_mg.mL, Treatment, Phase, Period) %>% 
-  rstatix::get_summary_stats(Observed, type = "common") %>% 
-  DT::datatable()
+physeq_rare %>%  
+  estimate_richness(measures = c("Observed", "Chao1", "Shannon")) %>% 
+                      plot_alpha_div_NRP72(facet_formula = paste0("alphadiversiy ~  Model ")) 
+# alpha_16S %>% 
+  # group_by(Model, Fermentation, Antibiotic, Antibiotic_mg.mL, Treatment, Phase, Period) %>% 
+  # rstatix::get_summary_stats(Observed, type = "common") %>% 
+  # DT::datatable()
 ```
 
 

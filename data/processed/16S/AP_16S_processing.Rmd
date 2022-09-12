@@ -69,8 +69,20 @@ outersect(
     readxl::read_xlsx() %>% 
     pull(sample_name)
   
-)
+) -> missing_samples
+
+missing_samples
 ```
+
+```{r}
+ "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/12.07.2022_metadata_updated.xlsx" %>%
+    readxl::read_xlsx() %>% 
+  filter(sample_name %in% as.vector(missing_samples)) %>% 
+  select(metagenomic_sample_name, everything()) %>% 
+  DT::datatable()
+```
+
+
 
 Those are the metagnomic extra samples.
 
@@ -151,7 +163,7 @@ ps_all %>%
 ntaxa(ps_all) - ntaxa(ps_all_clean)
 ```
 
-176 ASV assigned to mitochondria or choloroplasts.
+9 ASV assigned to mitochondria or choloroplasts.
 
 ```{r}
 ps_all_clean %>%  tax_table() %>% .[,"Kingdom"] %>%  unique()
@@ -170,6 +182,11 @@ ps_all_clean %>%  tax_table() %>% .[,"Genus"] %>%  unique()
 ps_all_clean %>% tax_table() %>% .[,"Species"] %>% unique()
 ```
 
+```{r}
+ps_all_clean %>% 
+  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_no_tree_090922.RDS")
+```
+
 add phylogeny:
 
 ```{r}
@@ -179,7 +196,7 @@ ps_all_clean %>%
 
 ```{r}
 ps_all_clean %>% 
-  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct.RDS")
+  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_090922.RDSS")
 ```
  
  
@@ -194,7 +211,7 @@ ps_all_clean %>%
   subset_samples(Day_of_Treatment >= -4 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous")) %>% 
   # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
-    saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms.RDS")
+    saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_090922.RDS")
 ```
 
 ```{r, message = FALSE, warning= FALSE}
