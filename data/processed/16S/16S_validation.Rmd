@@ -172,11 +172,11 @@ ps_16S %>%
 
 ```{r}
 # Alpha-diversity:
-plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point_size = 2.5, color = "Treatment", fill  = "Treatment", shape = "Antibiotic", alpha = "Antibiotic_mg.L", facet_formula = paste0("alphadiversiy ~  Model2 "), ylab = "Resistome alpha-diversity", xlab = "Days (Treatment)", measures = c("Observed"), path_group = "interaction(Model, Fermentation, Reactor_Treatment)"){
+plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point_size = 2.5, color = "Treatment", fill  = "Treatment", shape = "Antibiotic", alpha = "Antibiotic_mg.L", facet_formula = paste0("alphadiversiy ~  Model2 "), ylab = "Resistome alpha-diversity", xlab = "Days (Treatment)", measures = c("Observed"), path_group = "interaction(Model, Model2, Fermentation, Antibiotic_mg.L, Reactor_Treatment)"){
   
   df %>% 
-    pivot_longer(cols = all_of(measures), values_to = "value", names_to = 'alphadiversiy', values_drop_na  = TRUE) %>%
-    mutate(alphadiversiy = fct_relevel(alphadiversiy, measures)) -> df_ready
+    # pivot_longer(cols = all_of(measures), values_to = "value", names_to = 'alphadiversiy', values_drop_na  = TRUE) %>%
+    mutate(variable = fct_relevel(variable, measures)) -> df_ready
   
   df_ready %>% 
     ggplot(aes_string(x = x, y = y, color = color, fill = fill, shape = shape, alpha = alpha)) + #shape = Fermentation
@@ -198,18 +198,24 @@ plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point
 
 
 
-```{r, message= FALSE, warnings = FALSE, eval = FALSE}
+```{r, message= FALSE, warnings = FALSE, eval = TRUE}
 # physeq_rare %>% 
 #   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
 #   phyloseq_alphas(phylo = FALSE) -> alpha_16S
 
 physeq_rare %>%  
-  estimate_richness(measures = c("Observed", "Chao1", "Shannon")) %>% 
-                      plot_alpha_div_NRP72(facet_formula = paste0("alphadiversiy ~  Model ")) 
-# alpha_16S %>% 
-  # group_by(Model, Fermentation, Antibiotic, Antibiotic_mg.mL, Treatment, Phase, Period) %>% 
-  # rstatix::get_summary_stats(Observed, type = "common") %>% 
-  # DT::datatable()
+  microViz::ps_mutate(Day_of_Treatment = as.double(Day_of_Treatment)) %>% 
+  subset_samples(Model == "Human") %>% 
+  plot_richness(measures = c("Observed", "Chao1", "Shannon")) -> alpha_df
+```
+
+
+```{r, message= FALSE, warnings = FALSE, eval = TRUE, fig.width = 16}
+alpha_df$data %>% 
+  filter(Day_of_Treatment > -10) %>% 
+  plot_alpha_div_NRP72(facet_formula = paste0("variable ~  Model2 "), 
+                       path_group = NULL) 
+
 ```
 
 

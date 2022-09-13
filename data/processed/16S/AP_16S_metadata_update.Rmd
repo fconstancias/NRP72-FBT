@@ -36,7 +36,7 @@ source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/p
 
 
 ```{r}
-"/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct.RDS" %>% 
+"/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_090922.RDSS" %>% 
   readRDS() -> ps
 
 ps
@@ -49,7 +49,8 @@ Update metadata file:
 ps %>% 
   physeq_add_metadata(physeq = .,
                       metadata = ( "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/04.08.2022_metadata_all_merged.xlsx") %>%
-                        readxl::read_excel(sheet = 1), sample_column = "sample_name") -> ps_all
+                        readxl::read_excel(sheet = 1), sample_column = "sample_name") %>%
+  microViz::ps_mutate(Day_of_Treatment = as.double(Day_of_Treatment)) -> ps_all
 
 
 ps_all
@@ -111,7 +112,7 @@ ps_all %>%
 
 ```{r}
 ps_all %>% 
-  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_04.08.2022_up.RDS")
+  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_090922_up.RDS")
 ```
  
  
@@ -126,7 +127,7 @@ ps_all %>%
   subset_samples(Day_of_Treatment >= -4 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous")) %>% 
   # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
-    saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_04.08.2022_up.RDS")
+    saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_090922_up.RDS")
 ```
 
 ```{r, message = FALSE, warning= FALSE}
