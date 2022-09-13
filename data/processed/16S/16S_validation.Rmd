@@ -20,7 +20,7 @@ knitr::opts_chunk$set(fig.align = "center")
 
 # Load required packages
 
-```{r,packages,message=FALSE}
+```{r,packages,message=FALSE, include=FALSE}
 library(tidyverse)
 # library(phyloseq)
 library(speedyseq)
