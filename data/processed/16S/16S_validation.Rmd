@@ -70,7 +70,7 @@ load(here::here("Figures/Rastetics.Rdata"))
 
 ### 16S:
 ```{r}
-("data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_090922.RDS") %>% 
+("data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_090922_up.RDS") %>% 
   here::here() %>% 
   readRDS() %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> ps_16S
@@ -170,9 +170,9 @@ ps_16S %>%
 ```
 
 
-```{r}
+```{r, include=FALSE}
 # Alpha-diversity:
-plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point_size = 2.5, color = "Treatment", fill  = "Treatment", shape = "Antibiotic", alpha = "Antibiotic_mg.L", facet_formula = paste0("alphadiversiy ~  Model2 "), ylab = "Resistome alpha-diversity", xlab = "Days (Treatment)", measures = c("Observed"), path_group = "interaction(Model, Model2, Fermentation, Antibiotic_mg.L, Reactor_Treatment)"){
+plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point_size = 2.5, color = "Treatment", fill  = "Treatment", shape = "Antibiotic", alpha = "Antibiotic_mg.L", facet_formula = paste0("alphadiversiy ~  Model2 "), ylab = "16S alpha-diversity", xlab = "Days (Treatment)", measures = c("Observed"), path_group = "interaction(Model, Model2, Fermentation, Antibiotic_mg.L, Reactor_Treatment)"){
   
   df %>% 
     # pivot_longer(cols = all_of(measures), values_to = "value", names_to = 'alphadiversiy', values_drop_na  = TRUE) %>%
@@ -204,7 +204,6 @@ plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point
 #   phyloseq_alphas(phylo = FALSE) -> alpha_16S
 
 physeq_rare %>%  
-  microViz::ps_mutate(Day_of_Treatment = as.double(Day_of_Treatment)) %>% 
   subset_samples(Model == "Human") %>% 
   plot_richness(measures = c("Observed", "Chao1", "Shannon")) -> alpha_df
 ```
