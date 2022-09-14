@@ -204,15 +204,15 @@ plot_alpha_div_NRP72 <- function(df, x = "Day_of_Treatment", y = "value",  point
 #   phyloseq_alphas(phylo = FALSE) -> alpha_16S
 
 physeq_rare %>%  
-  subset_samples(Model == "Human") %>% 
+  # subset_samples(Model == "Human") %>% 
   plot_richness(measures = c("Observed", "Chao1", "Shannon")) -> alpha_df
 ```
 
 
-```{r, message= FALSE, warnings = FALSE, eval = TRUE, fig.width = 16}
+```{r, message= FALSE, warnings = FALSE, eval = TRUE, fig.width = 22}
 alpha_df$data %>% 
   filter(Day_of_Treatment > -10) %>% 
-  plot_alpha_div_NRP72(facet_formula = paste0("variable ~  Model2 "), 
+  plot_alpha_div_NRP72(facet_formula = paste0("variable ~ Model2"), 
                        path_group = NULL) 
 
 ```
