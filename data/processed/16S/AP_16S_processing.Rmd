@@ -245,7 +245,7 @@ ps_all_clean %>%
   subset_samples(Day_of_Treatment >= -4 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous", "SLURRY")) %>% 
   # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
-    saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_090922.RDS")
+    saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_051022.RDS")
 ```
 
 ```{r, message = FALSE, warning= FALSE}
