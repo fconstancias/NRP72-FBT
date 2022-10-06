@@ -35,10 +35,17 @@ source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/p
 
 
 ```{r, eval=FALSE}
-Rscript ~/Documents/GitHub/metabaRpipe/Rscripts/dada2_metabarcoding_pipeline.Rscript -i raw/ -T 4 --preset V4-1PCR --db ~/db/DADA2/silva_nr99_v138.1_train_set.fa.gz --db_species ~/db/DADA2/silva_species_assignment_v138.1.fa.gz --metadata 12.07.2022_metadata_updated.xlsx --priors ~/Documents/GitHub/metabaRpipe/databases/priors/hv292_CGU_V4.fasta --pool FALSE
+cd /Users/fconstan/Projects/ETH/Alessia/16S 
 
+conda activate metabaRpipe 
 
-Rscript ~/Documents/GitHub/metabaRpipe/Rscripts/dada2_metabarcoding_pipeline.Rscript -i raw/ -T 4 --preset V4-2PCR --db ~/db/DADA2/silva_nr99_v138.1_train_set.fa.gz --db_species ~/db/DADA2/silva_species_assignment_v138.1.fa.gz --metadata 12.07.2022_metadata_updated.xlsx --priors ~/Documents/GitHub/metabaRpipe/databases/priors/hv292_CGU_V4.fasta --pool FALSE
+cd /Users/fconstan/Projects/ETH/Alessia/16S/2
+
+Rscript ~/Documents/GitHub/metabaRpipe/Rscripts/dada2_metabarcoding_pipeline.Rscript -i raw/ -T 4 --preset V4-1PCR --db ~/db/DADA2/silva_nr99_v138.1_train_set.fa.gz --db_species ~/db/DADA2/silva_species_assignment_v138.1.fa.gz --metadata /Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/05.10.2022_metadata_all_merged.xlsx --priors ~/Documents/GitHub/metabaRpipe/databases/priors/hv292_CGU_V4.fasta --pool FALSE
+
+cd /Users/fconstan/Projects/ETH/Alessia/16S/1
+
+Rscript ~/Documents/GitHub/metabaRpipe/Rscripts/dada2_metabarcoding_pipeline.Rscript -i raw/ -T 4 --preset V4-2PCR --db ~/db/DADA2/silva_nr99_v138.1_train_set.fa.gz --db_species ~/db/DADA2/silva_species_assignment_v138.1.fa.gz --metadata /Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/05.10.2022_metadata_all_merged.xlsx --priors ~/Documents/GitHub/metabaRpipe/databases/priors/hv292_CGU_V4.fasta --pool FALSE
 ```
 
 
@@ -65,7 +72,7 @@ ps_all
 
 outersect(
   sample_names(ps_all),
-  "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/12.07.2022_metadata_updated.xlsx" %>%
+  "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/05.10.2022_metadata_all_merged.xlsx" %>%
     readxl::read_xlsx() %>% 
     pull(sample_name)
   
@@ -75,7 +82,7 @@ missing_samples
 ```
 
 ```{r}
- "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/12.07.2022_metadata_updated.xlsx" %>%
+ "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/05.10.2022_metadata_all_merged.xlsx" %>%
     readxl::read_xlsx() %>% 
   filter(sample_name %in% as.vector(missing_samples)) %>% 
   select(metagenomic_sample_name, everything()) %>% 
@@ -90,10 +97,15 @@ Those are the metagnomic extra samples.
 Update metadata file:
 
 ```{r}
+ps_all
+```
+
+```{r}
 ps_all %>% 
   physeq_add_metadata(physeq = .,
-                      metadata = ( "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/12.07.2022_metadata_updated.xlsx") %>%
-                        readxl::read_excel(sheet = 1), sample_column = "sample_name") -> ps_all
+                      metadata = ( "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/05.10.2022_metadata_all_merged.xlsx") %>%
+                        readxl::read_excel(sheet = 1), sample_column = "sample_name") %>% 
+    filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> ps_all
 
 
 ps_all
@@ -109,7 +121,7 @@ ps_all %>%
   # mutate(Reactor_Treatment_Dose = ifelse(!is.na(`Antibiotic_mg.mL`),
   #                                        paste0(Reactor_Treatment, `Antibiotic_mg.mL`), Reactor_Treatment),
   #        Treatment_Dose = ifelse(!is.na(`Antibiotic_mg.mL`),
-  #                                paste0(Treatment, `Antibiotic_mg.mL`), Reactor_Treatment)) %>% 
+  #                                paste0(Treatment, `Antibiotic_mg.mL`), Reactor_Treatment)) %>%
   mutate(Treatment2 = factor(Treatment2, levels = c("DONOR", "UNTREATED", "AB+E. coli", "AB", "E. coli", "AB+E. faecium", "E. faecium")),
          Reactor_Treatment = base::replace(Reactor_Treatment, Reactor_Treatment == "TR_2CTX", "TR2_CTX"),
          Phase = factor(Phase, levels = c("Stab", "Treat")),
@@ -131,6 +143,12 @@ ps_all %>%
          # Reactor = factor(Reactor, levels = c("negative","positive","STRAIN", "DONOR", "IR1", "IR2", "CR", "TR1", "TR2", "TR3", "TR4", "TR5", "TR6","Batch3","Batch4")),
          Experiment = factor(Experiment, levels = c( "NTC","Mock", "HV292.1", "CCUG59168", "Cecum","Continuous","Batch")),
          
+         Day_of_Treatment = as.double(Day_of_Treatment),
+         Antibiotic_mg.L = ifelse(Phase == "Stab", NA, Antibiotic_mg.L),
+         Antibiotic_mg.L = factor(Antibiotic_mg.L, levels = c(NA, 20, 200,90, 600)), 
+         reatment = factor(Treatment, levels = c("DONOR","UNTREATED","CTX","CTX+HV292.1","HV292.1","VAN","VAN+CCUG59168", "CCUG59168"
+  ))
+         
          # mutate( Treatment  = case_when(Experiment == "Cecum" ~ "DONOR",
          #                               TRUE ~ Treatment)) %>% 
          # mutate(Treatment = ifelse(Experiment == "Cecum", "Donor", Treatment)) %>% 
@@ -148,8 +166,11 @@ ps_all %>%
 
 ps_all %>% 
   sample_data() %>% 
-  data.frame()
+  data.frame() %>% 
+  DT::datatable()
 ```
+
+
 
 
 ```{r}
@@ -182,10 +203,22 @@ ps_all_clean %>%  tax_table() %>% .[,"Genus"] %>%  unique()
 ps_all_clean %>% tax_table() %>% .[,"Species"] %>% unique()
 ```
 
+
+Remove some mislabeled samples:
+
 ```{r}
 ps_all_clean %>% 
-  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_no_tree_090922.RDS")
+  subset_samples(Sample_description %!in% c("TR5-15", "TR4-1")) -> ps_all_clean
 ```
+
+
+save without phylogeny:
+
+```{r}
+ps_all_clean %>% 
+  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_no_tree_051022.RDS")
+```
+
 
 add phylogeny:
 
@@ -194,21 +227,22 @@ ps_all_clean %>%
   add_phylogeny_to_phyloseq() -> ps_all_clean
 ```
 
+save:
+
 ```{r}
 ps_all_clean %>% 
-  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_090922.RDSS")
+  saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_051022.RDS")
 ```
- 
  
 
 ```{r}
 ps_all_clean %>% 
-  subset_samples(Enrichment == "NotEnriched" ) %>% 
-  subset_samples(Sample_description %!in% c("TR5-15", "TR4-1")) %>% # mislabel
-  subset_samples(Day_from_Inoculum >= 30 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous")) %>% 
+  # subset_samples(Enrichment == "NotEnriched" ) %>% 
+  # subset_samples(Sample_description %!in% c("TR5-15", "TR4-1")) %>% # mislabel
+  # subset_samples(Day_from_Inoculum >= 30 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous")) %>% 
   # subset_samples(Experiment != "Batch") %>% 
   subset_samples(is.na(Paul)) %>% 
-  subset_samples(Day_of_Treatment >= -4 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous")) %>% 
+  subset_samples(Day_of_Treatment >= -4 | Experiment %in% c("Cecum", "NTC", "Mock", "HV292.1", "CCUG59168", "Continuous", "SLURRY")) %>% 
   # %    subset_samples(Model == "Human" & Day_of_Treatment <= 4) %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
     saveRDS("/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_090922.RDS")

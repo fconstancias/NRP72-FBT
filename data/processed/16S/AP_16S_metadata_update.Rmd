@@ -36,7 +36,7 @@ source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/p
 
 
 ```{r}
-"/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_090922.RDSS" %>% 
+"/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/16S/ps_silva_dada2_human_chicken_all_fct_090922.RDS" %>% 
   readRDS() -> ps
 
 ps
@@ -48,7 +48,7 @@ Update metadata file:
 ```{r}
 ps %>% 
   physeq_add_metadata(physeq = .,
-                      metadata = ( "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/04.08.2022_metadata_all_merged.xlsx") %>%
+                      metadata = ( "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/raw/05.10.2022_metadata_all_merged.xlsx") %>%
                         readxl::read_excel(sheet = 1), sample_column = "sample_name") %>%
   microViz::ps_mutate(Day_of_Treatment = as.double(Day_of_Treatment)) -> ps_all
 
