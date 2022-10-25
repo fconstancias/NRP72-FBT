@@ -1,5 +1,5 @@
 ---
-title: "NTP72 - 16S alpha div"
+title: "NTP72 - 16S  gram stain + intrinsic AMR"
 author: "Florentin Constancias"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
@@ -69,12 +69,11 @@ load(here::here("Figures/Rastetics.Rdata"))
 ## Data
 
 ### 16S:
+
 ```{r}
-("data/processed/16S/ps_silva_dada2_human_chicken_all_fct_polyferms_090922_up.RDS") %>% 
+"data/processed/16S/16S_working_phyloseq.RDS" %>% 
   here::here() %>% 
-  readRDS() %>% 
-  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
-  phyloseq_get_strains() -> ps_16S
+  readRDS() -> ps_16S
 ```
 
 
@@ -92,22 +91,28 @@ tibble(ASV = tax_table(ps_16S)[,c("Strain")] %>%  as.vector(),
 df %>%  
   # mutate(gram_neg_strain = AMR::mo_gramstain(ASV)) %>% 
   mutate(gram_neg_genus = AMR::mo_gramstain(Genus)) %>% 
-  mutate(gram_neg_class = AMR::mo_gramstain(Class)) %>% 
   mutate(gram_neg_phylum = AMR::mo_gramstain(Phylum)) %>% 
-  mutate(gram_strain = AMR::mo_gramstain(ASV)) -> gram_df
+  mutate(gram_neg_class = AMR::mo_gramstain(Class)) -> gram_df
 
 
 gram_df  %>% 
   DT::datatable()
 ```
 
+
+```{r}
+gram_df %>% 
+  saveRDS(here::here(("data/processed/16S/16S_based_gram.RDS")))
+```
+
+
 ```{r}
 df %>% 
-  mutate(intrinsic_genus_ctx = mo_is_intrinsic_resistant(Genus, ab = "CTX")) %>% 
-  mutate(intrinsic_genus_van = mo_is_intrinsic_resistant(Genus, ab = "VAN")) %>% 
-    mutate(intrinsic_family_ctx = mo_is_intrinsic_resistant(Family, ab = "CTX")) %>% 
-  mutate(intrinsic_family_van = mo_is_intrinsic_resistant(Family, ab = "VAN")) %>% 
-    # mutate(intrinsic_species_van = mo_is_intrinsic_resistant(Species, ab = "VAN")) %>% 
+  # mutate(intrinsic_genus_ctx = mo_is_intrinsic_resistant(Genus, ab = "CTX")) %>% 
+  # mutate(intrinsic_genus_van = mo_is_intrinsic_resistant(Genus, ab = "VAN")) %>% 
+  # mutate(intrinsic_family_ctx = mo_is_intrinsic_resistant(Family, ab = "CTX")) %>% 
+  # mutate(intrinsic_family_van = mo_is_intrinsic_resistant(Family, ab = "VAN")) %>% 
+  # mutate(intrinsic_species_van = mo_is_intrinsic_resistant(Species, ab = "VAN")) %>% 
   # mutate(intrinsic_species_ctx = mo_is_intrinsic_resistant(Species, ab = "CTX")) %>% #-> AMR_df 
   mutate(intrinsic_strain_ctx = mo_is_intrinsic_resistant(ASV, ab = "CTX")) %>%
   mutate(intrinsic_strain_van = mo_is_intrinsic_resistant(ASV, ab = "VAN")) -> AMR_df
@@ -119,13 +124,9 @@ AMR_df %>%
 ```{r}
 AMR_df %>% 
   saveRDS(here::here(("data/processed/16S/16S_based_intrinsinc_AMR.RDS")))
-
-
-gram_df %>% 
-    saveRDS(here::here(("data/processed/16S/16S_based_gram.RDS")))
-
-
 ```
+
+
 
 ```{r}
 sessionInfo()

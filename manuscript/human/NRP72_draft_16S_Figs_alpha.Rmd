@@ -1,0 +1,336 @@
+---
+title: "NTP72 - 16S - alpha - human draft "
+author: "Florentin Constancias"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+rm(list = ls())
+gc()
+options(java.parameters = "-Xmx80000m")
+```
+
+```{r setup2, include=FALSE}
+
+knitr::opts_chunk$set(cache=TRUE)
+##knitr::opts_chunk$set(echo = TRUE)
+### knitr::opts_chunk$set(dev = "ragg_png") # https://ragg.r-lib.org/index.html
+##knitr::opts_chunk$set(fig.width = 6) #https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing
+##knitr::opts_chunk$set(fig.asp = 0.618)
+##knitr::opts_chunk$set(fig.show = "hold")
+##knitr::opts_chunk$set(fig.show = "70%")
+##knitr::opts_chunk$set(fig.align = "center")
+```
+
+```{r packages, results=FALSE, warning=FALSE}
+#install.packages("tidyverse")
+require(tidyverse); packageVersion("tidyverse")
+require(phyloseq); packageVersion("phyloseq")
+```
+
+```{r sourcing, warning=FALSE , message= FALSE}
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_heatmap.R")
+source("https://raw.githubusercontent.com/fconstancias/metabaRpipe-source/master/Rscripts/functions.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_varia.R")
+
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+```
+
+```{r}
+out_pptx = "~/Desktop/16S-human-alpha.pptx"
+out_xlsx = "~/Desktop/16S-human-alpha.xlsx"
+```
+
+```{r}
+load(url("https://github.com/fconstancias/NRP72-FBT/blob/master/Figures/Rastetics.Rdata?raw=true"))
+```
+
+## load data:
+
+```{r}
+"data/processed/16S/16S_working_phyloseq.RDS" %>% 
+  here::here() %>% 
+  readRDS() -> ps_filtered
+```
+
+```{r}
+ps_filtered %>% 
+  phyloseq_check_lib_size(data_color = "Reactor", data_facet = "Reactor", first_n = 50, nreads_display = 1000) -> out
+
+out$df %>% 
+  # rownames_to_column('sample_id') %>% 
+  # filter(Treatment == "DONOR")  %>% 
+  select(SampleID, Day_of_Treatment,Treatment, Reactor, Model2, Model, LibrarySize) 
+```
+
+## rarefraction
+
+```{r}
+min_sample_size = 3820
+
+ps_filtered %>%
+  rarefy_even_depth(sample.size = min_sample_size, rngseed = 123)  -> ps_rare
+
+ps_filtered %>%
+  prune_samples(sample_sums(.)>= min_sample_size, .) -> ps_fil
+```
+
+Alpha Diversity:
+
+```{r}
+ps_rare %>% 
+  subset_samples(Treatment != "DONOR") %>% 
+  plot_richness(measures = c("Observed", "Shannon", "InvSimpson"),
+                shape = "Model2") -> alpha_plot
+
+alpha_plot$data %>% 
+    mutate(variable = recode(variable, 
+                         Observed="H0",
+                         Shannon="H1",
+                         InvSimpson = "H2")) %>% 
+  mutate(value = ifelse(variable == "H1", exp(value), value)) -> hill_df
+```
+
+```{r, message=FALSE, warning=FALSE}
+hill_df %>%
+  mutate(Day_of_Treatment = as.double(Day_of_Treatment)) %>% 
+  filter(!is.na(Day_of_Treatment)) %>% 
+  # filter(Day_of_Treatment >= -1) %>% 
+  ##filter(samples != "B3","B4") %>%
+  ggplot(aes(Day_of_Treatment,
+             value,
+             colour = Treatment,
+             fill = Treatment)) + #,
+             # group = interaction(Model2, Reactor, Treatment, Treatment_Dose, Fermentation))) +
+  facet_grid(variable ~ Model2,scale="free",space="fixed") +
+  # geom_boxplot(outlier.colour = NA, alpha = 0.2) +
+  # ggtitle("Alpha_Div_chicken_2 ") +
+  geom_point(size=2,position=position_jitterdodge(dodge.width = 0.2), 
+             aes(shape = Antibiotic_mg.L)) +
+  ylab("Hill diversity index") + xlab("Days (Treatment)") + theme_bw() +
+  geom_smooth(alpha = 0.08) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  scale_color_manual(name = "", values = treat_col[! treat_col %in% c("#3CB371")],
+                     na.value = "black") +
+  scale_fill_manual(name = "", values = treat_col[! treat_col %in% c("#3CB371")],
+                    na.value = "black") +
+  scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) -> alpha_plot
+
+alpha_plot
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+alpha_plot + theme(legend.position = "none") -> alpha_plot_noleg
+
+alpha_plot  %>%  ggpubr::get_legend() %>% ggpubr::as_ggplot() -> alpha_plot_leg
+
+alpha_plot_noleg
+
+
+
+alpha_plot_noleg %>%
+  export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 1,
+                    height = 0.618 * 317.48031496 * 1.25 , paper = "A4",  scaling = 2,
+                    file = out_pptx)
+
+
+alpha_plot_leg %>%
+  export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 1,
+                    height = 0.618 * 317.48031496 * 1.25 , paper = "A4",  scaling = 2,
+                    file = out_pptx)
+```
+
+```{r}
+alpha_plot_noleg$data %>% 
+    dplyr::select(sample_name, value, variable, Reactor_Treatment, Day_of_Treatment) %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   # sheetName = "p_gram_h2",
+                   showNA = TRUE)
+```
+
+# statistical evaluation:
+
+pre-treatment:
+
+```{r}
+alpha_plot_noleg$data %>% 
+  filter(Day_of_Treatment <= -1) %>% 
+  # group_by(Model2) %>% 
+   # group_by(Model2, variable) %>%
+      # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
+      #                      # comparisons = list(c("Inulin_3", "Control")),
+      #                      # ref.group = "Control",
+      #                      data = . ) %>%  #,
+      ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
+                            data = .,
+                            method = "wilcox.test",
+                            group.by = c("Model2", "variable"),
+                            p.adjust.method = "none") %>% 
+  arrange(p) %>% 
+  ungroup() %>% 
+  group_by(Model2) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  DT::datatable()
+
+```
+
+```{r}
+alpha_plot_noleg$data %>% 
+  filter(Day_of_Treatment >= 0) %>% 
+  # group_by(Model2) %>% 
+   # group_by(Model2, variable) %>%
+      # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
+      #                      # comparisons = list(c("Inulin_3", "Control")),
+      #                      # ref.group = "Control",
+      #                      data = . ) %>%  #,
+      ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
+                            data = .,
+                            method = "wilcox.test",
+                            group.by = c("Model2", "variable"),
+                            p.adjust.method = "none") %>% 
+  arrange(p) %>% 
+  ungroup() %>% 
+  group_by(Model2) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  DT::datatable()
+```
+
+```{r}
+alpha_plot_noleg$data %>% 
+  filter(Day_of_Treatment >= 3 & Day_of_Treatment <= 7) %>% 
+  # group_by(Model2) %>% 
+   # group_by(Model2, variable) %>%
+      # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
+      #                      # comparisons = list(c("Inulin_3", "Control")),
+      #                      # ref.group = "Control",
+      #                      data = . ) %>%  #,
+      ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
+                            data = .,
+                            method = "wilcox.test",
+                            group.by = c("Model2", "variable"),
+                            p.adjust.method = "none") %>% 
+  arrange(p) %>% 
+  ungroup() %>% 
+  group_by(Model2) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  DT::datatable()
+
+```
+
+```{r}
+alpha_plot_noleg$data %>% 
+  filter(Day_of_Treatment >= 7) %>% 
+  # group_by(Model2) %>% 
+   # group_by(Model2, variable) %>%
+      # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
+      #                      # comparisons = list(c("Inulin_3", "Control")),
+      #                      # ref.group = "Control",
+      #                      data = . ) %>%  #,
+      ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
+                            data = .,
+                            method = "wilcox.test",
+                            group.by = c("Model2", "variable"),
+                            p.adjust.method = "none") %>% 
+  arrange(p) %>% 
+  ungroup() %>% 
+  group_by(Model2) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  DT::datatable()
+
+```
+
+```{r}
+alpha_plot_noleg$data %>% 
+  filter(Day_of_Treatment >= 0) %>% 
+  # group_by(Model2) %>% 
+   # group_by(Model2, variable) %>%
+      # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
+      #                      # comparisons = list(c("Inulin_3", "Control")),
+      #                      # ref.group = "Control",
+      #                      data = . ) %>%  #,
+      ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
+                            data = .,
+                            method = "wilcox.test",
+                            group.by = c("Model2", "variable"),
+                            p.adjust.method = "none") %>% 
+  arrange(p) %>% 
+  ungroup() %>% 
+  group_by(Model2) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  DT::datatable()
+
+```
+
+```{r}
+# alpha_plot_2
+# 
+# 
+# library(tidyverse)
+# library(broom)
+# 
+# # original graph with smoother
+# ggplot(data=mtcars, aes(hp,wt)) + 
+#   stat_smooth(method = "loess", span = 0.75)
+# 
+# # Create model that will do the same thing as under the hood in ggplot2
+# model <- loess(wt ~ hp, data = mtcars, span = 0.75)
+# 
+# # Add predicted values from model to original dataset using broom library
+# mtcars2 <- augment(model, mtcars)
+# 
+# # Plot both lines 
+# ggplot(data=mtcars2, aes(hp,wt)) + 
+#   geom_line(aes(hp, .fitted), color = "red") +
+#   stat_smooth(method = "loess", span = 0.75)
+```
+
+```{r}
+
+# library(ggplot2)
+# # Make the plot
+# ggplot(aes(x = speed, y = dist), data = cars) + geom_point() +
+#   stat_smooth(method = "loess")
+# # Get the values
+# smooth_vals = predict(loess(dist~speed,cars), cars$speed)
+# 
+# 
+# plx<-predict(loess(cars$dist ~ cars$speed), se=T)
+# 
+# lines(cars$speed,plx$fit)
+# lines(cars$speed,plx$fit - qt(0.975,plx$df)*plx$se, lty=2)
+# lines(cars$speed,plx$fit + qt(0.975,plx$df)*plx$se, lty=2)
+
+```
+
+```{r}
+# alpha_plot_2 %>% 
+#   export::graph2ppt(file = "~/Downloads/16S-NRP72/pptx.pptx", append = TRUE,  width = 317.48031496 * 1.5, height = 0.618 * 317.48031496 * 1.075, paper = "A4",  scaling = 2)
+```
+
+```{r}
+
+# ggsave("Alpha_chicken_2_Days_new.pdf", 
+#        plot = alpha_plot_2, width = 10, height = 10, units = "cm", bg = "transparent", scale = 2, dpi = 600)
+```
+
+```{r}
+# alpha_plot_2 %>% 
+#   saveRDS("C:/Users/domga/Desktop/R stuff/Mapfiles/alpha_plot_2.RDS")
+```
+
+```{r}
+sessionInfo()
+```
