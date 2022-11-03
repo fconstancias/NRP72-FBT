@@ -1,0 +1,608 @@
+---
+title: "NTP72 - 16S - taxa gram - chicken draft "
+author: "Florentin Constancias"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+rm(list = ls())
+gc()
+options(java.parameters = "-Xmx80000m")
+```
+
+```{r setup2, include=FALSE}
+
+##knitr::opts_chunk$set(cache=TRUE)
+##knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(dev = "ragg_png") # https://ragg.r-lib.org/index.html
+##knitr::opts_chunk$set(fig.width = 6) #https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing
+##knitr::opts_chunk$set(fig.asp = 0.618)
+##knitr::opts_chunk$set(fig.show = "hold")
+##knitr::opts_chunk$set(fig.show = "70%")
+##knitr::opts_chunk$set(fig.align = "center")
+```
+
+```{r packages, results=FALSE, warning=FALSE}
+#install.packages("tidyverse")
+require(tidyverse); packageVersion("tidyverse")
+require(phyloseq); packageVersion("phyloseq")
+```
+
+```{r sourcing, warning=FALSE, results=FALSE , message= FALSE}
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_heatmap.R")
+source("https://raw.githubusercontent.com/fconstancias/metabaRpipe-source/master/Rscripts/functions.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_varia.R")
+
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+```
+
+
+```{r}
+out_pptx = "~/Desktop/16S-chick.pptx"
+out_xlsx = "~/Desktop/16S-chick.xlsx"
+```
+
+```{r}
+load(url("https://github.com/fconstancias/NRP72-FBT/blob/master/Figures/Rastetics.Rdata?raw=true"))
+```
+
+## load data:
+
+```{r}
+"data/processed/16S/16S_working_phyloseq.RDS" %>% 
+  here::here() %>% 
+  readRDS()  %>% 
+  subset_samples(Enrichment == "NotEnriched") %>%
+      subset_samples(Experiment %in% c("Continuous", "Cecum")) %>%
+   subset_samples(Day_of_Treatment > -6 & Day_of_Treatment <= 30 | Reactor == "DONOR") %>% 
+  subset_samples(Model == "Chicken") %>% 
+   subset_samples(Reactor != "CR" & Model2 == "Chicken1" | Model2 == "Chicken2" & Reactor %in% c("TR2", "TR3", "TR4", "TR5", "TR6", "TR7", "CR", "DONOR")) %>% 
+   subset_samples(Reactor != "IR") -> ps_filtered
+```
+
+```{r}
+ps_filtered %>% 
+  phyloseq_check_lib_size(data_color = "Reactor", data_facet = "Reactor", first_n = 50, nreads_display = 1000) -> out
+
+out$df %>% 
+  # rownames_to_column('sample_id') %>% 
+  # filter(Treatment == "DONOR")  %>% 
+  select(SampleID, Day_of_Treatment,Treatment, Reactor, Model2, Model, Period, LibrarySize) 
+```
+
+## rarefraction
+
+```{r}
+min_sample_size = 3738
+
+ps_filtered %>%
+  rarefy_even_depth(sample.size = min_sample_size, rngseed = 123)  -> ps_rare
+
+ps_filtered %>%
+  prune_samples(sample_sums(.)>= min_sample_size, .) -> ps_fil
+```
+
+
+## gram plots:
+
+histogram of gram+ gram- & intrinsicly resistant or not an annotation color in a heatmap would be cool as well.
+
+```{r}
+"data/processed/16S/16S_based_gram.RDS" %>% 
+  here::here() %>% 
+  readRDS() -> gram
+
+gram %>% 
+  summarise_all(~ sum(is.na(.)))
+```
+
+```{r}
+dim(gram)
+
+intersect(gram$ASV,
+          tax_table(ps_filtered)[,"Strain"] %>%  as.character() ) %>%  length() 
+```
+
+Let's take the Class info here.
+
+## intrinsic:
+
+```{r}
+"data/processed/16S/16S_based_intrinsinc_AMR.RDS" %>% 
+  here::here() %>% 
+  readRDS() -> intrinsic_AMR
+```
+
+Wich level to chose? the one with less NA:
+
+```{r}
+intrinsic_AMR %>% 
+  select(starts_with("intrinsic")) %>% 
+  summary()
+```
+
+Let's take the Strain info here.
+
+```{r}
+ps_rare_gram_int <- ps_rare
+
+# We want sample, reactor..., day_0f_treatment 
+ps_rare_gram_int %>% 
+  tax_table() %>% 
+  data.frame() %>% 
+  rownames_to_column("ASVid") %>% 
+  left_join(gram %>% dplyr::rename("Strain" = "ASV") %>%  
+              select(Strain , gram_neg_class)
+  ) %>%  #,
+  # by = c("Strain" = "ASV"),
+  # suffix = c("", ".y")) %>% 
+  select(ASVid:Strain, gram_neg_class) %>% 
+  dplyr::rename('gram_stain' = 'gram_neg_class') %>% 
+  mutate(gram_stain = replace_na(gram_stain, "unknown-gram")) %>% 
+  left_join(., intrinsic_AMR,
+            suffix = c("", ".y"),
+            by = c("Strain" = "ASV")) %>%
+  mutate(intrinsic = ifelse(intrinsic_strain_van == TRUE & intrinsic_strain_ctx == TRUE, "intrinsic-VAN-CTX",  ifelse(intrinsic_strain_van == TRUE, "intrinsic-VAN", ifelse(intrinsic_strain_ctx == TRUE, "intrinsic-CTX", "No-intrinsic")))) %>% 
+  select(ASVid:gram_stain,intrinsic) %>%
+  mutate(gram_intrinsic = paste0(gram_stain, 
+                                 ifelse(is.na(intrinsic), "", paste0("_",intrinsic)))) %>% 
+  # dplyr::rename('intrinsic_CTX' = 'intrinsic_strain_ctx',
+  # 'intrinsic_VAN' = 'intrinsic_strain_van') %>% 
+  column_to_rownames('ASVid') %>% 
+  as.matrix() -> tax_table(ps_rare_gram_int)
+
+
+ps_rare_gram_int %>% 
+  phloseq_export_otu_tax() %>% 
+  select(-ASV_sequence) %>% 
+    xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "gram_classification",
+                   showNA = TRUE)
+```
+
+### chicken2:
+
+#### gram:
+
+```{r}
+require(microViz)
+
+ps_rare_gram_int %>% 
+  subset_samples(Model2 == "Chicken2" & Treatment != "DONOR" & Day_of_Treatment >= -1) %>% 
+  microViz::ps_mutate(Reactor_Treatment_Dose = paste0(Reactor_Treatment_Dose, "_", Fermentation)) %>% 
+  # microViz::ps_mutate(Treatment = fct_relevel(Treatment, sample_data(ps_rare)$Treatment %>%  levels())) %>% 
+  transform_sample_counts(function(x) x/sum(x) * 100) %>%
+  physeq_sel_tax_table(c("gram_stain")) %>% 
+  # subset_taxa(Strain %in% top_taxa_per_group_h2) %>% # extract only the taxa to display - after percentage normalisation
+  microViz::phyloseq_validate() %>%
+  # microViz::tax_fix() %>%
+  microViz::ps_arrange(Day_of_Treatment) %>% 
+  # microViz::tax_mutate(gram = left_join(tax_table(.) %>% data.frame(), gram,
+  # by = c("Strain" = "ASV") %>% select(gram_neg_class))) %>% 
+  microViz::comp_barplot(
+    tax_transform_for_plot = "identity",
+    tax_level = "gram_stain",
+    label = "Day_of_Treatment", # name an alternative variable to label axes
+    palette = microViz::distinct_palette(3, pal = "greenArmytage"),
+    n_taxa = 10, # give more taxa unique colours
+    merge_other = FALSE, # split the "other" category to display alpha diversity
+    bar_width = 0.9, # reduce the bar width to 70% of one row
+    bar_outline_colour = "grey5",
+    sample_order = "default") +
+  ylab("Proportion - %") + xlab( " Day (Treatment) ") -> p_gram_h2
+
+p_gram_h2 + theme_light() + facet_grid(. ~ Treatment, scales = "free", space = "free_x", drop = TRUE) -> p_gram_h2
+
+p_gram_h2 + theme(legend.position = "none") + ggpubr::rotate_x_text(90) -> p_gram_h2_no_leg
+
+p_gram_h2_no_leg
+
+p_gram_h2 %>%  
+  ggpubr::get_legend() %>% 
+  ggpubr::as_ggplot() -> p_gram_h2_leg
+
+p_gram_h2_leg
+```
+
+saving outputs:
+
+
+```{r}
+p_gram_h2_no_leg %>%
+    export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 1.25,
+                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+                    file = out_pptx)
+
+
+p_gram_h2_leg %>%
+    export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 1,
+                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+                    file = out_pptx)
+
+p_gram_h2_no_leg$data %>% 
+  select(OTU, Sample, Abundance,Day_of_Treatment, Reactor_Treatment_Dose) %>% 
+  pivot_wider(names_from = OTU, values_from = Abundance) %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "chicken2_gram",
+                   showNA = TRUE)
+```
+
+```{r}
+require(ggalluvial)
+
+
+p_gram_h2$data %>%
+  # filter(Model2 == "Human2") %>%
+  mutate(gram_stain = factor(gram_stain, levels = c("Gram-positive", "Gram-negative", "unknown-gram"))) %>%
+  # mutate(combo = paste0(Model2, "_" , Reactor_F1_F2)) %>%
+  # mutate(combo = as.factor(combo)) %>%
+  select(SAMPLE, gram_stain,OTU, Abundance, Day_of_Treatment, Treatment) %>% 
+  ggplot(.,
+         aes(x = Day_of_Treatment, 
+             y = Abundance,
+             stratum = gram_stain, 
+             alluvium = OTU,
+             fill = gram_stain,
+             label = gram_stain))+
+  facet_grid(Treatment  ~ .)+
+  # scale_fill_manual(values = c("red", "yellow", "green3"))+
+  geom_flow(stat = "alluvium", lode.guidance = "frontback", color = "darkgray")+
+  geom_stratum() +
+  theme_light() +
+  # geom_text(stat = "alluvium", aes(label = top), lode.guidance = "frontback") +
+  # scale_fill_manual(values = col_ASVs) +
+  scale_color_manual(values  =   microViz::distinct_palette(3, pal = "greenArmytage")) +
+  scale_fill_manual(values  =   microViz::distinct_palette(3, pal = "greenArmytage")) +
+  # scale_color_manual(values  = microViz::distinct_palette(10, pal = "kelly")) +
+  # scale_fill_manual(values  = microViz::distinct_palette(10, pal = "kelly")) +
+  ylab("Proportion - %") -> p_allu_human2_gram
+
+p_allu_human2_gram + theme(legend.position = "none") -> p_allu_human2_gram_noleg 
+
+p_allu_human2_gram_noleg 
+
+p_allu_human2_gram %>% 
+  ggpubr::get_legend() %>% 
+  ggpubr::as_ggplot() ->  p_allu_human2_gram_leg
+
+p_allu_human2_gram_leg
+```
+
+saving outputs:
+
+
+```{r}
+p_allu_human2_gram_noleg %>%
+    export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 1.25,
+                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+                    file = out_pptx)
+```
+
+
+### chicken1 :
+
+#### gram:
+
+```{r}
+ps_rare_gram_int %>% 
+  subset_samples(Model2 == "Chicken1" & Treatment != "DONOR" & Day_of_Treatment >= -1) %>% 
+  # microViz::ps_mutate(Reactor_Treatment_Dose = paste0(Reactor_Treatment_Dose, "_", Fermentation)) %>% 
+  transform_sample_counts(function(x) x/sum(x) * 100) %>%
+  physeq_sel_tax_table(c("gram_stain")) %>% 
+  # subset_taxa(Strain %in% top_taxa_per_group_h2) %>% # extract only the taxa to display - after percentage normalisation
+  microViz::phyloseq_validate() %>%
+  microViz::tax_fix() %>%
+  microViz::ps_arrange(Day_of_Treatment) %>% 
+  # microViz::tax_mutate(gram = left_join(tax_table(.) %>% data.frame(), gram,
+  # by = c("Strain" = "ASV") %>% select(gram_neg_class))) %>% 
+  microViz::comp_barplot(
+    tax_transform_for_plot = "identity",
+    tax_level = "gram_stain",
+    label = "Day_of_Treatment", # name an alternative variable to label axes
+    palette = microViz::distinct_palette(2, pal = "greenArmytage"),
+    n_taxa = 10, # give more taxa unique colours
+    merge_other = FALSE, # split the "other" category to display alpha diversity
+    bar_width = 0.9, # reduce the bar width to 70% of one row
+    bar_outline_colour = "grey5",
+    sample_order = "default") +
+  ylab("Proportion - %") + xlab( " Day (Treatment) ") -> p_gram_h1
+
+p_gram_h1 + facet_grid(. ~ Treatment, scales = "free", space = "free_x", drop = TRUE) -> p_gram_h1
+
+p_gram_h1 + theme_light() + theme(legend.position = "none") + ggpubr::rotate_x_text(90) -> p_gram_h1_no_leg
+
+p_gram_h1_no_leg
+
+p_gram_h1 %>%  
+  ggpubr::get_legend() %>% 
+  ggpubr::as_ggplot() -> p_gram_h1_leg
+
+```
+```{r}
+p_gram_h1_no_leg %>%
+    export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 1.25,
+                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+                    file = out_pptx)
+
+
+p_gram_h1_leg %>%
+    export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 1,
+                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+                    file = out_pptx)
+
+p_gram_h1_no_leg$data %>% 
+  select(OTU, Sample, Abundance,Day_of_Treatment, Reactor_Treatment_Dose) %>% 
+  pivot_wider(names_from = OTU, values_from = Abundance) %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "chicken1_gram",
+                   showNA = TRUE)
+```
+
+```{r}
+p_gram_h1$data %>%
+  # filter(Model2 == "Human2") %>%
+  mutate(gram_stain = factor(gram_stain, levels = c("Gram-positive", "Gram-negative", "unknown-gram"))) %>%
+  # mutate(combo = paste0(Model2, "_" , Reactor_F1_F2)) %>%
+  # mutate(combo = as.factor(combo)) %>%
+  select(SAMPLE, gram_stain,OTU, Abundance, Day_of_Treatment, Treatment) %>% 
+  ggplot(.,
+         aes(x = Day_of_Treatment, 
+             y = Abundance,
+             stratum = gram_stain, 
+             alluvium = OTU,
+             fill = gram_stain,
+             label = gram_stain))+
+  facet_grid(Treatment  ~ .)+
+  # scale_fill_manual(values = c("red", "yellow", "green3"))+
+  geom_flow(stat = "alluvium", lode.guidance = "frontback", color = "darkgray")+
+  geom_stratum() +
+  theme_light() +
+  # geom_text(stat = "alluvium", aes(label = top), lode.guidance = "frontback") +
+  # scale_fill_manual(values = col_ASVs) +
+  scale_color_manual(values  =   microViz::distinct_palette(3, pal = "greenArmytage")) +
+  scale_fill_manual(values  =   microViz::distinct_palette(3, pal = "greenArmytage")) +
+  # scale_color_manual(values  = microViz::distinct_palette(10, pal = "kelly")) +
+  # scale_fill_manual(values  = microViz::distinct_palette(10, pal = "kelly")) +
+  ylab("Proportion - %") -> p_allu_h1_gram 
+
+p_allu_h1_gram + theme(legend.position = "none") -> p_allu_h1_gram_noleg 
+
+p_allu_h1_gram_noleg 
+
+p_allu_h1_gram %>% 
+  ggpubr::get_legend() %>% 
+  ggpubr::as_ggplot() ->  p_allu_h1_gram_leg
+
+p_allu_h1_gram_leg
+```
+
+
+```{r}
+p_allu_h1_gram_noleg %>%
+    export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 1.25,
+                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+                    file = out_pptx)
+```
+
+#### intrinsic:
+
+```{r}
+# ps_rare_gram_int %>% 
+#   subset_samples(Model2 == "Chicken1" & Treatment != "DONOR" & Day_of_Treatment >= -1) %>% 
+#   microViz::ps_mutate(Reactor_Treatment_Dose = paste0(Reactor_Treatment_Dose, "_", Fermentation)) %>% 
+#   transform_sample_counts(function(x) x/sum(x) * 100) %>%
+#   physeq_sel_tax_table(c( "intrinsic")) %>% 
+#   # microbiome::transform("log") %>% 
+#   # speedyseq::tax_glom("intrinsic") %>% 
+#   # physeq_sel_tax_table(c("gram_stain","intrinsic")) %>% 
+#   # physeq_glom_rename(phyloseq = ., speedyseq = TRUE, rename_ASV = FALSE, taxrank = "gram_stain") %>% 
+#   # subset_taxa(Strain %in% top_taxa_per_group_h2) %>% # extract only the taxa to display - after percentage normalisation
+#   microViz::phyloseq_validate() %>%
+#   microViz::tax_fix() %>%
+#   microViz::ps_arrange(Day_of_Treatment) %>% 
+#   # microViz::tax_mutate(gram = left_join(tax_table(.) %>% data.frame(), gram,
+#   # by = c("Strain" = "ASV") %>% select(gram_neg_class))) %>% 
+#   microViz::comp_barplot(
+#     tax_transform_for_plot = "identity",
+#     tax_level = "intrinsic",
+#     label = "Day_of_Treatment", # name an alternative variable to label axes
+#     # palette = microViz::distinct_palette(3, pal = "brewerPlus"),
+#     n_taxa = 10, # give more taxa unique colours
+#     merge_other = FALSE, # split the "other" category to display alpha diversity
+#     bar_width = 0.9, # reduce the bar width to 70% of one row
+#     bar_outline_colour = "grey5",
+#     sample_order = "default") +
+#   ylab("Proportion - %") + xlab( " Day (Treatment) ") -> p_int_h1_f1
+# 
+# p_int_h1_f1 + facet_grid(Kingdom ~ Reactor_Treatment_Dose, scales = "free", space = "free_x", drop = TRUE) -> p_int_h1_f1
+# 
+# p_int_h1_f1 %>% 
+#   ggpubr::set_palette(p = ., palette = "jco") -> p_int_h1_f1
+# 
+# p_int_h1_f1 + theme_light() +theme(legend.position = "none") -> p_int_h1_f1_no_leg
+# 
+# p_int_h1_f1_no_leg
+# 
+# p_int_h1_f1 %>%  
+#   ggpubr::get_legend() %>% 
+#   ggpubr::as_ggplot() -> p_int_h1_f1_leg
+# 
+# p_int_h1_f1_leg
+```
+
+
+```{r}
+# p_int_h1_f1$data %>%
+#   # filter(Model2 == "Human2") %>%
+#   # microViz::ps_mutate(Reactor_Treatment_Dose = paste0(Reactor_Treatment_Dose, "_", Fermentation)) %>% 
+#   # mutate(combo = paste0(Model2, "_" , Reactor_F1_F2)) %>%
+#   # mutate(combo = as.factor(combo)) %>%
+#   select(SAMPLE, top,OTU, Abundance, Day_of_Treatment, Reactor_Treatment_Dose) %>% 
+#   ggplot(.,
+#          aes(x = Day_of_Treatment, 
+#              y = Abundance,
+#              stratum = top, 
+#              alluvium = OTU,
+#              fill = top,
+#              label = top))+
+#   facet_grid(Reactor_Treatment_Dose  ~ .)+
+#   # scale_fill_manual(values = c("red", "yellow", "green3"))+
+#   geom_flow(stat = "alluvium", lode.guidance = "frontback", color = "darkgray")+
+#   geom_stratum() +
+#   theme_light() +
+#   # geom_text(stat = "alluvium", aes(label = top), lode.guidance = "frontback") +
+#   # scale_fill_manual(values = col_ASVs) +
+#   scale_color_manual(values  =  microViz::distinct_palette(3, pal = "greenArmytage")) +
+#   # scale_color_manual(values  = microViz::distinct_palette(10, pal = "kelly")) +
+#   # scale_fill_manual(values  = microViz::distinct_palette(10, pal = "kelly")) +
+#   ylab("Proportion - %") -> p_allu_h1_f1_int
+# 
+# p_allu_h1_f1_int %>% 
+#   ggpubr::set_palette(p = ., palette = "jco") -> p_allu_h1_f1_int
+# 
+# p_allu_h1_f1_int + theme(legend.position = "none") -> p_allu_h1_f1_int_noleg 
+# 
+# p_allu_h1_f1_int_noleg 
+# 
+# p_allu_h1_f1_int %>% 
+#   ggpubr::get_legend() %>% 
+#   ggpubr::as_ggplot() -> p_allu_h1_f1_int_leg
+```
+
+```{r}
+# ggpubr::ggarrange(p_allu_human1_f1_noleg + xlab(NULL),
+#                   p_allu_human1_ASV_f1_noleg + ylab(NULL) + xlab(NULL),
+#                   p_allu_h1_f1_int_noleg +  coord_cartesian(ylim = c(50,100)),
+#                   p_allu_h1_f1_gram_noleg + ylab(NULL),
+#                   align = "v", 
+#                   ncol = 2, nrow = 2,
+#                   heights = c(1, 0.6), widths = c(1,1),
+#                   common.legend = FALSE) -> p_allu_human1_f1
+# 
+# p_allu_human1_f1
+# 
+# p_allu_human1_f1 %>%
+#   export::graph2ppt(append = TRUE,
+#                     width = 317.48031496 * 1,
+#                     height = 0.618 * 317.48031496 * 1.75 , paper = "A4",  scaling = 2,
+#                     file = out_pptx)
+```
+
+```{r}
+# ggpubr::ggarrange(p_gram_h1_f1_no_leg + ylab(NULL) + 
+#                     theme(axis.title.x=element_blank(),
+#                           axis.text.x=element_blank(),
+#                           axis.ticks.x=element_blank()),
+#                   p_hist_human1_f1_fam_no_leg + 
+#                     theme(
+#                       strip.background = element_blank(),
+#                       strip.text.x = element_blank()
+#                     ) +
+#                     theme(axis.title.x=element_blank(),
+#                           axis.text.x=element_blank(),
+#                           axis.ticks.x=element_blank()),
+#                   p_hist_human1_f1_strain_no_leg + 
+#                     theme(
+#                       strip.background = element_blank(),
+#                       strip.text.x = element_blank()
+#                     ) + ylab(NULL) + 
+#                     theme(axis.title.x=element_blank(),
+#                           axis.text.x=element_blank(),
+#                           axis.ticks.x=element_blank()),
+#                   p_int_h1_f1_no_leg + ylab(NULL) + coord_cartesian(ylim = c(50,100)) +
+#                     theme(
+#                       strip.background = element_blank(),
+#                       strip.text.x = element_blank()
+#                     ), 
+#                   align = "v",
+#                   ncol = 1, 
+#                   heights = c(0.15, 0.4, 0.8,0.15),
+#                   common.legend = FALSE) -> all_plot_h1_f1
+# 
+# all_plot_h1_f1
+# 
+# all_plot_h1_f1 %>% 
+#   export::graph2ppt(append = TRUE, 
+#                     width = 317.48031496 * 3.5, 
+#                     height = 0.618 * 317.48031496 * 5 , paper = "A4",  scaling = 2,
+#                     file = out_pptx)
+# 
+# 
+# p_gram_h1_f1_leg  %>% 
+#   export::graph2ppt(append = TRUE, 
+#                     width = 317.48031496 * 1, 
+#                     height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+#                     file = out_pptx)
+# 
+# p_hist_human1_f1_fam_leg  %>% 
+#   export::graph2ppt(append = TRUE, 
+#                     width = 317.48031496 * 1, 
+#                     height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+#                     file = out_pptx)
+# 
+# p_hist_human1_f1_strain_leg  %>% 
+#   export::graph2ppt(append = TRUE, 
+#                     width = 317.48031496 * 4, 
+#                     height = 0.618 * 317.48031496 * 2 , paper = "A3",  scaling = 2,
+#                     file = out_pptx)
+# 
+# p_int_h1_f1_leg  %>% 
+#   export::graph2ppt(append = TRUE, 
+#                     width = 317.48031496 * 1, 
+#                     height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+#                     file = out_pptx)
+# 
+# 
+# 
+# p_gram_h1_f1$data %>% 
+#   select(OTU, Sample, Abundance, Treatment, Day_of_Treatment) %>% 
+#   xlsx::write.xlsx(file = out_xlsx,
+#                    append = TRUE,
+#                    sheetName = "p_gram_h1_f1",
+#                    showNA = TRUE)
+# p_hist_human1_f1_fam$data %>% 
+#   select(OTU, Sample, Abundance, Treatment, Day_of_Treatment) %>% 
+#   pivot_wider(names_from = OTU, values_from = Abundance) %>% 
+#   xlsx::write.xlsx(file = out_xlsx,
+#                    append = TRUE,
+#                    sheetName = "p_hist_human1_f1_fam",
+#                    showNA = TRUE)
+# p_hist_human1_f1_strain$data %>% 
+#   select(Sample, top ,Abundance, Treatment, Day_of_Treatment) %>% 
+#   pivot_wider(names_from = top, values_from = Abundance) %>% 
+#   xlsx::write.xlsx(file = out_xlsx,
+#                    append = TRUE,
+#                    sheetName = "p_hist_human1_f1_strain",
+#                    showNA = TRUE)
+# p_int_h1_f1$data %>% 
+#   select(OTU, Sample, Abundance, Treatment, Day_of_Treatment) %>% 
+#   pivot_wider(names_from = OTU, values_from = Abundance) %>% 
+#   xlsx::write.xlsx(file = out_xlsx,
+#                    append = TRUE,
+#                    sheetName = "p_int_h1_f1",
+#                    showNA = TRUE)
+
+```
+
+```{r}
+sessionInfo()
+```

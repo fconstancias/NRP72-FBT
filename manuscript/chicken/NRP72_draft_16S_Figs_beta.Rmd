@@ -69,11 +69,20 @@ load(url("https://github.com/fconstancias/NRP72-FBT/blob/master/Figures/Rastetic
    subset_samples(Reactor != "IR") -> ps_filtered
 ```
 
+```{r}
+ps_filtered %>% 
+  phyloseq_check_lib_size(data_color = "Reactor", data_facet = "Reactor", first_n = 50, nreads_display = 1000) -> out
+
+out$df %>% 
+  # rownames_to_column('sample_id') %>% 
+  # filter(Treatment == "DONOR")  %>% 
+  select(SampleID, Day_of_Treatment,Treatment, Reactor, Model2, Model, LibrarySize) 
+```
 
 ## rarefraction
 
 ```{r}
-min_sample_size = 3820
+min_sample_size = 3738
 
 ps_filtered %>%
   rarefy_even_depth(sample.size = min_sample_size, rngseed = 123)  -> ps_rare
@@ -190,7 +199,7 @@ phyloseq_plot_ordinations_facet(plot_list = plots_hall_humans,
   scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
   theme(legend.position = "right") +
   ggtitle(NULL) +
-  facet_grid(distance ~ ., scales = "free") -> pcoa_all
+  facet_grid(Model2 ~ distance, scales = "free") -> pcoa_all
 
 pcoa_all + theme(legend.position = "none") -> pcoa_all_noleg
 
@@ -234,298 +243,30 @@ expl_var %>%
                     file = out_pptx)
 ```
 
-### Human1 - F1:
+
+
+
+### chicken1:
 
 ```{r}
 ps_rare %>%
-  subset_samples(Model2 == "Human1" & Treatment != "DONOR" & Fermentation == 1) -> ps_tmp_forbdiv
-
-```
-
-#### PCoA:
-
-```{r}
-ps_tmp_forbdiv %>%
-  # microbiome::transform(transform = "compositional") %>% 
-  phyloseq_plot_bdiv(dlist = dist,
-                     m = "PCoA",
-                     seed = 123,
-                     axis1 = 1,
-                     axis2 = 2) -> PCoA_tmp
-```
-
-#### aichinson
-
-```{r}
-PCoA_tmp$aichinson$layers[[1]] = NULL; PCoA_tmp$aichinson$layers[[1]] = NULL
-PCoA_tmp$aichinson$layers[[2]] = NULL; PCoA_tmp$aichinson$layers[[1]] = NULL
-
-# plots_hall_humans$aichinson$layers[[1]] = NULL;plots_hall_humans$aichinson$layers[[1]] = NULL
-# plots_hall_humans$aichinson$layers[[2]] = NULL;plots_hall_humans$aichinson$layers[[2]] = NULL
-
-
-PCoA_tmp$aichinson + geom_point(size = 3,
-                                aes(colour = Treatment ,
-                                    shape = Antibiotic_mg.L,
-                                    alpha = NULL)) +
-  geom_path(data = PCoA_tmp$aichinson$data %>%
-              arrange(Day_of_Treatment) ,
-            # aes(colour = Treatment, group = interaction(Model, Model2, Antibiotic, Treatment, Fermentation, Reactor,Antibiotic_mg.L)),
-            aes(colour = Treatment, group = interaction(Model2, Reactor, Treatment, Treatment_Dose)),
-            
-            arrow = arrow(
-              angle = 30, length = unit(0.15, "inches"),
-              ends = "last", type = "open"
-            ), linetype = "longdash", size = 0.1) +
-  theme_light() +
-  scale_color_manual(name = "", values = treat_col,
-                     na.value = "black") +
-  scale_fill_manual(name = "", values = treat_col,
-                    na.value = "black") +
-  scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
-  theme(legend.position = "right") +
-  facet_grid(. ~ Model2, scales = "free") -> PCoA_tmp2
-
-PCoA_tmp2
-```
-
-```{r, warning = FALSE, message = FALSE}
-PCoA_tmp2 + 
-  scale_fill_manual(values = c("transparent")) + 
-  scale_color_manual(values = c(rep("transparent", 7))) + 
-  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) -> empty_plot_tmp
-
-
-ps_tmp_forbdiv %>%
-  phyloseq_add_taxa_vector_fix(phyloseq = .,
-                               dist = dist$aichinson,
-                               taxrank_glom = "Family",
-                               figure_ord = empty_plot_tmp, 
-                               fact = 0.2, pval_cutoff = 0.05,
-                               top_r = 8) -> out #top 10 correlated genera
-
-out$signenvfit %>% 
-  DT::datatable()
-```
-
-```{r, warning = FALSE, message = FALSE}
-out$plot -> PCoA_tmp2_fam
-
-PCoA_tmp2 + 
-  theme(legend.position = "none") -> PCoA_tmp2_noleg
-
-PCoA_tmp2_noleg
-
-PCoA_tmp2  %>%  ggpubr::get_legend() %>% ggpubr::as_ggplot() -> PCoA_tmp2_leg
-
-PCoA_tmp2_noleg %>% 
-  export::graph2ppt(append = TRUE,
-                    width = 317.48031496 * 1,
-                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
-                    file = out_pptx)
-
-PCoA_tmp2_leg %>% 
-  export::graph2ppt(append = TRUE,
-                    width = 317.48031496 * 1,
-                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
-                    file = out_pptx)
-
-PCoA_tmp2_fam %>% 
-  export::graph2ppt(append = TRUE,
-                    width = 317.48031496 * 1,
-                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
-                    file = out_pptx)
-```
-
-```{r, message = FALSE, warning = FALSE}
-ps_tmp_forbdiv %>% 
-  microViz::ps_mutate(Lactose_mM = as.double(Lactose_mM), 
-                      Glucose_mM = as.double(Glucose_mM),
-                      Galactose_mM = as.double(Galactose_mM),
-                      Succinat_mM = as.double(Succinat_mM),
-                      Lactat_mM = as.double(Lactat_mM),
-                      Formiat_mM = as.double(Formiat_mM),
-                      Acetat_mM = as.double(Acetat_mM),
-                      Propionat_mM = as.double(Propionat_mM),
-                      Butyrat_mM = as.double(Butyrat_mM),
-                      Valerat_mM = as.double(Valerat_mM),
-                      Isobutyrat_mM = as.double(Isobutyrat_mM),
-                      Isovalerat_mM = as.double(Isovalerat_mM),
-                      Total_SCFA_mM = as.double(Total_SCFA_mM))  %>% # sample_data() %>% data.frame()
-  subset_samples(Total_SCFA_mM > 0) %>% 
-  phyloseq_add_metadata_vector(dist = dist$aichinson,
-                               phyloseq = .,
-                               figure_ord = empty_plot_tmp,
-                               metadata_sel = c("Succinat_mM", "Formiat_mM",  "Acetat_mM" ,
-                                                "Propionat_mM", "Butyrat_mM",  "Valerat_mM", "Total_SCFA_mM"),
-                               top_r = 6, fact = 0.3, na.rm = TRUE,
-                               pval_cutoff = 0.05) -> env_out
-
-
-env_out$signenvfit %>% 
-  DT::datatable()
-```
-
-```{r, warning = FALSE, message = FALSE}
-env_out$plot %>% 
-  export::graph2ppt(append = TRUE,
-                    width = 317.48031496 * 1,
-                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
-                    file = out_pptx)
-
-```
-
-#### bjaccard
-
-```{r}
-PCoA_tmp$bjaccard$layers[[1]] = NULL; PCoA_tmp$bjaccard$layers[[1]] = NULL
-PCoA_tmp$bjaccard$layers[[2]] = NULL; PCoA_tmp$bjaccard$layers[[1]] = NULL
-
-# plots_hall_humans$aichinson$layers[[1]] = NULL;plots_hall_humans$aichinson$layers[[1]] = NULL
-# plots_hall_humans$aichinson$layers[[2]] = NULL;plots_hall_humans$aichinson$layers[[2]] = NULL
-
-
-PCoA_tmp$bjaccard + geom_point(size = 3,
-                               aes(colour = Treatment ,
-                                   shape = Antibiotic_mg.L,
-                                   alpha = NULL)) +
-  geom_path(data = PCoA_tmp$bjaccard$data %>%
-              arrange(Day_of_Treatment) ,
-            # aes(colour = Treatment, group = interaction(Model, Model2, Antibiotic, Treatment, Fermentation, Reactor,Antibiotic_mg.L)),
-            aes(colour = Treatment, group = interaction(Model2, Reactor, Treatment, Treatment_Dose)),
-            
-            arrow = arrow(
-              angle = 30, length = unit(0.15, "inches"),
-              ends = "last", type = "open"
-            ), linetype = "longdash", size = 0.1) +
-  theme_light() +
-  scale_color_manual(name = "", values = treat_col,
-                     na.value = "black") +
-  scale_fill_manual(name = "", values = treat_col,
-                    na.value = "black") +
-  scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
-  theme(legend.position = "right") +
-  facet_grid(. ~ Model2, scales = "free") -> PCoA_tmp2
-
-PCoA_tmp2
-```
-
-```{r, warning = FALSE, message = FALSE}
-PCoA_tmp2 + 
-  scale_fill_manual(values = c("transparent")) + 
-  scale_color_manual(values = c(rep("transparent", 7))) + 
-  theme(panel.border = element_blank(), panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(), axis.line = element_line(colour = "black")) -> empty_plot_tmp
-
-
-ps_tmp_forbdiv %>%
-  phyloseq_add_taxa_vector_fix(phyloseq = .,
-                               dist = dist$bjaccard,
-                               taxrank_glom = "Family",
-                               figure_ord = empty_plot_tmp, 
-                               fact = 0.2, pval_cutoff = 0.05,
-                               top_r = 8) -> out #top 10 correlated genera
-
-out$signenvfit %>% 
-  DT::datatable()
-```
-
-```{r, warning = FALSE, message = FALSE}
-out$plot -> PCoA_tmp2_fam
-
-PCoA_tmp2 + 
-  theme(legend.position = "none") -> PCoA_tmp2_noleg
-
-PCoA_tmp2_noleg
-
-PCoA_tmp2  %>%  ggpubr::get_legend() %>% ggpubr::as_ggplot() -> PCoA_tmp2_leg
-
-PCoA_tmp2_noleg %>% 
-  export::graph2ppt(append = TRUE,
-                    width = 317.48031496 * 1,
-                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
-                    file = out_pptx)
-
-PCoA_tmp2_leg %>% 
-  export::graph2ppt(append = TRUE,
-                    width = 317.48031496 * 1,
-                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
-                    file = out_pptx)
-
-PCoA_tmp2_fam %>% 
-  export::graph2ppt(append = TRUE,
-                    width = 317.48031496 * 1,
-                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
-                    file = out_pptx)
-```
-
-```{r, message = FALSE, warning = FALSE}
-ps_tmp_forbdiv %>% 
-  microViz::ps_mutate(Lactose_mM = as.double(Lactose_mM), 
-                      Glucose_mM = as.double(Glucose_mM),
-                      Galactose_mM = as.double(Galactose_mM),
-                      Succinat_mM = as.double(Succinat_mM),
-                      Lactat_mM = as.double(Lactat_mM),
-                      Formiat_mM = as.double(Formiat_mM),
-                      Acetat_mM = as.double(Acetat_mM),
-                      Propionat_mM = as.double(Propionat_mM),
-                      Butyrat_mM = as.double(Butyrat_mM),
-                      Valerat_mM = as.double(Valerat_mM),
-                      Isobutyrat_mM = as.double(Isobutyrat_mM),
-                      Isovalerat_mM = as.double(Isovalerat_mM),
-                      Total_SCFA_mM = as.double(Total_SCFA_mM))  %>% # sample_data() %>% data.frame()
-  subset_samples(Total_SCFA_mM > 0) %>% 
-  phyloseq_add_metadata_vector(dist = dist$bjaccard,
-                               phyloseq = .,
-                               figure_ord = empty_plot_tmp,
-                               metadata_sel = c("Succinat_mM", "Formiat_mM",  "Acetat_mM" ,
-                                                "Propionat_mM", "Butyrat_mM",  "Valerat_mM", "Total_SCFA_mM"),
-                               top_r = 6, fact = 0.3, na.rm = TRUE,
-                               pval_cutoff = 0.05) -> env_out
-
-
-env_out$signenvfit %>% 
-  DT::datatable()
-```
-
-```{r, warning = FALSE, message = FALSE}
-env_out$plot %>% 
-  export::graph2ppt(append = TRUE,
-                    width = 317.48031496 * 1,
-                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
-                    file = out_pptx)
-
-```
-
-
-
-
-
-
-
-
-### Human1 - F2:
-
-
-```{r}
-ps_rare %>%
-  subset_samples(Model2 == "Human1" & Treatment != "DONOR" & Fermentation == 2) -> ps_tmp_forbdiv
+  subset_samples(Model2 == "Chicken1" & Treatment != "DONOR") -> ps_tmp_forbdiv
 
 ```
 
 #### NMDS:
 
-```{r}
-ps_tmp_forbdiv %>%
+```{r, message=FALSE, results='hide'}
+
+
+ps_tmp_forbdiv %>% 
   # microbiome::transform(transform = "compositional") %>% 
   phyloseq_plot_bdiv(dlist = dist,
-                     m = "PCoA",
+                     m = "NMDS",
                      seed = 123,
                      axis1 = 1,
                      axis2 = 2) -> NMDS_tmp
 ```
-
 
 #### aichinson
 
@@ -736,7 +477,7 @@ NMDS_tmp2_fam %>%
 
 ```{r, message = FALSE, warning = FALSE}
 ps_rare %>%
-  subset_samples(Model2 == "Human1" & Treatment != "DONOR" & Fermentation == 1) %>%
+  subset_samples(Model2 == "Chicken1" & Treatment != "DONOR") %>%
   microViz::ps_mutate(Lactose_mM = as.double(Lactose_mM), 
                       Glucose_mM = as.double(Glucose_mM),
                       Galactose_mM = as.double(Galactose_mM),
@@ -1033,6 +774,7 @@ env_out$plot %>%
                     file = out_pptx)
 
 ```
+
 
 
 
@@ -1042,37 +784,39 @@ env_out$plot %>%
 
 ```{r}
 ps_rare %>%
-  subset_samples(Model2 == "Human2"  & Treatment != "DONOR" ) -> ps_tmp_forbdiv
+  subset_samples(Model2 == "Chicken2"  & Treatment != "DONOR" ) -> ps_tmp_forbdiv
 
 ```
 
-#### PCoA:
+#### NMDS:
 
 ```{r}
-ps_tmp_forbdiv %>%
+
+
+ps_tmp_forbdiv %>% 
   # microbiome::transform(transform = "compositional") %>% 
   phyloseq_plot_bdiv(dlist = dist,
-                     m = "PCoA",
+                     m = "NMDS",
                      seed = 123,
                      axis1 = 1,
-                     axis2 = 2) -> PCoA_tmp
+                     axis2 = 2) -> NMDS_tmp
 ```
 
 #### aichinson
 
 ```{r}
-PCoA_tmp$aichinson$layers[[1]] = NULL; PCoA_tmp$aichinson$layers[[1]] = NULL
-PCoA_tmp$aichinson$layers[[2]] = NULL; PCoA_tmp$aichinson$layers[[1]] = NULL
+NMDS_tmp$aichinson$layers[[1]] = NULL; NMDS_tmp$aichinson$layers[[1]] = NULL
+NMDS_tmp$aichinson$layers[[2]] = NULL; NMDS_tmp$aichinson$layers[[1]] = NULL
 
 # plots_hall_humans$aichinson$layers[[1]] = NULL;plots_hall_humans$aichinson$layers[[1]] = NULL
 # plots_hall_humans$aichinson$layers[[2]] = NULL;plots_hall_humans$aichinson$layers[[2]] = NULL
 
 
-PCoA_tmp$aichinson + geom_point(size = 3,
+NMDS_tmp$aichinson + geom_point(size = 3,
                                 aes(colour = Treatment ,
                                     shape = Antibiotic_mg.L,
                                     alpha = NULL)) +
-  geom_path(data = PCoA_tmp$aichinson$data %>%
+  geom_path(data = NMDS_tmp$aichinson$data %>%
               arrange(Day_of_Treatment) ,
             # aes(colour = Treatment, group = interaction(Model, Model2, Antibiotic, Treatment, Fermentation, Reactor,Antibiotic_mg.L)),
             aes(colour = Treatment, group = interaction(Model2, Reactor, Treatment, Treatment_Dose)),
@@ -1086,15 +830,15 @@ PCoA_tmp$aichinson + geom_point(size = 3,
                      na.value = "black") +
   scale_fill_manual(name = "", values = treat_col,
                     na.value = "black") +
-  scale_shape_manual(name = "" ,values = c(16,19), na.value =  17) +
+  scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
   theme(legend.position = "right") +
-  facet_grid(. ~ Model2, scales = "free") -> PCoA_tmp2
+  facet_grid(. ~ Model2, scales = "free") -> NMDS_tmp2
 
-PCoA_tmp2
+NMDS_tmp2
 ```
 
 ```{r, warning = FALSE, message = FALSE}
-PCoA_tmp2 + 
+NMDS_tmp2 + 
   scale_fill_manual(values = c("transparent")) + 
   scale_color_manual(values = c(rep("transparent", 7))) + 
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
@@ -1114,28 +858,28 @@ out$signenvfit %>%
 ```
 
 ```{r, warning = FALSE, message = FALSE}
-out$plot -> PCoA_tmp2_fam
+out$plot -> NMDS_tmp2_fam
 
-PCoA_tmp2 + 
-  theme(legend.position = "none") -> PCoA_tmp2_noleg
+NMDS_tmp2 + 
+  theme(legend.position = "none") -> NMDS_tmp2_noleg
 
-PCoA_tmp2_noleg
+NMDS_tmp2_noleg
 
-PCoA_tmp2  %>%  ggpubr::get_legend() %>% ggpubr::as_ggplot() -> PCoA_tmp2_leg
+NMDS_tmp2  %>%  ggpubr::get_legend() %>% ggpubr::as_ggplot() -> NMDS_tmp2_leg
 
-PCoA_tmp2_noleg %>% 
+NMDS_tmp2_noleg %>% 
   export::graph2ppt(append = TRUE,
                     width = 317.48031496 * 1,
                     height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
                     file = out_pptx)
 
-PCoA_tmp2_leg %>% 
+NMDS_tmp2_leg %>% 
   export::graph2ppt(append = TRUE,
                     width = 317.48031496 * 1,
                     height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
                     file = out_pptx)
 
-PCoA_tmp2_fam %>% 
+NMDS_tmp2_fam %>% 
   export::graph2ppt(append = TRUE,
                     width = 317.48031496 * 1,
                     height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
@@ -1180,21 +924,22 @@ env_out$plot %>%
 
 ```
 
+
 #### bjaccard
 
 ```{r}
-PCoA_tmp$bjaccard$layers[[1]] = NULL; PCoA_tmp$bjaccard$layers[[1]] = NULL
-PCoA_tmp$bjaccard$layers[[2]] = NULL; PCoA_tmp$bjaccard$layers[[1]] = NULL
+NMDS_tmp$bjaccard$layers[[1]] = NULL; NMDS_tmp$bjaccard$layers[[1]] = NULL
+NMDS_tmp$bjaccard$layers[[2]] = NULL; NMDS_tmp$bjaccard$layers[[1]] = NULL
 
 # plots_hall_humans$aichinson$layers[[1]] = NULL;plots_hall_humans$aichinson$layers[[1]] = NULL
 # plots_hall_humans$aichinson$layers[[2]] = NULL;plots_hall_humans$aichinson$layers[[2]] = NULL
 
 
-PCoA_tmp$bjaccard + geom_point(size = 3,
+NMDS_tmp$bjaccard + geom_point(size = 3,
                                aes(colour = Treatment ,
                                    shape = Antibiotic_mg.L,
                                    alpha = NULL)) +
-  geom_path(data = PCoA_tmp$bjaccard$data %>%
+  geom_path(data = NMDS_tmp$bjaccard$data %>%
               arrange(Day_of_Treatment) ,
             # aes(colour = Treatment, group = interaction(Model, Model2, Antibiotic, Treatment, Fermentation, Reactor,Antibiotic_mg.L)),
             aes(colour = Treatment, group = interaction(Model2, Reactor, Treatment, Treatment_Dose)),
@@ -1208,15 +953,15 @@ PCoA_tmp$bjaccard + geom_point(size = 3,
                      na.value = "black") +
   scale_fill_manual(name = "", values = treat_col,
                     na.value = "black") +
-  scale_shape_manual(name = "" ,values = c(16,19), na.value =  17) +
+  scale_shape_manual(name = "" ,values = c(15,16,18,19), na.value =  17) +
   theme(legend.position = "right") +
-  facet_grid(. ~ Model2, scales = "free") -> PCoA_tmp2
+  facet_grid(. ~ Model2, scales = "free") -> NMDS_tmp2
 
-PCoA_tmp2
+NMDS_tmp2
 ```
 
 ```{r, warning = FALSE, message = FALSE}
-PCoA_tmp2 + 
+NMDS_tmp2 + 
   scale_fill_manual(values = c("transparent")) + 
   scale_color_manual(values = c(rep("transparent", 7))) + 
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
@@ -1236,28 +981,28 @@ out$signenvfit %>%
 ```
 
 ```{r, warning = FALSE, message = FALSE}
-out$plot -> PCoA_tmp2_fam
+out$plot -> NMDS_tmp2_fam
 
-PCoA_tmp2 + 
-  theme(legend.position = "none") -> PCoA_tmp2_noleg
+NMDS_tmp2 + 
+  theme(legend.position = "none") -> NMDS_tmp2_noleg
 
-PCoA_tmp2_noleg
+NMDS_tmp2_noleg
 
-PCoA_tmp2  %>%  ggpubr::get_legend() %>% ggpubr::as_ggplot() -> PCoA_tmp2_leg
+NMDS_tmp2  %>%  ggpubr::get_legend() %>% ggpubr::as_ggplot() -> NMDS_tmp2_leg
 
-PCoA_tmp2_noleg %>% 
+NMDS_tmp2_noleg %>% 
   export::graph2ppt(append = TRUE,
                     width = 317.48031496 * 1,
                     height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
                     file = out_pptx)
 
-PCoA_tmp2_leg %>% 
+NMDS_tmp2_leg %>% 
   export::graph2ppt(append = TRUE,
                     width = 317.48031496 * 1,
                     height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
                     file = out_pptx)
 
-PCoA_tmp2_fam %>% 
+NMDS_tmp2_fam %>% 
   export::graph2ppt(append = TRUE,
                     width = 317.48031496 * 1,
                     height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
@@ -1265,63 +1010,44 @@ PCoA_tmp2_fam %>%
 ```
 
 ```{r, message = FALSE, warning = FALSE}
-ps_tmp_forbdiv %>% 
-  microViz::ps_mutate(Lactose_mM = as.double(Lactose_mM), 
-                      Glucose_mM = as.double(Glucose_mM),
-                      Galactose_mM = as.double(Galactose_mM),
-                      Succinat_mM = as.double(Succinat_mM),
-                      Lactat_mM = as.double(Lactat_mM),
-                      Formiat_mM = as.double(Formiat_mM),
-                      Acetat_mM = as.double(Acetat_mM),
-                      Propionat_mM = as.double(Propionat_mM),
-                      Butyrat_mM = as.double(Butyrat_mM),
-                      Valerat_mM = as.double(Valerat_mM),
-                      Isobutyrat_mM = as.double(Isobutyrat_mM),
-                      Isovalerat_mM = as.double(Isovalerat_mM),
-                      Total_SCFA_mM = as.double(Total_SCFA_mM))  %>% # sample_data() %>% data.frame()
-  subset_samples(Total_SCFA_mM > 0) %>% 
-  phyloseq_add_metadata_vector(dist = dist$bjaccard,
-                               phyloseq = .,
-                               figure_ord = empty_plot_tmp,
-                               metadata_sel = c("Succinat_mM", "Formiat_mM",  "Acetat_mM" ,
-                                                "Propionat_mM", "Butyrat_mM",  "Valerat_mM", "Total_SCFA_mM"),
-                               top_r = 6, fact = 0.3, na.rm = TRUE,
-                               pval_cutoff = 0.05) -> env_out
-
-
-env_out$signenvfit %>% 
-  DT::datatable()
-```
-
-```{r, warning = FALSE, message = FALSE}
-env_out$plot %>% 
-  export::graph2ppt(append = TRUE,
-                    width = 317.48031496 * 1,
-                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
-                    file = out_pptx)
-
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Human1 - all:
-
-
-```{r}
 ps_rare %>%
-  subset_samples(Model2 == "Human1"  & Treatment != "DONOR"  & Fermentation %in% c(1,2)) -> ps_tmp_forbdiv
+  subset_samples(Model2 == "Chicken2" & Treatment != "DONOR" ) %>%
+  microViz::ps_mutate(Lactose_mM = as.double(Lactose_mM), 
+                      Glucose_mM = as.double(Glucose_mM),
+                      Galactose_mM = as.double(Galactose_mM),
+                      Succinat_mM = as.double(Succinat_mM),
+                      Lactat_mM = as.double(Lactat_mM),
+                      Formiat_mM = as.double(Formiat_mM),
+                      Acetat_mM = as.double(Acetat_mM),
+                      Propionat_mM = as.double(Propionat_mM),
+                      Butyrat_mM = as.double(Butyrat_mM),
+                      Valerat_mM = as.double(Valerat_mM),
+                      Isobutyrat_mM = as.double(Isobutyrat_mM),
+                      Isovalerat_mM = as.double(Isovalerat_mM),
+                      Total_SCFA_mM = as.double(Total_SCFA_mM))  %>% # sample_data() %>% data.frame()
+  subset_samples(Total_SCFA_mM > 0) %>% 
+  phyloseq_add_metadata_vector(dist = dist$bjaccard,
+                               phyloseq = .,
+                               figure_ord = empty_plot_tmp,
+                               metadata_sel = c("Succinat_mM", "Formiat_mM",  "Acetat_mM" ,
+                                                "Propionat_mM", "Butyrat_mM",  "Valerat_mM", "Total_SCFA_mM"),
+                               top_r = 6, fact = 0.3, na.rm = TRUE,
+                               pval_cutoff = 0.05) -> env_out
 
+
+env_out$signenvfit %>% 
+  DT::datatable()
 ```
+
+```{r, warning = FALSE, message = FALSE}
+env_out$plot %>% 
+  export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 1,
+                    height = 0.618 * 317.48031496 * 1 , paper = "A4",  scaling = 2,
+                    file = out_pptx)
+```
+
+
 
 #### PCoA:
 
@@ -1343,6 +1069,7 @@ PCoA_tmp$aichinson$layers[[2]] = NULL; PCoA_tmp$aichinson$layers[[1]] = NULL
 
 # plots_hall_humans$aichinson$layers[[1]] = NULL;plots_hall_humans$aichinson$layers[[1]] = NULL
 # plots_hall_humans$aichinson$layers[[2]] = NULL;plots_hall_humans$aichinson$layers[[2]] = NULL
+
 
 PCoA_tmp$aichinson + geom_point(size = 3,
                                 aes(colour = Treatment ,
@@ -1577,6 +1304,7 @@ env_out$plot %>%
                     file = out_pptx)
 
 ```
+
 
 ```{r}
 sessionInfo()
