@@ -92,3 +92,20 @@ vignettes/*.pdf
 *all_splits.tsv
 *plasx-scores.txt
 
+#SQM
+*.cog.funcover
+*.fun3.cog
+*fun3.pfam
+*.rnas
+*.orftable
+*01*fasta
+*kegg.funcover
+*.trnas.fasta
+*03*gff
+*03.*fna
+*03.*faa
+*.fun3.tax.noidfilter.wranks
+*.fun3.tax.wranks
+*.rnas
+*
+
