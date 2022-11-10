@@ -44,7 +44,24 @@ tar \
  --exclude='contig_splitted' --exclude='renamed' --exclude='splitted' --exclude='*.faa' \
  --exclude='*.fna' --exclude='*.contig' -zcvf PathoFact_chicken1_AMR.tar.gz .
  
+# chicken2:
+
+Rscript ../../../../functions/prepare_faa_fna_PAthoFact_orf.Rscript.R --contig_fasta_file_path results/01.chicken2.fasta --aa_file_path  results/03.chicken2.faa -l 1000 -s chicken2_l1000
+
+/datadrive05/Flo/tools/PathoFact_orf/orfs_chicken2
+
+cd /datadrive05/Flo/tools/PathoFact_orf/
+
+conda activate PathoFact
+snakemake -s Snakefile --use-conda --reason --cores 1 -p --configfile orfs_chicken2/config.yaml
  
+cd /datadrive05/Flo/tools/PathoFact_orf/orfs_chicken2
+
+
+tar \
+ --exclude='contig_splitted' --exclude='renamed' --exclude='splitted' --exclude='*.faa' --exclude='*.fna' --exclude='PathoFact_chicken2_AMR.tar.gz' --exclude='*.contig' -zcvf PathoFact_chicken2_AMR.tar.gz .
+ 
+
 # human1-chicken1 single assemblies:
  
 cd /Volumes/Pegasus3R4/NRP72/individual_SQM_binning/chicken1/scelse/SQM
