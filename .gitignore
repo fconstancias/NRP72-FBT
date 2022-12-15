@@ -53,12 +53,17 @@ vignettes/*.pdf
 *.struct
 .DS_Store
 
+
+*concoct_*_collection*
+*_concoct_*
 *logger.log
 *contigs.fa
 *tar.gz
 *Mdb.csv
 *Ndb.csv
 *.db
+*/SUMMARY/
+*SUMMARY/
 *chicken_full_SQM.rds
 *01.SqueezeHuman_result_table.csv
 *RUNLOG.txt
@@ -104,7 +109,19 @@ vignettes/*.pdf
 *03*gff
 *03.*fna
 *03.*faa
+*02*.16S.txt
 *.fun3.tax.noidfilter.wranks
 *.fun3.tax.wranks
 *.rnas
+*.trnas
+*.kegg
+20.*.contigtable
+*_anvio_contig_taxonomy.txt
 
+
+*_l1000.faa
+*_l1000.fna
+*_l1000.contig
+*l1000_report.tsv
+
+*mobileOG.Alignment.Out.csv
