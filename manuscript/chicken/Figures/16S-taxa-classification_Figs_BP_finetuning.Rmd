@@ -1,0 +1,1107 @@
+---
+title: "NTP72 - 16S - taxa compostiion - chicken draft "
+author: "Florentin Constancias"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+rm(list = ls())
+gc()
+options(java.parameters = "-Xmx80000m")
+```
+
+```{r setup2, include=FALSE}
+
+##knitr::opts_chunk$set(cache=TRUE)
+##knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(dev = "ragg_png") # https://ragg.r-lib.org/index.html
+##knitr::opts_chunk$set(fig.width = 6) #https://r4ds.had.co.nz/graphics-for-communication.html#figure-sizing
+##knitr::opts_chunk$set(fig.asp = 0.618)
+##knitr::opts_chunk$set(fig.show = "hold")
+##knitr::opts_chunk$set(fig.show = "70%")
+##knitr::opts_chunk$set(fig.align = "center")
+```
+
+```{r packages, results=FALSE, warning=FALSE}
+#install.packages("tidyverse")
+require(tidyverse); packageVersion("tidyverse")
+require(phyloseq); packageVersion("phyloseq")
+```
+
+```{r sourcing, warning=FALSE, results=FALSE , message= FALSE}
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R") 
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_heatmap.R")
+# source("https://raw.githubusercontent.com/fconstancias/metabaRpipe-source/master/Rscripts/functions.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R")
+source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_varia.R")
+
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+```
+
+
+```{r}
+out_pptx = "~/Desktop/16S-chick.pptx"
+out_xlsx = "~/Desktop/16S-chick.xlsx"
+```
+
+```{r}
+load(url("https://github.com/fconstancias/NRP72-FBT/blob/master/Figures/Rastetics.Rdata?raw=true"))
+```
+
+## load data:
+
+```{r}
+"data/processed/16S/16S_working_phyloseq.RDS" %>% 
+  here::here() %>% 
+  readRDS()  %>% 
+  subset_samples(Enrichment == "NotEnriched") %>%
+  subset_samples(Experiment %in% c("Continuous", "Cecum")) %>%
+  subset_samples(Day_of_Treatment > -4 & Day_of_Treatment <= 30 | Reactor == "DONOR") %>% 
+  subset_samples(Model == "Chicken") %>% 
+  subset_samples(Reactor != "CR" & Model2 == "Chicken1" | Model2 == "Chicken2" & Reactor %in% c("TR2", "TR3", "TR4", "TR5", "TR6", "TR7", "CR", "DONOR")) %>% 
+  subset_samples(Reactor != "IR") %>% 
+  microViz::ps_mutate("Model2_reactor_treatment_dose" = paste0(Model2,"_",Reactor_Treatment_Dose))-> ps_filtered
+```
+
+```{r}
+ps_filtered %>% 
+  phyloseq_check_lib_size(data_color = "Reactor", data_facet = "Reactor", first_n = 50, nreads_display = 1000) -> out
+
+out$df %>% 
+  # rownames_to_column('sample_id') %>% 
+  # filter(Treatment == "DONOR")  %>% 
+  select(SampleID, Day_of_Treatment,Treatment, Reactor, Model2, Model, Period, LibrarySize) 
+```
+
+## rarefraction
+
+```{r}
+min_sample_size = 3738
+
+ps_filtered %>%
+  rarefy_even_depth(sample.size = min_sample_size, rngseed = 123)  -> ps_rare
+
+ps_filtered %>%
+  prune_samples(sample_sums(.)>= min_sample_size, .) -> ps_fil
+```
+
+```{r}
+# ps_rare %>%
+#   subset_samples(! Reactor %in% c("DONOR")) %>% 
+#   subset_samples(Model2 == "Chicken2") %>%
+#   subset_samples(Day_of_Treatment <= 15) %>% 
+#   filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> chick2 # %>% 
+# subset_samples(Reactor %!in%c("IR")) %>% 
+# subset_samples() -> before_treat
+
+# ps_rare %>%
+#   subset_samples(! Reactor %in% c("DONOR", "CR")) %>% 
+#   subset_samples(Model2 = "Chicken1") %>% 
+#   filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> chick1 # %>% 
+
+
+# mat.train.svd.corr <- svd(mat.train.clr.corr)
+
+
+ps_rare %>%
+  subset_samples(! Reactor %in% c("DONOR")) %>% 
+  subset_samples(Model2 %in% c("Chicken1","Chicken2")) %>% 
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> chicks # %>% 
+
+# rm(list=setdiff(ls(), "chicks"))
+```
+
+# linear models: CLR taxa - ASV:
+
+Per reactor:
+
+```{r}
+function_lm_per_reactor <- function(chick2, var = "Model2_reactor_treatment_dose", group = "TR6_VAN90", transform = "log", rank_glom = "Genus", ranks = "Genus",  min_prev = 0.25, adj_pval_cut = 0.05, estimate_cut = 0, min_tot_ab = 0.1, padj_group = "rank", sub_test = TRUE, time_split = 4,  use_cluster = FALSE, max_clust = 9)
+{
+  #######------------------
+  
+  require(microViz); require(tidyverse)
+  
+  #######------------------
+  
+  # The code for `taxatree_models` is quite similar to tax_model. 
+  # However, you might need to run `tax_prepend_ranks` to ensure that each taxon at each rank is always unique. 
+  chick2 %>% 
+    prune_samples(get_variable(chick2, var) %in% group,
+                  .)  %>% 
+    filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+    # speedyseq::tax_glom(taxrank = rank_glom) %>%
+    physeq_glom_rename(taxrank = rank_glom, rename_ASV = rank_glom) %>% 
+    microbiome::transform(transform = transform) %>% 
+    # subset_samples(eval(as.name(var)) %in% as.name(group)) %>% 
+    # subset_samples(Reactor_Treatment_Dose == "TR6_VAN90") %>% 
+    microViz::phyloseq_validate() %>%
+    # tax_fix() %>%
+    # tax_prepend_ranks() %>%
+    # tax_transform("clr", rank = "Strain", keep_counts = TRUE) %>% 
+    # tax_transform(transform = transform, rank = rank_glom, keep_counts = TRUE) %>%
+    microViz::tax_filter(min_total_abundance = min_tot_ab, min_prevalence = min_prev, undetected = 0, use_counts = FALSE) -> ps_fil
+  
+  #######------------------
+  
+  lms <- ps_fil %>% 
+    # tax_transform(trans = "log2", chain = TRUE, zero_replace = "halfmin") %>% 
+    microViz::taxatree_models(
+      type = lm, 
+      ranks = ranks,
+      variables = c('Day_of_Treatment')
+    )
+  
+  #######------------------
+  
+  lms %>% 
+    taxatree_models2stats(.) %>% 
+    taxatree_stats_p_adjust(method = "BH", grouping = padj_group) %>% 
+    .$taxatree_stats %>% 
+    # mutate(taxon =  stringr::str_remove(taxon, "[PFGCOS]: ")) %>%  #-> tmp #%>% 
+    # arrange(starts_with("p.adj")) %>%
+    select(taxon,p.adj.BH.rank, everything()) -> tmp
+  
+  #######------------------
+  
+  tmp %>% 
+    # filter(p.adj.BH.rank <= adj_pval_cut) %>% 
+    # filter(rank == "Genus") %>% 
+    filter(estimate > estimate_cut) %>% 
+    mutate(comp = "pos") -> pos_taxa
+  
+  tmp %>% 
+    # filter(p.adj.BH.rank <= adj_pval_cut) %>% 
+    # filter(rank == "Genus") %>% 
+    filter(estimate < -estimate_cut) %>% 
+    mutate(comp = "neg") -> neg_taxa
+  
+  #######------------------
+  
+  rbind(pos_taxa,
+        neg_taxa) %>% 
+    filter(p.adj.BH.rank <= adj_pval_cut) %>%
+    select(comp, everything())  -> overall_taxa_long
+  
+  overall_taxa_long %>% 
+    select(term, rank, taxon, comp, p.adj.BH.rank) %>% 
+    pivot_wider(   names_from = comp,
+                   values_from = p.adj.BH.rank) %>% 
+    rowwise() %>%
+    mutate(pos = ifelse("pos" %in% names(.), pos, NA),
+           neg = ifelse("neg" %in% names(.), neg, NA)) %>% 
+    #        p2_pos = ifelse("p2_pos" %in% names(.), p2_neg, NA),
+    #        p2_neg = ifelse("p2_neg" %in% names(.), p2_neg, NA)) %>% 
+    mutate(class = case_when(!is.na(pos) ~ "inc",
+                             !is.na(neg) ~ "dec",
+                             TRUE ~ "unclassified")) %>% 
+    mutate(Group = group)-> overall_taxa
+  # select(-pos) %>% 
+  # add_column(., !!!c("pos", "neg")[setdiff(c("pos", "neg"), names(overall_taxa))])
+  
+  
+  #######------------------
+  
+  if ( use_cluster ==TRUE) {
+    
+    
+    ps_fil$ps %>% 
+      t() %>% 
+      otu_table() -> t_otu
+    
+    t_otu %>% 
+      Hmisc::rcorr() -> cor_tax
+    
+    #######------------------
+    
+    rows.cor <- cor((t_otu),  method = "spearman")
+    
+    hclust.row <- hclust(as.dist(1-rows.cor),"ward.D2" )
+    
+    # factoextra::fviz_nbclust(rows.cor, kmeans, method= 'gap_stat') -> outt
+    # 
+    # n_clust<-outt$data
+    
+    #######------------------
+    
+    # library(fpc)
+    # pamk.best <- pamk(rows.cor)
+    # cat("number of clusters estimated by optimum average silhouette width:", pamk.best$nc, "\n")
+    # plot(cluster::pam(rows.cor, pamk.best$nc))
+    # 
+    #######------------------
+    
+    library(mclust)
+    # Run the function to see how many clusters
+    # it finds to be optimal, set it to search for
+    # at least 1 model and up 20.
+    d_clust <- Mclust(as.matrix(rows.cor), G=1:max_clust)
+    m.best <- dim(d_clust$z)[2]
+    cat("model-based optimal number of clusters:", m.best, "\n")
+    
+    cutree(hclust.row, k = m.best) %>% 
+      data.frame() %>% 
+      rownames_to_column('taxon') -> taxa_gpes
+    # mutate(taxon =  stringr::str_remove(taxon, "[PFCGOS]: ")) -> taxa_gpes
+    
+    colnames(taxa_gpes)  <- c("taxon", "cluster")
+    
+    
+    out = list(); out_heat = list()
+    
+    for (cluster_nb in taxa_gpes$cluster %>%  unique()){
+      
+      print(cluster_nb)
+      
+      taxa_gpes %>% 
+        filter(cluster == cluster_nb) %>% 
+        pull(taxon) %>% 
+        as.character()-> tax
+      
+      if(tax %>%  length() > 1 )
+      {
+        chick2 %>% 
+          prune_samples(get_variable(chick2, var) %in% group,
+                        .)  %>% 
+          filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+          microbiome::transform(., "compositional") %>% 
+          subset_taxa(.,  eval(as.name(ranks)) %in% tax) %>% 
+          
+          # subset_taxa( Genus %in% tax) %>% 
+          # subset_taxa(Genus %in% c("Proteus", "Ligilactobacillus")) %>% 
+          microbiomeutilities::plot_area(., xvar="Day_of_Treatment", 
+                                         level = ranks,
+                                         facet.by =ranks,
+                                         abund.thres = 0,
+                                         prev.thres=0,
+                                         fill.colors = microViz::distinct_palette(20, pal = "kelly"),
+                                         ncol=6,
+                                         nrow=4) -> out[[cluster_nb]]
+        
+      }
+      
+      # chick2 %>% 
+      #   prune_samples(get_variable(chick2, var) %in% group,
+      #                 .)  %>% 
+      #   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+      #   microbiome::transform(., "compositional") %>% 
+      #     subset_taxa(.,  eval(as.name(ranks)) %in% tax) %>% 
+      #   phyloseq_ampvis_heatmap(physeq = ., tax_aggregate = ifelse(ranks == "Strains", "Species",ranks), 
+      #                           transform = FALSE,
+      #                           plot_values = FALSE,
+      #                           facet_by = c("Model2", "Model", "Fermentation","Reactor_Treatment_Dose"),
+      #                           group_by = "Day_of_Treatment",#"sample_name",
+      #                           ntax = Inf
+      #   ) -> out_heat[[cluster_nb]]
+      # 
+      
+    }
+    
+    out <- list("ps_fil" = ps_fil,
+                "model" = tmp,
+                "overall_taxa" = overall_taxa,
+                "overall_taxa_long" = overall_taxa_long,
+                "taxa_cluster" = taxa_gpes,
+                "out_heat" = out_heat,
+                "out" = out)
+    
+    
+  }else{
+    out <- list("ps_fil" = ps_fil,
+                "model" = tmp,
+                "overall_taxa" = overall_taxa,
+                "overall_taxa_long" = overall_taxa_long)
+    
+  }
+  #######------------------
+  # then for the stationary ones, we can test on -4 to 5 and 5 to end.
+  
+  if(sub_test == TRUE){
+    
+    #######------------------
+    
+    ps_fil %>% 
+      ps_filter(Day_of_Treatment <= time_split) %>% 
+      # tax_transform(trans = "log2", chain = TRUE, zero_replace = "halfmin") %>% 
+      taxatree_models(
+        type = lm, 
+        ranks = ranks,
+        variables = c('Day_of_Treatment')
+      ) %>% 
+      taxatree_models2stats(.) %>% 
+      taxatree_stats_p_adjust(method = "BH", grouping = padj_group) %>% 
+      .$taxatree_stats %>% 
+      # mutate(taxon =  stringr::str_remove(taxon, "[PFCGOS]: ")) %>% 
+      arrange(p.adj.BH.rank) %>% 
+      select(taxon,p.adj.BH.rank, everything()) -> psfil_1
+    
+    psfil_1 %>% 
+      # filter(p.adj.BH.rank <= adj_pval_cut) %>% 
+      # filter(rank == "Genus") %>% 
+      filter(estimate > estimate_cut) %>% 
+      mutate(comp = "p1_pos") -> fil1_pos_taxa
+    
+    psfil_1 %>% 
+      # filter(p.adj.BH.rank <= adj_pval_cut) %>% 
+      # filter(rank == "Genus") %>% 
+      filter(estimate < -estimate_cut) %>% 
+      mutate(comp = "p1_neg") -> fil1_neg_taxa
+    
+    #######------------------
+    
+    ps_fil %>% 
+      ps_filter(Day_of_Treatment > time_split) %>% 
+      # tax_transform(trans = "log2", chain = TRUE, zero_replace = "halfmin") %>% 
+      taxatree_models(
+        type = lm, 
+        ranks = ranks,
+        variables = c('Day_of_Treatment')
+      ) %>% 
+      taxatree_models2stats(.) %>% 
+      taxatree_stats_p_adjust(method = "BH", grouping = padj_group) %>% 
+      .$taxatree_stats %>% 
+      # mutate(taxon =  stringr::str_remove(taxon, "[PFCGOS]: ")) %>% 
+      arrange(p.adj.BH.rank) %>% 
+      select(taxon,p.adj.BH.rank, everything()) -> psfil_2
+    
+    psfil_2 %>% 
+      # filter(p.adj.BH.rank <= adj_pval_cut) %>% 
+      # filter(rank == "Genus") %>% 
+      filter(estimate > estimate_cut) %>% 
+      mutate(comp = "p2_pos") -> fil2_pos_taxa
+    
+    psfil_2 %>% 
+      # filter(p.adj.BH.rank <= adj_pval_cut) %>% 
+      # filter(rank == "Genus") %>% 
+      filter(estimate < -estimate_cut) %>% 
+      mutate(comp = "p2_neg") -> fil2_neg_taxa
+    
+    #######------------------
+    
+    
+    rbind(pos_taxa,
+          neg_taxa,
+          fil1_pos_taxa,
+          fil1_neg_taxa,
+          fil2_pos_taxa,
+          fil2_neg_taxa) %>% 
+      filter(p.adj.BH.rank <= adj_pval_cut) -> overall_taxa_long
+    
+    overall_taxa_long %>% 
+      select(term, rank, taxon, comp, p.adj.BH.rank) %>% 
+      pivot_wider(   names_from = comp,
+                     values_from = p.adj.BH.rank) %>% 
+      rowwise() %>%
+      mutate(pos = ifelse("pos" %in% names(.), pos, NA),
+             neg = ifelse("neg" %in% names(.), neg, NA)) %>% 
+      mutate(p1_pos = ifelse("p1_pos" %in% names(.), p1_pos, NA),
+             p1_neg = ifelse("p1_neg" %in% names(.), p1_neg, NA),
+             p2_pos = ifelse("p2_pos" %in% names(.), p2_pos, NA),
+             p2_neg = ifelse("p2_neg" %in% names(.), p2_neg, NA)) %>% 
+      mutate(class = case_when(
+        # increasing = signif pos or signif p1pos AND signif p2_pos
+        !is.na(pos) | (!is.na(p1_pos) & !is.na(p2_pos)) ~ "inc",
+        # secondary sucesional - inV = p1_pos AND p2Pos
+        (!is.na(p1_pos) & !is.na(p2_neg)) | (!is.na(neg) & !is.na(p1_pos) & is.na(p1_neg) & is.na(p2_neg) & is.na(p2_pos) | (!is.na(p1_pos) & is.na(pos) &is.na(neg) & is.na(p2_pos) & is.na(p2_neg))) ~ "inV",
+        # decrasing: signif neg AND ns p1pos and ns p2pos OR signif p1 neg AND 
+        (!is.na(neg)  & (is.na(p1_pos) & is.na(p2_pos))) | (!is.na(p1_neg) & is.na(p1_pos) | !is.na(p2_neg) & is.na(pos) & is.na(neg) & is.na(p2_pos) & is.na(p1_pos) & is.na(p1_neg)) ~ "dec",
+        # recovering= signif p1 neg ADN signif p2_pos OR signif neg AND signif p2_pos OR ns pos AND neg and p1pos OR 
+        is.na(p1_neg) & !is.na(p2_pos) & is.na(pos) & is.na(p2_neg) ~ "V",
+        TRUE ~ "unclassified"))  %>% 
+      mutate(Group = group) -> overall_taxa
+    
+    
+    
+    
+    if ( use_cluster ==TRUE) {
+      
+      out <- list("ps_fil" = ps_fil,
+                  "model" = tmp,
+                  "model_split1" = psfil_1,
+                  "model_split2" = psfil_2,
+                  "overall_taxa_long" = overall_taxa_long,
+                  "overall_taxa" = overall_taxa,
+                  "taxa_cluster" = taxa_gpes)
+    }
+    else{
+      
+      out <- list("ps_fil" = ps_fil,
+                  "model" = tmp,
+                  "model_split1" = psfil_1,
+                  "model_split2" = psfil_2,
+                  "overall_taxa_long" = overall_taxa_long,
+                  "overall_taxa" = overall_taxa)
+    }
+  }
+  
+  #######------------------
+  
+  
+  
+  
+  #######------------------
+  
+  return(out)
+}
+```
+
+
+```{r}
+# chicks %>%
+#   function_lm_per_reactor(transform = "compositional", #compositional, 
+#                           time_split = 3, rank_glom = "Genus",
+#                           ranks = "Genus") -> out
+# 
+# out$overall_taxa %>% 
+#   filter(class == "inV")
+```
+
+```{r}
+setNames(vector("list", 
+                length(physeq_get_unique(chicks, "Model2_reactor_treatment_dose"))), 
+         physeq_get_unique(chicks, "Model2_reactor_treatment_dose")) -> lis
+```
+
+```{r}
+for (grp in names(lis)){
+  print(grp)
+  
+  function_lm_per_reactor(chicks, time_split = 3, rank_glom = "Genus",  
+                          transform = "log", min_prev = 0.25, adj_pval_cut = 0.05, estimate_cut = 0, min_tot_ab = 0.01,
+                          ranks = "Genus", group = grp) -> lis[[grp]]
+}
+
+
+do.call(rbind, lapply(lis, "[[", "overall_taxa")) %>% 
+  ungroup() %>% 
+  # select(taxon, Group, class) %>% 
+  rename(OTU = taxon,
+         Model2_reactor_treatment_dose = Group,
+         category = class)-> map_class
+
+map_class %>% 
+  filter(!category %in% c("V","inV", "dec", "inc"))
+```
+
+
+
+```{r}
+chicks %>% 
+  # prune_samples(get_variable(chick2, var) %in% group,
+  #               .)  %>%
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  transform_sample_counts(function(x) x/sum(x) * 100) %>% 
+  physeq_glom_rename(taxrank = "Genus", rename_ASV = "Genus") -> ps_filt
+```
+
+
+```{r}
+map_class %>%
+  select(category, Model2_reactor_treatment_dose, everything()) %>%
+  # filter(category %in% c("V"),
+  #        Reactor_Treatment_Dose == "CR_UNTREATED") %>%
+  filter(!is.na(pos) & !is.na(p2_pos)) %>% 
+  distinct(OTU, Model2_reactor_treatment_dose) -> sel
+
+ps_filt %>% 
+  speedyseq::psmelt() %>%
+  # filter(OTU %in% sel$OTU,
+  # Reactor_Treatment_Dose %in% sel$Reactor_Treatment_Dose) %>%
+  # filter(Reactor_Treatment_Dose %in% c("TR6_VAN90") ) %>%
+  select(OTU, Abundance, Day_of_Treatment, Model2_reactor_treatment_dose) %>% #!!rank_glom,
+  left_join(map_class,
+            by = c("Model2_reactor_treatment_dose", "OTU")) %>% 
+  arrange(Model2_reactor_treatment_dose) %>% 
+  ggplot(data = ., aes_string(color = "OTU", fill = "OTU")) +
+  geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
+  facet_grid(category ~  Model2_reactor_treatment_dose, scales = "free") + theme(legend.position = "none")
+```
+
+same as Hanna but with long df with wide time abundance:
+```{r}
+var = "Model2_reactor_treatment_dose"
+transform = "log"
+rank_glom = "Genus"
+# ranks = "Genus"
+min_prev = 0.25
+adj_pval_cut = 0.05
+padj_group = "rank"
+sub_test = TRUE
+
+#######------------------
+
+require(tidyverse)
+
+#######------------------
+
+chicks %>% 
+  # prune_samples(get_variable(chick2, var) %in% group,
+  #               .)  %>%
+  filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
+  subset_samples(Day_of_Treatment <= 15) %>% 
+  physeq_glom_rename(taxrank = rank_glom, rename_ASV = rank_glom) -> ps_filt
+```
+
+
+```{r, warning= FALSE}
+ps_filt %>% 
+  transform_sample_counts(function(x) x/sum(x) * 100) %>% 
+  speedyseq::psmelt() %>% 
+  select(OTU, Abundance, Model2, Day_of_Treatment, Model2_reactor_treatment_dose ,Day_of_Treatment, Treatment, Reactor_Treatment_Dose) %>% 
+  arrange(Day_of_Treatment)  -> ps_filt2
+
+
+ps_filt2 %>% 
+  group_by(OTU, Model2_reactor_treatment_dose) %>% 
+  add_count() %>% 
+  select(-Abundance) %>% 
+  distinct(OTU, Model2_reactor_treatment_dose, n) %>% 
+  mutate(OTU_Reactor_Treatment_Dose = paste0(OTU,"_",Model2_reactor_treatment_dose)) -> count_OTU_reactors
+
+
+ps_filt2 %>% 
+  group_by(OTU, Model2_reactor_treatment_dose) %>% 
+  summarise(mean_ab = mean(Abundance)) %>% 
+  mutate(OTU_Reactor_Treatment_Dose = paste0(OTU,"_",Model2_reactor_treatment_dose))  -> mean_ab_OTU_reactors
+
+ps_filt %>%
+  microbiome::transform(transform = "Z") %>%
+  speedyseq::psmelt() %>%
+  arrange(Day_of_Treatment) %>%
+  group_by(OTU, Model2_reactor_treatment_dose) %>%
+  # do(model = tseries::adf.test(.))
+  # filter(OTU == "Alloprevotella" & Model2_reactor_treatment_dose == "Chicken1_TR1_CTX+HV292.120") %>% #pull(Abundance) -> Abundance
+  
+  # summarise(pval_ur.df2 = ifelse(n() <= 4,NA, urca::ur.df(Abundance, type = "none", selectlags = "AIC")$out)) %>%
+  # summarise(pval_ur.df2_none = ifelse(n() <= 4,NA, erer::ur.df2(Abundance, type = "none", selectlags = "AIC")$out)  %>%
+  summarise(pval_ur.df2_none =  ifelse(sum(Abundance > 0, na.rm = FALSE) <= 4,NA,coef(attributes(urca::ur.df(y = Abundance, type = "none", selectlags = "AIC"))$testreg)[1, 4]),
+            pval_ur.df2_drift = ifelse(sum(Abundance > 0, na.rm = FALSE) <= 4, NA,coef(attributes(urca::ur.df(y = Abundance, type = "drift", selectlags = "AIC"))$testreg)[1, 4]),
+            pval_ur.df2_trend = ifelse(sum(Abundance > 0, na.rm = FALSE)  <= 4,NA,coef(attributes(urca::ur.df(y = Abundance, type = "trend", selectlags = "AIC"))$testreg)[1, 4]),
+            pval_adf.test = tseries::adf.test(Abundance, alternative = "stationary")$p.value,
+            pval_kpss_type1 = ifelse(sum(Abundance > 0, na.rm = FALSE) <= 4,NA, aTSA::kpss.test(Abundance, lag.short = TRUE, output =FALSE) %>%  data.frame() %>%  rownames_to_column("type") %>% filter(type == "type 1") %>% pull(p.value)),
+            pval_kpss_type2 = ifelse(sum(Abundance > 0, na.rm = FALSE)  <= 4,NA, aTSA::kpss.test(Abundance, lag.short = TRUE, output =FALSE) %>%  data.frame() %>%  rownames_to_column("type") %>% filter(type == "type 2") %>% pull(p.value)),
+            pval_kpss_type3 = ifelse(sum(Abundance > 0, na.rm = FALSE)  <= 4,NA, aTSA::kpss.test(Abundance, lag.short = TRUE, output =FALSE) %>%  data.frame() %>%  rownames_to_column("type") %>% filter(type == "type 3") %>% pull(p.value)),
+            pval_kpss.test_level = ifelse(sum(Abundance > 0, na.rm = FALSE)  <= 4,NA, tseries::kpss.test(Abundance, null = "Level")$p.value),
+            pval_Box.test = ifelse(sum(Abundance > 0, na.rm = FALSE) <= 4,NA, stats::Box.test(Abundance, lag = 1, type = "Ljung-Box")$p.value) #Here we see a p-value much smaller than .01, thus we can reject the null hypothesis, indicating the time series does contain an autocorrelation.
+            
+            
+            # pval_pp.test = ifelse(n() <= 4,NA, aTSA::pp.test (vec, lag.short = TRUE, output =FALSE) %>%  data.frame() %>%  rownames_to_column("type") %>% filter(type == "type 3")
+            # pval_aTSAadf.tes =  ifelse(n() <= 4,NA, aTSA::adf.test())
+  ) %>%
+  # pval_CADFtest = ifelse(n() <= 12,NA,CADFtest::CADFtest(Abundance ~ 1,x = Abundance, type="trend", criterion = "AIC")$p.value)) %>%  # 0.000
+  # summarise(pval_ur.df2_none = ifelse(n() <= 4,NA, erer::ur.df2(Abundance, type = "none", selectlags = "AIC")$out)) %>%
+  # https://search.r-project.org/CRAN/refmans/erer/html/ur.df2.html
+  # summarise(pval = ifelse(n() <= 4,NA, CADFtest::CADFtest(x = Abundance, type="trend", criterion = "AIC")$p.value)) %>%
+  # group_by(Reactor_Treatment_Dose) %>%
+  # mutate(pval_ur.df2_none = str_replace_all(pval_ur.df2_none, "[^*]", "")) %>%
+  # rstatix::adjust_pvalue(p.col = "pval_ur.df2_none", method = "fdr") %>%
+  # filter(pval.adj <= 0.05) %>%
+  arrange(Model2_reactor_treatment_dose) %>%
+  mutate(OTU_Reactor_Treatment_Dose = paste0(OTU,"_",Model2_reactor_treatment_dose)) -> ur.df2
+
+ur.df2
+```
+
+```{r, warning= FALSE}
+library(dplyr)
+#define_groups:
+ps_filt2 %>% 
+  # select(Day_of_Treatment) %>% 
+  distinct(Day_of_Treatment) %>% 
+  mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
+                            Day_of_Treatment > 0 &  Day_of_Treatment <= 5 ~ "t1" ,
+                            Day_of_Treatment > 5 &  Day_of_Treatment <= 10 ~ "t2",
+                            Day_of_Treatment > 10  ~ "t3" )) -> day_period
+
+ps_filt2 %>% 
+  mutate(OTU_Reactor_Treatment_Dose = paste0(OTU,"_",Model2_reactor_treatment_dose)) %>% 
+  left_join(count_OTU_reactors %>%  ungroup() %>%  select(-OTU, -Model2_reactor_treatment_dose),
+            by = c("OTU_Reactor_Treatment_Dose" = "OTU_Reactor_Treatment_Dose"),
+            keep = FALSE) %>% 
+  left_join(mean_ab_OTU_reactors %>%  ungroup() %>%  select(-OTU, -Model2_reactor_treatment_dose),
+            by = c("OTU_Reactor_Treatment_Dose" = "OTU_Reactor_Treatment_Dose"),
+            keep = FALSE) %>% 
+  # filter(mean_ab > 1 & n > 8)  %>%
+  mutate(Day_of_Treatment = as.double(Day_of_Treatment)) %>%
+  left_join(day_period,
+            by = c("Day_of_Treatment" = "Day_of_Treatment")) %>% 
+  # mutate(period = ifelse(Day_of_Treatment <= 0, "pret",
+  #                        ifelse(0 <  Day_of_treatment <= 5, "t1"
+  #                        ))
+  # mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
+  #                           0 <  Day_of_treatment <= 5 ~ "tt"
+  #                           Day_of_treatment > 0 & Day_of_treatment <= 5 ~ "t1",
+  #                           Day_of_treatment > 6 & Day_of_treatment <= 10 ~ "t2",
+  #                           Day_of_treatment > 10 & Day_of_treatment <= 16 ~ "t3",
+  #                           TRUE ~ "tunknown")) %>%
+  group_by(Model2_reactor_treatment_dose, OTU, period) %>% 
+  summarise(mean = base::mean(Abundance, na.rm = TRUE)) %>% 
+  group_by(Model2_reactor_treatment_dose, OTU) %>% 
+  pivot_wider(names_from = period, 
+              values_from = mean) %>% 
+  
+  # original
+  # summarise(category = 
+  #           case_when(
+  #             # pret == 0 & (t1 >0 & t2>0 & t3 >0) ~ "new",
+  #                     (t1 > pret  &
+  #                        t2 > pret &
+  #                        t3 > pret) & (t3 > t2 | t3 > t1 ) & 
+  #                       (t3/(pret+0.00000000001) > 1.5 & t2/(pret+0.00000000001) > 1.25)  ~ "prol",
+  #                     t1 < pret  &
+  #                       t3 < t1 ~ "dis",
+#                     pret/t1 > 2 &
+#                       t3/t1 > 1.25  ~ "recovering",
+#                     (t1/(pret+0.00000000001) > 1.25 | t2/(pret+0.00000000001) > 1.25) &
+#                       (t1/t3 > 1.25 | t2/t3 > 1.25) ~ "mid",
+#                     # pret == 0 & t1>0 &t2>0 &t3>0 ~ "new",
+#                     TRUE ~ "normal")) %>% 
+
+summarise(category = 
+            case_when(
+              # pret == 0 & (t1 >0 & t2>0 & t3 >0) ~ "new",
+              (t1 > pret  &
+                 t2 > pret &
+                 t3 > pret) & (t3 > t2 | t3 > t1 ) &
+                (t3/(pret + 0.00000000001) > 1.5 & t2/(pret + 0.00000000001) > 1.5)  ~ "prol",
+              (pret + 0.00000000001)/t1 > 1.5  &
+                t1/t2 > 1.5 &
+                t1/t3 > 1.5 ~ "dis",
+              pret/t1 > 1.5 &
+                t3/t1 > 1.25  ~ "recovering",
+              (t1/(pret + 0.00000000001) > 1.5 | t2/(pret + 0.00000000001) > 1.5) &
+                (t1/t3 > 1.5 | t2/t3 > 1.5) ~ "mid",
+              # pret == 0 & t1>0 &t2>0 &t3>0 ~ "new",
+              TRUE ~ "normal")) %>% 
+  arrange(Model2_reactor_treatment_dose,category) -> classif
+
+classif$category %>%
+  unique()
+```
+
+
+```{r}
+classif %>% 
+  rename("cat_period" = "category") %>% 
+  mutate(OTU_Reactor_Treatment_Dose = paste0(OTU,"_",Model2_reactor_treatment_dose)) %>% 
+  left_join(ur.df2,
+            by = c("Model2_reactor_treatment_dose", "OTU"),
+            suffix = c("", ".y")) %>%
+  left_join(map_class %>%  rename("cat_lm" = "category"),
+            by = c("Model2_reactor_treatment_dose", "OTU")) %>% 
+  select(-term, -rank, ) -> tmp
+
+tmp
+```
+
+
+```{r}
+ps_filt2 %>%
+  # filter(Reactor_Treatment_Dose %in% c("TR6_VAN90","TR4_CCUG59168", "TR5_HV292.1", "TR1_CTX+HV292.120")) %>%
+  select(OTU, Abundance, Day_of_Treatment, Model2 ,Model2_reactor_treatment_dose) %>% 
+  left_join(tmp,
+            by = c("Model2_reactor_treatment_dose", "OTU")) %>% 
+  left_join(mean_ab_OTU_reactors,
+            by = c("Model2_reactor_treatment_dose", "OTU")) %>% 
+  # filter(mean_ab <= 5) %>%
+  filter(cat_period != "normal") %>%
+  # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
+  arrange(Model2_reactor_treatment_dose) -> pre_plot
+
+# pre_plot %>%
+#   pull(OTU) %>%
+#   unique() %>%
+#   length() %>%
+#   randomcoloR::distinctColorPalette(k = ., runTsne = TRUE) -> col
+
+
+# names(col) <- pre_plot %>%
+#   pull(OTU) %>%
+#   unique() 
+
+
+col <- c(Lachnospira = "#E6BD7F", Negativibacillus = "#3AE6C1", Tyzzerella = "#E071F6", 
+         Blautia = "#568243", `Escherichia-Shigella` = "#B97CE5", `Defluviitaleaceae UCG-011` = "#C7FDC0", 
+         `NK4A214 group` = "#AAEAFD", `Lachnospiraceae UCG-010` = "#F9A5FF", 
+         `[Eubacterium] hallii group` = "#B76D70", Enterococcus = "#8C73EE", 
+         `GCA-900066575` = "#5FE672", Monoglobus = "#99AEE0", Shuttleworthia = "#F8E1C5", 
+         Butyricicoccus = "#B2ED9A", `CAG-56` = "#A7D2FB", Holdemania = "#7295FA", 
+         Gordonibacter = "#EBC5E9", `Lachnospiraceae FCS020 group` = "#CD27CD", 
+         Lactobacillus = "#D6DB8F", Ligilactobacillus = "#BFA6F1", Marvinbryantia = "#A8BF92", 
+         Paludicola = "#EB743D", Pseudoflavonifractor = "#CCAFE1", Pygmaiobacter = "#90F3C8", 
+         UBA1819 = "#D597D2", `UCG-005` = "#58EE4F", Eisenbergiella = "#C7EDD2", 
+         Intestinimonas = "#8848FD", Oscillibacter = "#BBF47B", Erysipelatoclostridium = "#3A8477", 
+         Oscillospira = "#F3F7F7", `[Eubacterium] nodatum group` = "#958CE9", 
+         Pseudomonas = "#F5A75A", Anaerostipes = "#D67764", DTU089 = "#4AA2E4", 
+         Ruminococcus = "#E281E6", Stenotrophomonas = "#EB96A7", Subdoligranulum = "#D844C3", 
+         `[Eubacterium] brachy group` = "#3F88DA", Harryflintia = "#BE4EF0", 
+         Anaerofilum = "#6ECCFD", Bacillus = "#CAEC53", CHKCI001 = "#9EB0FA", 
+         `UC5-1-2E3` = "#B0CEE0", Lachnoclostridium = "#CDFDF1", `[Ruminococcus] torques group` = "#81D7B3", 
+         Sellimonas = "#EBBAC0", Flavonifractor = "#D9C4C4", Colidextribacter = "#D0A893", 
+         CHKCI002 = "#F490B6", Acinetobacter = "#E1D14D", `Family XIII AD3011 group` = "#9D48CC", 
+         `Candidatus Soleaferrea` = "#B89C9B", Aerococcus = "#1CBA6F", 
+         Merdibacter = "#E9BD9C", Parabacteroides = "#A0F789", Streptococcus = "#EF6FC8", 
+         Prevotella_9 = "#5F5AED", Angelakisella = "#C5CBDB", Campylobacter = "#C6CCB8", 
+         Catenibacterium = "#55B7A2", `Christensenellaceae R-7 group` = "#913298", 
+         Cosenzaea = "#07DFA0", `Lachnospiraceae NK3A20 group` = "#EA585E", 
+         Lactiplantibacillus = "#E7B0E1", Latilactobacillus = "#F8E9F8", 
+         Limosilactobacillus = "#D5DE73", Megasphaera = "#F8EBAE", Sutterella = "#81D184", 
+         Proteus = "#63F5F6", Lactococcus = "#FBAE9A", Oceanobacillus = "#8C7085", 
+         Pediococcus = "#EDD484", Staphylococcus = "#60D8E4", Veillonella = "#E34172", 
+         Tuzzerella = "#93EA46", Parasutterella = "#872253", Alistipes = "#CCE98C", 
+         Anaerococcus = "#ACB54A", Collinsella = "#C6F593", Dialister = "#D8DF53", 
+         Dorea = "#83B92D", Leuconostoc = "#7B6392", Roseburia = "#F5F6E3", 
+         Fournierella = "#54B0B8", Anaerofustis = "#5985A1", Coprococcus = "#6F80A4", 
+         Intestinibacter = "#9CE2E3", Peptococcus = "#E0F2C9", Frisingicoccus = "#B8BFE4", 
+         HT002 = "#82E5DD", Methanosphaera = "#CF79BA", Prevotella = "#58F0E3", 
+         `UCG-002` = "#DAE61B", Clostridioides = "#99CEB2", `Clostridium sensu stricto 1` = "#C4B6CC", 
+         Listeria = "#88B9B3", Mogibacterium = "#CAAA33", Salmonella = "#B47EC8", 
+         Megamonas = "#574695", Sarcina = "#C697B4")
+
+
+
+pre_plot %>% 
+  ggplot(data = ., aes_string(color = "OTU", fill = "OTU")) +
+  geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
+  facet_grid(cat_period ~  Model2 + Model2_reactor_treatment_dose, scales = "free") + 
+  scale_fill_manual(values =  col) + 
+  scale_color_manual(values = col) -> p_cat
+
+
+p_cat + theme(legend.position = "none") -> p_cat_no_leg
+
+p_cat_no_leg
+
+p_cat  %>% 
+  ggpubr::get_legend() %>% 
+  ggpubr::as_ggplot() -> p_cat_leg
+
+p_cat_leg
+
+p_cat_no_leg %>% 
+  export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 6,
+                    height = 0.618 * 317.48031496 * 8 , paper = "A2",  scaling = 2,
+                    file = out_pptx)
+
+
+p_cat_leg %>% 
+  export::graph2ppt(append = TRUE,
+                    width = 317.48031496 * 6,
+                    height = 0.618 * 317.48031496 * 8 , paper = "A2",  scaling = 2,
+                    file = out_pptx)
+
+
+
+```
+
+```{r}
+
+ps_filt2 %>% 
+  # filter(Reactor_Treatment_Dose %in% c("TR6_VAN90","TR4_CCUG59168", "TR5_HV292.1", "TR1_CTX+HV292.120")) %>% 
+  select(OTU, Abundance, Day_of_Treatment, Model2 ,Model2_reactor_treatment_dose, Reactor_Treatment_Dose, Treatment, ) %>% 
+  left_join(tmp,
+            by = c("Model2_reactor_treatment_dose", "OTU")) %>%  
+  mutate(cat_lm = replace_na(cat_lm, "normal")) %>% 
+  left_join(day_period)  -> tmp_ready 
+
+```
+Ljun-Box test is a hypothesis test that checks if a time series contains an autocorrelation. The null Hypothesis H0 is that the residuals are independently distributed. sign -> time pattern
+tseries::adf.test(lc, alternative = "stationary") -> ns -> time pattern
+urca::ur.df not sure sign -> pattern?
+kpss.test() signif : pattern
+
+```{r}
+tmp_ready %>% 
+  filter(pval_Box.test < 0.05 |  pval_adf.test > 0.05 | pval_kpss.test_level < 0.05) %>%
+  arrange(OTU, Model2_reactor_treatment_dose) %>% 
+  select(OTU, Model2_reactor_treatment_dose, cat_period, cat_lm,  pval_Box.test, pval_adf.test, pval_kpss.test_level) %>% 
+  distinct(OTU, Model2_reactor_treatment_dose ,.keep_all = TRUE) #%>% 
+# mutate(final_class = case_when()) -> tmp_ready
+# 
+# tmp_ready
+```
+
+
+```{r}
+# based on manual categories
+
+tmp_ready %>% 
+  # filter(category %in% c("normal"),
+  # filter(category %in% c("normal"),
+  # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
+  select(cat_period, Abundance, period, Treatment,Model2,  OTU_Reactor_Treatment_Dose, Model2_reactor_treatment_dose, Reactor_Treatment_Dose, OTU, Day_of_Treatment) %>% 
+  group_by(Model2, Model2_reactor_treatment_dose,Treatment, period, OTU_Reactor_Treatment_Dose, cat_period) %>% 
+  arrange(Model2, Model2_reactor_treatment_dose, Reactor_Treatment_Dose) %>% 
+  summarise(mean_period = mean(Abundance)) %>% 
+  group_by(Model2, Model2_reactor_treatment_dose, Treatment, period, cat_period) %>% 
+  summarise(sum_cat = sum(mean_period)) %>% 
+  ggplot(data = ., aes_string(x = "period", y = "sum_cat",  fill = "cat_period")) + #, color = "grey90") +
+  geom_bar(position="fill", stat="identity") + 
+  # geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
+  facet_grid(Model2 ~ Treatment, scales = "free", drop = TRUE, space = "free") + 
+  theme(legend.position = "bottom") + ggpubr::rotate_x_text(45) + xlab(NULL) + ylab(NULL) +
+  scale_fill_manual(values = ggpubr::get_palette(palette = "jco", k = 5)) -> p_cat2
+
+p_cat2
+```
+
+
+```{r}
+tmp_ready %>% 
+  # filter(category %in% c("normal"),
+  # filter(category %in% c("normal"),
+  # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
+  # filter(category %in% c("normal"),
+  # filter(category %in% c("normal"),
+  # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
+  select(cat_period, Abundance, period, Treatment,Model2,  OTU_Reactor_Treatment_Dose, Model2_reactor_treatment_dose, Reactor_Treatment_Dose, OTU, Day_of_Treatment) %>% 
+  ggplot(data = ., aes_string(x = "period", y = "Abundance",  fill = "cat_period")) + #, color = "grey90") +
+  geom_bar(position="fill", stat="identity") + 
+  # geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
+  facet_grid(Model2 ~ Treatment, scales = "free", drop = TRUE, space = "free") + 
+  theme(legend.position = "bottom") + ggpubr::rotate_x_text(45) + xlab(NULL) + ylab(NULL) +
+  scale_fill_manual(values = ggpubr::get_palette(palette = "jco", k = 5)) -> p_cat
+
+p_cat
+
+p_cat %>%
+  export::graph2ppt(append = TRUE, 
+                    width = 317.48031496 * 1.5, 
+                    height = 0.618 * 317.48031496 * 1.25, paper = "A4",  scaling = 2,
+                    file = out_pptx)
+
+tmp_ready %>% 
+  # filter(category %in% c("normal"),
+  # filter(category %in% c("normal"),
+  # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
+  select(cat_period, Abundance, period, Treatment,Model2,  OTU_Reactor_Treatment_Dose, Model2_reactor_treatment_dose, Reactor_Treatment_Dose, OTU, Day_of_Treatment) %>% 
+  group_by(Model2_reactor_treatment_dose, period, OTU_Reactor_Treatment_Dose, cat_period) %>% 
+  arrange(Model2_reactor_treatment_dose, Reactor_Treatment_Dose) %>% 
+  summarise(mean_period = mean(Abundance)) %>% 
+  group_by(Model2_reactor_treatment_dose, period, cat_period) %>% 
+  summarise(sum_cat = sum(mean_period)) %>% 
+  write_tsv(file = "~/Desktop/16S_fig_cat.tsv")
+```
+
+```{r}
+
+# based on cat_lm categories
+tmp_ready %>% 
+  # filter(category %in% c("normal"),
+  # filter(category %in% c("normal"),
+  # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
+  arrange(Model2_reactor_treatment_dose) %>% 
+  ggplot(data = ., aes_string(x = "period", y = "Abundance", fill = "cat_lm")) +
+  geom_bar(position="fill", stat="identity") + 
+  # geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
+  facet_grid(Model2 ~ Treatment, scales = "free", drop = TRUE, space = "free") + 
+  theme(legend.position = "bottom") 
+
+
+```
+
+```{r}
+ps_filt2 %>% 
+  # filter(Reactor_Treatment_Dose %in% c("TR6_VAN90","TR4_CCUG59168", "TR5_HV292.1", "TR1_CTX+HV292.120")) %>% 
+  select(OTU, Abundance, Day_of_Treatment, Model2 ,Model2_reactor_treatment_dose, Treatment) %>% 
+  left_join(classif,
+            by = c("Model2_reactor_treatment_dose", "OTU")) %>% 
+  left_join(day_period) %>%   # filter(category %in% c("normal"),
+  # filter(category %in% c("normal"),
+  # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
+  arrange(Model2_reactor_treatment_dose) %>% 
+  ggplot(data = ., aes_string(x = "interaction(period, category)", y = "Abundance", color = "OTU", fill = "OTU")) +
+  geom_bar(position="fill", stat="identity") + 
+  # geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
+  facet_grid(Model2 ~ Treatment , scales = "free", drop = TRUE, space = "free") + 
+  theme(legend.position = "none") + ggpubr::rotate_x_text(90) 
+```
+
+```{r}
+
+ps_filt2 %>% 
+  mutate(OTU_Reactor_Treatment_Dose = paste0(OTU,"_",Model2_reactor_treatment_dose)) %>% 
+  group_by(OTU, Model2_reactor_treatment_dose) %>% 
+  arrange(Day_of_Treatment) %>% 
+  mutate(global_mean = mean(Abundance),
+         global_CV = (sd(Abundance) / mean(Abundance)) * 100) %>% 
+  mutate(Mean_avg_change = mean(cummean(Abundance))) %>% 
+  # mutate(cum_avg_change_pos = sum(Mean_avg_change[Mean_avg_change>global_mean]), 
+  #  cum_avg_change_neg = sum(Mean_avg_change[Mean_avg_change<global_mean])) %>% 
+  mutate(cum_avg_change_pos = sum(Abundance[Abundance>mean(nth(Abundance, n = 3))]),
+         cum_avg_change_neg = sum(Abundance[Abundance<mean(nth(Abundance,  n = 3))])) -> cum_stuff
+# mutate(avg_cum_change_pos = mean(Abundance[Abundance>first(Abundance)]), 
+# avg_cum_change_neg = mean(Abundance[Abundance<first(Abundance)])) %>% 
+
+# mutate(Mean_avg_inc = ifelse(Abundance < first(Abundance)), cummean(Abundance), 0) %>% 
+# arrange(-cum_avg_change_neg) %>%
+```
+
+
+```{r}
+
+p_cat$data %>% 
+  select(-starts_with("pval"), -Day_of_Treatment, -Abundance) %>% 
+  arrange(Model2_reactor_treatment_dose, OTU) %>% 
+  # left_join(cum_stuff,
+  #           by = c("OTU_Reactor_Treatment_Dose" = "OTU_Reactor_Treatment_Dose"),
+  #           copy = FALSE, keep = FALSE,
+  #           suffix = c("", ".y")) %>%
+  # select(-ends_with(".y")) %>%
+  # select(-Abundance, -Day_of_Treatment, -pos:-p1_neg, -OTU_Reactor_Treatment_Dose.y, -cat_lm, -period) %>% 
+  # select(-pos:-p1_neg, -OTU_Reactor_Treatment_Dose.y, -cat_lm) %>% 
+  distinct(OTU_Reactor_Treatment_Dose, .keep_all = TRUE) %>%
+  # as_tibble() %>% 
+  # pivot_wider(names_from = cat_period, values_from = OTU_Reactor_Treatment_Dose )  %>% 
+  write_tsv(file = "~/Desktop/16S-chick_classif.tsv")
+# pivot_wider(names_from = OTU_Reactor_Treatment_Dose, values_from = cum_abund) -> ps_merged
+# xlsx::write.xlsx(out_xlsx,
+# sheetName = "cat_period_data")
+
+
+p_cat$data %>% 
+  # select(-starts_with("pval")) %>% 
+  arrange(Model2_reactor_treatment_dose, OTU, Day_of_Treatment) %>% 
+  # left_join(cum_stuff,
+  #           by = c("OTU_Reactor_Treatment_Dose" = "OTU_Reactor_Treatment_Dose"),
+  #           copy = FALSE, keep = FALSE,
+  #           suffix = c("", ".y")) %>% 
+  # select(-ends_with(".y")) %>% 
+  # select(-Abundance, -Day_of_Treatment, -pos:-p1_neg, -OTU_Reactor_Treatment_Dose.y, -cat_lm, -period) %>% 
+  # select(-pos:-p1_neg, -OTU_Reactor_Treatment_Dose.y, -cat_lm) %>% 
+  # distinct(OTU_Reactor_Treatment_Dose, .keep_all = TRUE) %>% 
+  # as_tibble() %>% 
+  # pivot_wider(names_from = cat_period, values_from = OTU_Reactor_Treatment_Dose )  %>% 
+  write_tsv(file = "~/Desktop/16S-chick_classif_2.tsv")
+# pivot_wider(names_from = OTU_Reactor_Treatment_Dose, values_from = cum_abund) -> ps_merged
+# xlsx::write.xlsx(out_xlsx,
+# sheetName = "cat_period_data")
+
+
+cum_stuff %>% 
+  select(-Abundance, -Day_of_Treatment) %>% 
+  distinct(OTU_Reactor_Treatment_Dose, .keep_all = TRUE) %>% 
+  # xlsx::write.xlsx(out_xlsx,
+  # sheetName = "additional_info")
+  write_tsv(file = "~/Desktop/16S-chick_additional_info.tsv")
+
+```
+
+-   explore stability metrics: <https://microbiome.github.io/tutorials/Stability.html> to detect taxa impacted. or filter by coefficient variation. or Hannah's classification
+
+Bimodal population distribution across individuals is often associated with instable intermediate abundances within individuals:
+
+```{r,  eval = FALSE}
+# Use relative abundances
+pseq <- microbiome::transform(ps_filt, "compositional")
+
+# Merge rare taxa to speed up examples
+pseq <- microbiome::aggregate_rare(pseq, level = "Strain", detection = .1/100, prevalence = 10/100)
+
+# For cross-sectional analysis, include
+# only the treated points.
+
+pseq0 <- subset_samples(pseq, Day_of_Treatment >= 0)
+
+# intermediate_stability: within subjects:
+pseq %>% 
+  microViz::ps_mutate(subject = Model2_reactor_treatment_dose,
+                      time = Day_of_Treatment) %>% 
+  microbiome::intermediate_stability(., #output = "scores", 
+                                     output = "scores") -> intermediate.stability
+
+intermediate.stability %>% 
+  head()
+```
+
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
+# Bimodality is better estimated from abundances at log scale (such as CLR)
+pseq0.clr <- microbiome::transform(pseq0, "clr")
+
+set.seed(4433)
+
+# bimodality: between subjects
+bimodality.score <- microbiome::bimodality(pseq0.clr, method = "potential_analysis",
+                                           bs.iter = 999, peak.threshold = 5,
+                                           min.density = 5)
+
+bimodality.score %>% 
+  head()
+```
+
+```{r, eval=FALSE}
+taxa <-microbiome::taxa(pseq0)
+df <- data.frame(group = taxa,
+                 intermediate.stability = intermediate.stability[taxa],
+                 bimodality = bimodality.score[taxa])
+theme_set(theme_bw(20))
+
+library(ggrepel)
+
+p <- ggplot(df,
+            aes(x = intermediate.stability, y = bimodality, label = '')) + #Doesn't add labels to points
+  geom_text_repel() +
+  geom_point()
+
+#Labels only those that have bimodality > 0.4 and intermediate stability < 0, adjusts the placement of labels
+p <- p + geom_text(aes(label = ifelse(bimodality > 0.75 | intermediate.stability < -0.25, group, '')), vjust = "inward", hjust = "inward")
+
+print(p)
+```
+
+```{r, eval=FALSE}
+p$data
+```
+
+```{r, eval=FALSE}
+# Log10 abundance for a selected taxonomic group
+# Pick the most bimodal taxa as an example
+tax  <- names(which.max(bimodality.score))
+
+# Detect tipping points at log10 abundances
+x <- microbiome::abundances(microbiome::transform(pseq, "clr"))[tax,]
+
+# Bootstrapped potential analysis to identify potential minima
+# in practice, use more bootstrap iterations
+potential.minima <- microbiome::potential_analysis(x, bs.iter = 10)$minima
+
+# Same with earlywarnings package (without bootstrap ie. less robust)
+# library(earlywarnings)
+# res <- livpotential_ews(x)$min.points
+
+# Identify the potential minimum locations as tipping point candidates
+tipping.samples <- sapply(potential.minima, function (m) {names(which.min(abs(sort(x) - m)))})
+tipping.point <- microbiome::abundances(pseq)[tax, tipping.samples]
+print(tipping.point)
+```
+
+
+```{r, eval=FALSE}
+# Illustrate the detected tipping point
+plot(density(x), main = tax)
+abline(v = x[tipping.samples])
+```
+
+
+```{r}
+# # Bimodality hotplot:
+# # Consider a unique sample from each subject: the baseline time point 
+# p <- microbiome::hotplot(pseq0, tax, tipping.point = 0.005)
+# print(p)
+# 
+# # Visualize bimodality
+# pv <- plot_tipping(pseq, tax, tipping.point = 0.005)
+# print(pv)
+```
+
+```{r}
+sessionInfo()
+```
