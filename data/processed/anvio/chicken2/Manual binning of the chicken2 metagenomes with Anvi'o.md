@@ -117,7 +117,7 @@ An we then import that in the chicken2 databases.
 	anvi-import-collection  -c ${CONT_DB} -p ${PROF} -C concoct_20_Bin_4_concoct_5 concoct_20_20_Bin_4_concoct_5_merged.tsv
 
 
-	
+
 We are going to refine this freshly imported concoct_20_Bin_4_concoct_5 collection. First we bin roughly we will go for a second refinement later.
 
 	for bin in `cut -f2 concoct_20_20_Bin_4_concoct_5_merged.tsv | uniq`

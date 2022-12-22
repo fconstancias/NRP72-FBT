@@ -1,5 +1,5 @@
 ---
-title: "NTP72 - 16S - beta - chicken draft "
+title: "NTP72 - 16S - beta - human draft "
 author: "Florentin Constancias"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
@@ -47,8 +47,8 @@ source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/p
 ```
 
 ```{r}
-out_pptx = "~/Desktop/16S-chicken-beta.pptx"
-out_xlsx = "~/Desktop/16S-chicken-beta.xlsx"
+out_pptx = "~/Desktop/16S-human-beta.pptx"
+out_xlsx = "~/Desktop/16S-human-beta.xlsx"
 ```
 
 ```{r}
@@ -60,15 +60,25 @@ load(url("https://github.com/fconstancias/NRP72-FBT/blob/master/Figures/Rastetic
 ```{r}
 "data/processed/16S/16S_working_phyloseq.RDS" %>% 
   here::here() %>% 
-  readRDS()  %>% 
-  subset_samples(Enrichment == "NotEnriched") %>%
-      subset_samples(Experiment %in% c("Continuous", "Cecum")) %>%
-   subset_samples(Day_of_Treatment > -6 & Day_of_Treatment <= 30 | Reactor == "DONOR") %>% 
-  subset_samples(Model == "Chicken") %>% 
-   subset_samples(Reactor != "CR" & Model2 == "Chicken1" | Model2 == "Chicken2" & Reactor %in% c("TR2", "TR3", "TR4", "TR5", "TR6", "TR7", "CR", "DONOR")) %>% 
-   subset_samples(Reactor != "IR") -> ps_filtered
+  readRDS() %>% 
+  subset_samples(Experiment %in% c("Continuous", "Cecum")) %>%
+  subset_samples(Day_of_Treatment > -6 & Day_of_Treatment <= 30 | Reactor == "DONOR") %>% 
+  subset_samples(Model == "Human") %>% 
+    microViz::ps_mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
+                                         Day_of_Treatment > 0 &  Day_of_Treatment < 3 ~ "t1" ,
+                                         Day_of_Treatment >= 3 & Day_of_Treatment <= 6 ~ "t2",
+                                         Day_of_Treatment > 6  ~ "t3" )) -> ps_filtered
 ```
 
+```{r}
+ps_filtered %>% 
+  phyloseq_check_lib_size(data_color = "Reactor", data_facet = "Reactor", first_n = 50, nreads_display = 1000) -> out
+
+out$df %>% 
+  # rownames_to_column('sample_id') %>% 
+  # filter(Treatment == "DONOR")  %>% 
+  select(SampleID, Day_of_Treatment,Treatment, Reactor, Model2, Model, LibrarySize) 
+```
 
 ## rarefraction
 
@@ -219,7 +229,6 @@ pcoa_all_leg %>%
                     file = out_pptx)
 ```
 
-
 ```{r}
 
 plots_hall_humans %>% 
@@ -228,10 +237,10 @@ plots_hall_humans %>%
 expl_var %>% 
   DT::datatable()
 
-expl_var %>%
-  data.frame() %>% 
-  export::table2ppt(append = TRUE,
-                    file = out_pptx)
+# expl_var %>%
+#   data.frame() %>% 
+#   export::table2ppt(append = TRUE,
+#                     file = out_pptx)
 ```
 
 ### Human1 - F1:
@@ -498,10 +507,384 @@ env_out$plot %>%
 
 ```
 
+####  Statistical evaluation:
+
+##### pret - Day_of_Treatment <= 0:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
 
 
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-pretreat",
+                   showNA = TRUE)
+```
 
 
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-pretreat-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-pretreat-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-pretreat-pw2",
+                   showNA = TRUE)
+```
+
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+##### treat - Day_of_Treatment > 1:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-treat",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-treat-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment > 1),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-treat-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-treat-pw2",
+                   showNA = TRUE)
+```
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+##### Day_of_Treatment >= 3 & Day_of_Treatment <= 6:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-d3d6",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-d3d6-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-d3d6-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-d3d6-pw2",
+                   showNA = TRUE)
+```
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+
+##### period:
+
+```{r}
+# within reactor among periods
+# 
+# lapply(
+#   dist,
+#   FUN = physeq_pairwise_permanovas_adonis2,
+#   physeq = ps_tmp_forbdiv %>%
+#     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+#   compare_header = "Treatment",
+#   n_perm = 999,
+#   strat = "none"
+# ) %>%
+#   bind_rows(.id = "Distance") %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   select(-pvalBon)  -> tmp_df
+# 
+# 
+# tmp_df %>% 
+#   DT::datatable()
+# 
+# tmp_df %>% 
+#   xlsx::write.xlsx(file = out_xlsx,
+#                    append = TRUE,
+#                    sheetName = "human1_F1-beta-d3d6-pw",
+#                    showNA = TRUE)
+```
 
 
 
@@ -1034,11 +1417,356 @@ env_out$plot %>%
 
 ```
 
+##### pret - Day_of_Treatment <= 0:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-pretreat",
+                   showNA = TRUE)
+```
+
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-pretreat-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-pretreat-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-pretreat-pw2",
+                   showNA = TRUE)
+```
+
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+##### treat - Day_of_Treatment > 1:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-treat",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-treat-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment > 1),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-treat-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-treat-pw2",
+                   showNA = TRUE)
+```
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+##### Day_of_Treatment >= 3 & Day_of_Treatment <= 6:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-d3d6",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-d3d6-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-d3d6-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-d3d6-pw2",
+                   showNA = TRUE)
+```
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
 
 
 
 ### Human2:
-
 
 ```{r}
 ps_rare %>%
@@ -1303,12 +2031,477 @@ env_out$plot %>%
 ```
 
 
+####  Statistical evaluation:
+
+##### pret - Day_of_Treatment <= 0:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-pretreat",
+                   showNA = TRUE)
+```
+
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-pretreat-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-pretreat-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-pretreat-pw2",
+                   showNA = TRUE)
+```
+
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+##### treat - Day_of_Treatment > 1:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-treat",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-treat-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment > 1),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-treat-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-treat-pw2",
+                   showNA = TRUE)
+```
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+##### Day_of_Treatment >= 3 & Day_of_Treatment <= 6:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-d3d6",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-d3d6-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-d3d6-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-d3d6-pw2",
+                   showNA = TRUE)
+```
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+
+##### treat - Day_of_Treatment > 7:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >7),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-d7p",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >7),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-d7p-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment > 7),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-d7p-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >7),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-d7p-pw2",
+                   showNA = TRUE)
+```
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
 
 
 
 
-
-
+```{r}
+sessionInfo()
+```
 
 
 
@@ -1578,6 +2771,360 @@ env_out$plot %>%
 
 ```
 
+
+####  Statistical evaluation:
+
+##### pret - Day_of_Treatment <= 0:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-pretreat",
+                   showNA = TRUE)
+```
+
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-pretreat-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-pretreat-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment <= 0),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-pretreat-pw2",
+                   showNA = TRUE)
+```
+
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+##### treat - Day_of_Treatment > 1:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-treat",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-treat-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment > 1),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-treat-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >1),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-treat-pw2",
+                   showNA = TRUE)
+```
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+##### Day_of_Treatment >= 3 & Day_of_Treatment <= 6:
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  formula = paste0(c("Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-d3d6",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  nrep = 999,
+  strata = "none",
+  terms_margins = "margin"
+) %>%
+  bind_rows(.id = "Distance")  %>% 
+  mutate_if(is.numeric, round, 3) -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-d3d6-time-day",
+                   showNA = TRUE)
+```
+
+```{r, warning= FALSE}
+lapply(
+  dist,
+  FUN = physeq_pairwise_permanovas_adonis2,
+  physeq = ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  compare_header = "Treatment",
+  n_perm = 999,
+  strat = "none"
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3) %>%
+  select(-pvalBon)  -> tmp_df
+
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-d3d6-pw",
+                   showNA = TRUE)
+```
+
+```{r}
+lapply(
+  dist,
+  FUN = phyloseq_TW,
+  physeq =  ps_tmp_forbdiv %>%
+    subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
+  variable = "Treatment",
+  nrep = 999,
+  strata = NULL
+) %>%
+  bind_rows(.id = "Distance") %>%
+  mutate_if(is.numeric, round, 3)   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-d3d6-pw2",
+                   showNA = TRUE)
+```
+
+```{r}
+# lapply(
+#   dlist,
+#   FUN = betadisper,
+#   physeq = physeq,
+#   variable = "Health_status"
+# ) %>%
+#   bind_rows() %>%
+#   mutate_if(is.numeric, round, 3) %>%
+#   t() %>%
+#   data.frame() %>%
+#   dplyr::rename(bdisper_pvalue = '.') %>%
+#   DT::datatable()
+```
+
+
+
+
 ```{r}
 sessionInfo()
 ```
+

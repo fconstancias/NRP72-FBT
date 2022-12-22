@@ -66,9 +66,13 @@ load(url("https://github.com/fconstancias/NRP72-FBT/blob/master/Figures/Rastetic
   subset_samples(Day_of_Treatment > -6 & Day_of_Treatment <= 30 | Reactor == "DONOR") %>% 
   subset_samples(Model == "Chicken") %>% 
   subset_samples(Reactor != "CR" & Model2 == "Chicken1" | Model2 == "Chicken2" & Reactor %in% c("TR2", "TR3", "TR4", "TR5", "TR6", "TR7", "CR", "DONOR")) %>% 
-  subset_samples(Reactor != "IR") -> ps_filtered
+  subset_samples(Reactor != "IR") %>% 
+  microViz::ps_mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
+                                         Day_of_Treatment > 0 &  Day_of_Treatment <= 5 ~ "t1" ,
+                                         Day_of_Treatment > 5 &  Day_of_Treatment <= 10 ~ "t2",
+                                         Day_of_Treatment > 10  ~ "t3" )) -> ps_filtered
 ```
-a
+
 ## rarefraction
 
 ```{r}
