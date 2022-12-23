@@ -64,7 +64,7 @@ load(url("https://github.com/fconstancias/NRP72-FBT/blob/master/Figures/Rastetic
   subset_samples(Experiment %in% c("Continuous", "Cecum")) %>%
   subset_samples(Day_of_Treatment > -6 & Day_of_Treatment <= 30 | Reactor == "DONOR") %>% 
   subset_samples(Model == "Human") %>% 
-    microViz::ps_mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
+  microViz::ps_mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
                                          Day_of_Treatment > 0 &  Day_of_Treatment < 3 ~ "t1" ,
                                          Day_of_Treatment >= 3 & Day_of_Treatment <= 6 ~ "t2",
                                          Day_of_Treatment > 6  ~ "t3" )) -> ps_filtered
@@ -517,7 +517,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -543,7 +543,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -568,7 +568,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -593,7 +593,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -634,7 +634,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -659,7 +659,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -684,7 +684,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment > 1),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -709,7 +709,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -749,7 +749,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -774,7 +774,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -799,7 +799,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -824,7 +824,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -857,39 +857,101 @@ tmp_df %>%
 ```
 
 
-##### period:
+##### Period:
 
 ```{r}
-# within reactor among periods
+setNames(vector("list", 
+                length(physeq_get_unique(ps_tmp_forbdiv, "Reactor_Treatment_Dose"))), 
+         physeq_get_unique(ps_tmp_forbdiv, "Reactor_Treatment_Dose")) -> lis
+```
+
+
+```{r}
+for (grp in names(lis)){
+  print(grp)
+  
+  lapply(
+    dist,
+    FUN = physeq_pairwise_permanovas_adonis2,
+    physeq = ps_tmp_forbdiv %>%
+      # subset_samples(.,  eval(as.name(ranks)) %in% tax) %>% 
+      subset_samples(., Reactor_Treatment_Dose == grp),
+    compare_header = "period",
+    n_perm = 999,
+    strat = "none"
+  ) %>%
+    bind_rows(.id = "Distance") %>%
+    mutate_if(is.numeric, round, 3) %>%
+    select(-pvalBon) -> lis[[grp]]
+}
+
+
+lis %>% 
+  bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+  filter(X1 == "pret" | "X2" == "pret") %>% 
+  group_by(Reactor_Treatment_Dose, Distance) %>% 
+  rstatix::adjust_pvalue(p.col = "pval", output.col = "pvalFDR") %>% 
+  rstatix::add_significance(p.col = "pvalFDR")-> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-vs_pret",
+                   showNA = TRUE)
+```
+
+
+```{r}
+lis %>% 
+  bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+  group_by(Reactor_Treatment_Dose, Distance) %>% 
+  rstatix::adjust_pvalue(p.col = "pval", output.col = "pvalFDR") %>% 
+  rstatix::add_significance(p.col = "pvalFDR") -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F1-beta-between-periods",
+                   showNA = TRUE)
+```
+
+
+```{r}
 # 
+# for (grp in names(lis)){
+#   print(grp)
+#   
 # lapply(
 #   dist,
-#   FUN = physeq_pairwise_permanovas_adonis2,
-#   physeq = ps_tmp_forbdiv %>%
-#     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-#   compare_header = "Treatment",
-#   n_perm = 999,
-#   strat = "none"
+#   FUN = phyloseq_TW,
+#   physeq =  ps_tmp_forbdiv %>%
+#       # subset_samples(.,  eval(as.name(ranks)) %in% tax) %>% 
+#       subset_samples(., Reactor_Treatment_Dose == grp),
+#     variable = "period",
+#   nrep = 999,
+#   strata = NULL
 # ) %>%
 #   bind_rows(.id = "Distance") %>%
-#   mutate_if(is.numeric, round, 3) %>%
-#   select(-pvalBon)  -> tmp_df
+#   mutate_if(is.numeric, round, 5) -> lis[[grp]]
+# }
 # 
 # 
-# tmp_df %>% 
-#   DT::datatable()
-# 
-# tmp_df %>% 
+# lis %>% 
+#   bind_rows(.id = "Reactor_Treatment_Dose") %>% 
 #   xlsx::write.xlsx(file = out_xlsx,
 #                    append = TRUE,
-#                    sheetName = "human1_F1-beta-d3d6-pw",
+#                    sheetName = "human1_F1-beta-between-periodsTW",
 #                    showNA = TRUE)
 ```
 
 
-
 ### Human1 - F2:
-
 
 ```{r}
 ps_rare %>%
@@ -1425,7 +1487,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -1451,7 +1513,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -1476,7 +1538,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -1501,7 +1563,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -1542,7 +1604,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -1567,7 +1629,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -1592,7 +1654,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment > 1),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -1617,7 +1679,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -1657,7 +1719,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -1682,7 +1744,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -1707,7 +1769,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -1732,7 +1794,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -1764,6 +1826,98 @@ tmp_df %>%
 #   DT::datatable()
 ```
 
+
+##### Period:
+
+```{r}
+setNames(vector("list", 
+                length(physeq_get_unique(ps_tmp_forbdiv, "Reactor_Treatment_Dose"))), 
+         physeq_get_unique(ps_tmp_forbdiv, "Reactor_Treatment_Dose")) -> lis
+```
+
+
+```{r}
+for (grp in names(lis)){
+  print(grp)
+  
+  lapply(
+    dist,
+    FUN = physeq_pairwise_permanovas_adonis2,
+    physeq = ps_tmp_forbdiv %>%
+      # subset_samples(.,  eval(as.name(ranks)) %in% tax) %>% 
+      subset_samples(., Reactor_Treatment_Dose == grp),
+    compare_header = "period",
+    n_perm = 999,
+    strat = "none"
+  ) %>%
+    bind_rows(.id = "Distance") %>%
+    mutate_if(is.numeric, round, 3) %>%
+    select(-pvalBon) -> lis[[grp]]
+}
+
+
+lis %>% 
+  bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+  filter(X1 == "pret" | "X2" == "pret") %>% 
+  group_by(Reactor_Treatment_Dose, Distance) %>% 
+  rstatix::adjust_pvalue(p.col = "pval", output.col = "pvalFDR") %>% 
+  rstatix::add_significance(p.col = "pvalFDR")-> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-vs_pret",
+                   showNA = TRUE)
+```
+
+
+```{r}
+lis %>% 
+  bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+  group_by(Reactor_Treatment_Dose, Distance) %>% 
+  rstatix::adjust_pvalue(p.col = "pval", output.col = "pvalFDR") %>% 
+  rstatix::add_significance(p.col = "pvalFDR") -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1_F2-beta-between-periods",
+                   showNA = TRUE)
+```
+
+
+```{r}
+# for (grp in names(lis)){
+#   print(grp)
+#   
+# lapply(
+#   dist,
+#   FUN = phyloseq_TW,
+#   physeq =  ps_tmp_forbdiv %>%
+#       # subset_samples(.,  eval(as.name(ranks)) %in% tax) %>% 
+#       subset_samples(., Reactor_Treatment_Dose == grp),
+#     variable = "period",
+#   nrep = 999,
+#   strata = NULL
+# ) %>%
+#   bind_rows(.id = "Distance") %>%
+#   mutate_if(is.numeric, round, 5) -> lis[[grp]]
+# }
+# 
+# 
+# lis %>% 
+#   bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+#   xlsx::write.xlsx(file = out_xlsx,
+#                    append = TRUE,
+#                    sheetName = "human1_F2-beta-between-periodsTW",
+#                    showNA = TRUE)
+```
 
 
 ### Human2:
@@ -2041,7 +2195,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2067,7 +2221,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2092,7 +2246,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -2117,7 +2271,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -2158,7 +2312,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2183,7 +2337,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2208,7 +2362,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment > 1),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -2233,7 +2387,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -2273,7 +2427,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2298,7 +2452,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2323,7 +2477,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -2348,7 +2502,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -2389,7 +2543,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >7),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2414,7 +2568,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >7),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2439,7 +2593,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment > 7),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -2464,7 +2618,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >7),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -2497,10 +2651,96 @@ tmp_df %>%
 ```
 
 
+##### Period:
+
+```{r}
+setNames(vector("list", 
+                length(physeq_get_unique(ps_tmp_forbdiv, "Reactor_Treatment_Dose"))), 
+         physeq_get_unique(ps_tmp_forbdiv, "Reactor_Treatment_Dose")) -> lis
+```
 
 
 ```{r}
-sessionInfo()
+for (grp in names(lis)){
+  print(grp)
+  
+  lapply(
+    dist,
+    FUN = physeq_pairwise_permanovas_adonis2,
+    physeq = ps_tmp_forbdiv %>%
+      # subset_samples(.,  eval(as.name(ranks)) %in% tax) %>% 
+      subset_samples(., Reactor_Treatment_Dose == grp),
+    compare_header = "period",
+    n_perm = 999,
+    strat = "none"
+  ) %>%
+    bind_rows(.id = "Distance") %>%
+    mutate_if(is.numeric, round, 3) %>%
+    select(-pvalBon) -> lis[[grp]]
+}
+
+
+lis %>% 
+  bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+  filter(X1 == "pret" | "X2" == "pret") %>% 
+  group_by(Reactor_Treatment_Dose, Distance) %>% 
+  rstatix::adjust_pvalue(p.col = "pval", output.col = "pvalFDR") %>% 
+  rstatix::add_significance(p.col = "pvalFDR")-> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-vs_pret",
+                   showNA = TRUE)
+```
+
+
+```{r}
+lis %>% 
+  bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+  group_by(Reactor_Treatment_Dose, Distance) %>% 
+  rstatix::adjust_pvalue(p.col = "pval", output.col = "pvalFDR") %>% 
+  rstatix::add_significance(p.col = "pvalFDR") -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human2-beta-between-periods",
+                   showNA = TRUE)
+```
+
+
+```{r}
+# for (grp in names(lis)){
+#   print(grp)
+#   
+# lapply(
+#   dist,
+#   FUN = phyloseq_TW,
+#   physeq =  ps_tmp_forbdiv %>%
+#       # subset_samples(.,  eval(as.name(ranks)) %in% tax) %>% 
+#       subset_samples(., Reactor_Treatment_Dose == grp),
+#     variable = "period",
+#   nrep = 999,
+#   strata = NULL
+# ) %>%
+#   bind_rows(.id = "Distance") %>%
+#   mutate_if(is.numeric, round, 5) -> lis[[grp]]
+# }
+# 
+# 
+# lis %>% 
+#   bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+#   xlsx::write.xlsx(file = out_xlsx,
+#                    append = TRUE,
+#                    sheetName = "human2-beta-between-periodsTW",
+#                    showNA = TRUE)
 ```
 
 
@@ -2782,7 +3022,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2808,7 +3048,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2833,7 +3073,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -2858,7 +3098,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment <= 0),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -2899,7 +3139,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2924,7 +3164,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -2949,7 +3189,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment > 1),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -2974,7 +3214,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >1),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -3014,7 +3254,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  formula = paste0(c("Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -3039,7 +3279,7 @@ lapply(
   FUN = phyloseq_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  formula = paste0(c("Treatment", "Day_of_Treatment"), collapse=" + "),
+  formula = paste0(c("Reactor_Treatment_Dose", "Day_of_Treatment"), collapse=" + "),
   nrep = 999,
   strata = "none",
   terms_margins = "margin"
@@ -3064,7 +3304,7 @@ lapply(
   FUN = physeq_pairwise_permanovas_adonis2,
   physeq = ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  compare_header = "Treatment",
+  compare_header = "Reactor_Treatment_Dose",
   n_perm = 999,
   strat = "none"
 ) %>%
@@ -3089,7 +3329,7 @@ lapply(
   FUN = phyloseq_TW,
   physeq =  ps_tmp_forbdiv %>%
     subset_samples(Day_of_Treatment >= 3 & Day_of_Treatment <= 6),
-  variable = "Treatment",
+  variable = "Reactor_Treatment_Dose",
   nrep = 999,
   strata = NULL
 ) %>%
@@ -3122,7 +3362,104 @@ tmp_df %>%
 ```
 
 
+##### Period:
 
+```{r}
+setNames(vector("list", 
+                length(physeq_get_unique(ps_tmp_forbdiv, "Reactor_Treatment_Dose"))), 
+         physeq_get_unique(ps_tmp_forbdiv, "Reactor_Treatment_Dose")) -> lis
+```
+
+
+```{r}
+for (grp in names(lis)){
+  print(grp)
+  
+  lapply(
+    dist,
+    FUN = physeq_pairwise_permanovas_adonis2,
+    physeq = ps_tmp_forbdiv %>%
+      # subset_samples(.,  eval(as.name(ranks)) %in% tax) %>% 
+      subset_samples(., Reactor_Treatment_Dose == grp),
+    compare_header = "period",
+    n_perm = 999,
+    strat = "none"
+  ) %>%
+    bind_rows(.id = "Distance") %>%
+    mutate_if(is.numeric, round, 3) %>%
+    select(-pvalBon) -> lis[[grp]]
+}
+
+
+lis %>% 
+  bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+  filter(X1 == "pret" | "X2" == "pret") %>% 
+  group_by(Reactor_Treatment_Dose, Distance) %>% 
+  rstatix::adjust_pvalue(p.col = "pval", output.col = "pvalFDR") %>% 
+  rstatix::add_significance(p.col = "pvalFDR")-> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-vs_pret",
+                   showNA = TRUE)
+```
+
+
+```{r}
+lis %>% 
+  bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+  group_by(Reactor_Treatment_Dose, Distance) %>% 
+  rstatix::adjust_pvalue(p.col = "pval", output.col = "pvalFDR") %>% 
+  rstatix::add_significance(p.col = "pvalFDR") -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human1all-beta-between-periods",
+                   showNA = TRUE)
+```
+
+
+```{r}
+# for (grp in names(lis)){
+#   print(grp)
+#   
+# lapply(
+#   dist,
+#   FUN = phyloseq_TW,
+#   physeq =  ps_tmp_forbdiv %>%
+#       # subset_samples(.,  eval(as.name(ranks)) %in% tax) %>% 
+#       subset_samples(., Reactor_Treatment_Dose == grp),
+#     variable = "period",
+#   nrep = 999,
+#   strata = NULL
+# ) %>%
+#   bind_rows(.id = "Distance") %>%
+#   mutate_if(is.numeric, round, 5) -> lis[[grp]]
+# }
+# 
+# 
+# lis %>% 
+#   bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+#   xlsx::write.xlsx(file = out_xlsx,
+#                    append = TRUE,
+#                    sheetName = "human1all-beta-between-periodsTW",
+#                    showNA = TRUE)
+```
+
+
+
+
+
+
+## End:
 
 ```{r}
 sessionInfo()

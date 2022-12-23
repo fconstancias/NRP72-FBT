@@ -1,4 +1,4 @@
-
+`
 # Manual binning of the chicken metagenomes with Anvi'o
 
 SQM pipeline generated lots of data including MAGs binned based on automatic approach. We are going to adopt here the manual binning approach starting from CONCOCT clusters.
@@ -132,6 +132,33 @@ We are going to refine this freshly imported concoct_20_Bin_4_concoct_5 collecti
 
 
 
+We then summarise the new collection before a second run of refinement:
+
+    anvi-summarize \
+       -p ${PROF}  \
+       -c ${CONT_DB}  \
+       --quick-summary \
+       -C concoct_20_Bin_4_concoct_5 -o SUMMARY/concoct_20_Bin_4_concoct_5
+	
+	anvi-export-collection -C concoct_20_Bin_4_concoct_5 \
+	    -p ${PROF}  \
+	    -O concoct_20_Bin_4_concoct_5_refined
+
+
+
+	for bin in `cut -f2 concoct_20_Bin_4_concoct_5_refined.txt | uniq`
+	do
+	echo "### Refining bin" ${bin} "Start###"
+	
+	        anvi-refine -c ${CONT_DB} \
+	                    -p ${PROF}  \
+	                    -C concoct_20_Bin_4_concoct_5 \
+	                    -b ${bin}
+	done
+
+
+
+
 	anvi-export-collection -C concoct_20 \
 	-p ${PROF} \
 	-O manual_binning/concoct_20_collection_refined
@@ -176,3 +203,4 @@ Export the DAS collection summary including genomes as well as refined2:
 	
 	anvi-summarize -c ${CONT_DB} -p ${PROF} -C concoct_20 -o SUMMARY/concoct_20_refined_2
 	
+`

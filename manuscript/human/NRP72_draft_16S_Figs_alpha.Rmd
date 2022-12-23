@@ -63,7 +63,11 @@ load(url("https://github.com/fconstancias/NRP72-FBT/blob/master/Figures/Rastetic
   readRDS() %>% 
   subset_samples(Experiment %in% c("Continuous", "Cecum")) %>%
   subset_samples(Day_of_Treatment > -6 & Day_of_Treatment <= 30 | Reactor == "DONOR") %>% 
-  subset_samples(Model == "Human")  -> ps_filtered
+  subset_samples(Model == "Human")  %>% 
+  microViz::ps_mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
+                                         Day_of_Treatment > 0 &  Day_of_Treatment < 3 ~ "t1" ,
+                                         Day_of_Treatment >= 3 & Day_of_Treatment <= 6 ~ "t2",
+                                         Day_of_Treatment > 6  ~ "t3" )) -> ps_filtered
 ```
 
 ```{r}
@@ -163,7 +167,7 @@ hill_df %>%
              value,
              colour = Treatment,
              fill = Treatment)) + #,
-             # group = interaction(Model2, Reactor, Treatment, Treatment_Dose, Fermentation))) +
+  # group = interaction(Model2, Reactor, Treatment, Treatment_Dose, Fermentation))) +
   facet_grid(variable ~ Model2,scale="free",space="fixed") +
   # geom_boxplot(outlier.colour = NA, alpha = 0.2) +
   # ggtitle("Alpha_Div_chicken_2 ") +
@@ -205,7 +209,7 @@ alpha_plot_leg %>%
 
 ```{r}
 alpha_plot_noleg$data %>% 
-    dplyr::select(sample_name, value, variable, Reactor_Treatment, Day_of_Treatment) %>% 
+  dplyr::select(sample_name, value, variable, Reactor_Treatment, Day_of_Treatment) %>% 
   xlsx::write.xlsx(file = out_xlsx,
                    append = TRUE,
                    # sheetName = "p_gram_h2",
@@ -214,26 +218,27 @@ alpha_plot_noleg$data %>%
 
 # statistical evaluation:
 
-pre-treatment:
+btw reactors:
 
 ```{r}
 alpha_plot_noleg$data %>% 
   filter(Day_of_Treatment <= 0) %>% 
   # group_by(Model2) %>% 
-   # group_by(Model2, variable) %>%
-      # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
-      #                      # comparisons = list(c("Inulin_3", "Control")),
-      #                      # ref.group = "Control",
-      #                      data = . ) %>%  #,
-      ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
-                            data = .,
-                            method = "wilcox.test",
-                            group.by = c("Model2", "variable"),
-                            p.adjust.method = "none") %>% 
+  # group_by(Model2, variable) %>%
+  # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
+  #                      # comparisons = list(c("Inulin_3", "Control")),
+  #                      # ref.group = "Control",
+  #                      data = . ) %>%  #,
+  ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
+                        data = .,
+                        method = "wilcox.test",
+                        group.by = c("Model2", "variable"),
+                        p.adjust.method = "none") %>% 
+  group_by(Model2, variable) %>% 
   arrange(p) %>% 
-  ungroup() %>% 
-  group_by(Model2) %>% 
-  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj")  -> p_tmp
+  select(-".y.", -p.adj, -p.format, -p.signif) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  rstatix::add_significance(p.col = "p.adj") -> p_tmp
 
 p_tmp %>% 
   xlsx::write.xlsx(file = out_xlsx,
@@ -250,20 +255,21 @@ p_tmp %>%
 alpha_plot_noleg$data %>% 
   filter(Day_of_Treatment >= 1) %>% 
   # group_by(Model2) %>% 
-   # group_by(Model2, variable) %>%
-      # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
-      #                      # comparisons = list(c("Inulin_3", "Control")),
-      #                      # ref.group = "Control",
-      #                      data = . ) %>%  #,
-      ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
-                            data = .,
-                            method = "wilcox.test",
-                            group.by = c("Model2", "variable"),
-                            p.adjust.method = "none") %>% 
+  # group_by(Model2, variable) %>%
+  # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
+  #                      # comparisons = list(c("Inulin_3", "Control")),
+  #                      # ref.group = "Control",
+  #                      data = . ) %>%  #,
+  ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
+                        data = .,
+                        method = "wilcox.test",
+                        group.by = c("Model2", "variable"),
+                        p.adjust.method = "none") %>% 
   arrange(p) %>% 
-  ungroup() %>% 
-  group_by(Model2) %>% 
-  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") -> p_tmp
+  group_by(Model2, variable) %>% 
+  select(-".y.", -p.adj, -p.format, -p.signif) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  rstatix::add_significance(p.col = "p.adj") -> p_tmp
 
 p_tmp %>% 
   xlsx::write.xlsx(file = out_xlsx,
@@ -280,20 +286,21 @@ p_tmp %>%
 alpha_plot_noleg$data %>% 
   filter(Day_of_Treatment >= 3 & Day_of_Treatment <= 6) %>% 
   # group_by(Model2) %>% 
-   # group_by(Model2, variable) %>%
-      # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
-      #                      # comparisons = list(c("Inulin_3", "Control")),
-      #                      # ref.group = "Control",
-      #                      data = . ) %>%  #,
-      ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
-                            data = .,
-                            method = "wilcox.test",
-                            group.by = c("Model2", "variable"),
-                            p.adjust.method = "none") %>% 
+  # group_by(Model2, variable) %>%
+  # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
+  #                      # comparisons = list(c("Inulin_3", "Control")),
+  #                      # ref.group = "Control",
+  #                      data = . ) %>%  #,
+  ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
+                        data = .,
+                        method = "wilcox.test",
+                        group.by = c("Model2", "variable"),
+                        p.adjust.method = "none") %>% 
   arrange(p) %>% 
-  ungroup() %>% 
-  group_by(Model2) %>% 
-  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj")  -> p_tmp
+  group_by(Model2, variable) %>% 
+  select(-".y.", -p.adj, -p.format, -p.signif) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  rstatix::add_significance(p.col = "p.adj")  -> p_tmp
 
 p_tmp %>% 
   xlsx::write.xlsx(file = out_xlsx,
@@ -310,20 +317,21 @@ p_tmp %>%
 alpha_plot_noleg$data %>% 
   filter(Day_of_Treatment >= 7) %>% 
   # group_by(Model2) %>% 
-   # group_by(Model2, variable) %>%
-      # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
-      #                      # comparisons = list(c("Inulin_3", "Control")),
-      #                      # ref.group = "Control",
-      #                      data = . ) %>%  #,
-      ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
-                            data = .,
-                            method = "wilcox.test",
-                            group.by = c("Model2", "variable"),
-                            p.adjust.method = "none") %>% 
+  # group_by(Model2, variable) %>%
+  # rstatix::wilcox_test(log10_ratio ~ Treatment_A,
+  #                      # comparisons = list(c("Inulin_3", "Control")),
+  #                      # ref.group = "Control",
+  #                      data = . ) %>%  #,
+  ggpubr::compare_means(value ~ Reactor_Treatment_Dose_fermentation,
+                        data = .,
+                        method = "wilcox.test",
+                        group.by = c("Model2", "variable"),
+                        p.adjust.method = "none") %>% 
   arrange(p) %>% 
-  ungroup() %>% 
-  group_by(Model2) %>% 
-  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj")   -> p_tmp
+  group_by(Model2, variable) %>% 
+  select(-".y.", -p.adj, -p.format, -p.signif) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  rstatix::add_significance(p.col = "p.adj")    -> p_tmp
 
 p_tmp %>% 
   xlsx::write.xlsx(file = out_xlsx,
@@ -334,6 +342,56 @@ p_tmp %>%
 p_tmp %>% 
   filter(p.adj <= 0.05) %>% 
   DT::datatable()
+```
+
+within reactors:
+
+
+```{r}
+setNames(vector("list", 
+                length(unique(alpha_plot_noleg$data$Reactor_Treatment_Dose))), 
+         unique(alpha_plot_noleg$data$Reactor_Treatment_Dose)) -> lis
+```
+
+
+```{r}
+for (grp in names(lis)){
+  print(grp)
+
+alpha_plot_noleg$data %>%
+  dplyr::filter(Reactor_Treatment_Dose == UQ(grp)) %>%
+  group_by(Model2, variable) %>% 
+  # rstatix::wilcox_test(value ~ period,
+  #                       data = . , p.adjust.method = "none")-> lis[[grp]]  #,
+  ggpubr::compare_means(value ~ period,
+                        data = .,
+                        method = "wilcox.test",
+                        group.by = c("Model2", "variable"),
+                        p.adjust.method = "none") -> lis[[grp]]
+# #   arrange(p) %>% 
+#   ungroup() %>% 
+#   group_by(Model2) %>% 
+#   rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj")  -> p_tmp
+}
+# 
+
+
+lis %>% 
+  bind_rows(.id = "Reactor_Treatment_Dose") %>% 
+  arrange(p) %>% 
+  group_by(Model2, Reactor_Treatment_Dose, variable) %>% 
+  select(-".y.", -p.adj, -p.format, -p.signif) %>% 
+  rstatix::adjust_pvalue(method = "fdr",p.col = "p", output.col = "p.adj") %>% 
+  rstatix::add_significance(p.col = "p.adj")   -> tmp_df
+
+tmp_df %>% 
+  DT::datatable()
+
+tmp_df %>% 
+  xlsx::write.xlsx(file = out_xlsx,
+                   append = TRUE,
+                   sheetName = "human-alpha-vs_pret",
+                   showNA = TRUE)
 ```
 
 
