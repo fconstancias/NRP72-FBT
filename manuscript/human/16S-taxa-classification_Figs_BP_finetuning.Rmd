@@ -1,5 +1,5 @@
 ---
-title: "NTP72 - 16S - taxa compostiion - chicken draft "
+title: "NTP72 - 16S - taxa compostiion - human draft "
 author: "Florentin Constancias"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
@@ -32,7 +32,7 @@ require(tidyverse); packageVersion("tidyverse")
 require(phyloseq); packageVersion("phyloseq")
 ```
 
-```{r sourcing, warning=FALSE, results=FALSE , message= FALSE}
+```{r sourcing, warning=FALSE, results=TRUE , message= FALSE}
 # source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R") 
 source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R") 
 source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R") 
@@ -47,8 +47,8 @@ source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/p
 
 
 ```{r}
-out_pptx = "~/Desktop/16S-chick.pptx"
-out_xlsx = "~/Desktop/16S-chick.xlsx"
+out_pptx = "~/Desktop/16S-human.pptx"
+out_xlsx = "~/Desktop/16S-human.xlsx"
 ```
 
 ```{r}
@@ -64,10 +64,14 @@ load(url("https://github.com/fconstancias/NRP72-FBT/blob/master/Figures/Rastetic
   subset_samples(Enrichment == "NotEnriched") %>%
   subset_samples(Experiment %in% c("Continuous", "Cecum")) %>%
   subset_samples(Day_of_Treatment > -4 & Day_of_Treatment <= 30 | Reactor == "DONOR") %>% 
-  subset_samples(Model == "Chicken") %>% 
-  subset_samples(Reactor != "CR" & Model2 == "Chicken1" | Model2 == "Chicken2" & Reactor %in% c("TR2", "TR3", "TR4", "TR5", "TR6", "TR7", "CR", "DONOR")) %>% 
+  subset_samples(Model == "Human") %>% 
+  # subset_samples(Reactor != "CR" & Model2 == "Chicken1" | Model2 == "Chicken2" & Reactor %in% c("TR2", "TR3", "TR4", "TR5", "TR6", "TR7", "CR", "DONOR")) %>% 
   subset_samples(Reactor != "IR") %>% 
-  microViz::ps_mutate("Model2_reactor_treatment_dose" = paste0(Model2,"_",Reactor_Treatment_Dose))-> ps_filtered
+  microViz::ps_mutate("Model2_reactor_treatment_dose" = paste0(Model2,"_",Fermentation, "_", Reactor_Treatment_Dose)) %>% 
+    microViz::ps_mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
+                                         Day_of_Treatment > 0 &  Day_of_Treatment < 3 ~ "t1" ,
+                                         Day_of_Treatment >= 3 & Day_of_Treatment <= 6 ~ "t2",
+                                         Day_of_Treatment > 6  ~ "t3" )) -> ps_filtered
 ```
 
 ```{r}
@@ -77,7 +81,7 @@ ps_filtered %>%
 out$df %>% 
   # rownames_to_column('sample_id') %>% 
   # filter(Treatment == "DONOR")  %>% 
-  select(SampleID, Day_of_Treatment,Treatment, Reactor, Model2, Model, Period, LibrarySize) 
+  select(SampleID, Day_of_Treatment,Treatment, Reactor, Model2, Model, period, LibrarySize) 
 ```
 
 ## rarefraction
@@ -93,22 +97,37 @@ ps_filtered %>%
 ```
 
 ```{r}
+# ps_rare %>%
+#   subset_samples(! Reactor %in% c("DONOR")) %>% 
+#   subset_samples(Model2 == "Chicken2") %>%
+#   subset_samples(Day_of_Treatment <= 15) %>% 
+#   filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> chick2 # %>% 
+# subset_samples(Reactor %!in%c("IR")) %>% 
+# subset_samples() -> before_treat
+
+# ps_rare %>%
+#   subset_samples(! Reactor %in% c("DONOR", "CR")) %>% 
+#   subset_samples(Model2 = "Chicken1") %>% 
+#   filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> chick1 # %>% 
+
+
+# mat.train.svd.corr <- svd(mat.train.clr.corr)
+
+
 ps_rare %>%
   subset_samples(! Reactor %in% c("DONOR")) %>% 
-  subset_samples(Model2 %in% c("Chicken1","Chicken2")) %>% 
+  subset_samples(Model2 %in% c("Human1","Human2")) %>% 
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) -> chicks # %>% 
 
+# rm(list=setdiff(ls(), "chicks"))
 ```
 
-# linear models:  taxa - ASV:
-
-similar as in https://www.nature.com/articles/s41467-019-08377-w
-
+# linear models: CLR taxa - ASV:
 
 Per reactor:
 
 ```{r}
-function_lm_per_reactor <- function(chick2, var = "Model2_reactor_treatment_dose", group = "Chicken2_TR5_HV292.1", transform = "log", rank_glom = "Genus", ranks = "Genus",  min_prev = 0.25, adj_pval_cut = 0.05, estimate_cut = 0, min_tot_ab = 0.1, padj_group = "rank", sub_test = TRUE, time_split = 4,  use_cluster = FALSE, max_clust = 9)
+function_lm_per_reactor <- function(chick2, var = "Model2_reactor_treatment_dose", group = "TR6_VAN90", transform = "log", rank_glom = "Genus", ranks = "Genus",  min_prev = 0.25, adj_pval_cut = 0.05, estimate_cut = 0, min_tot_ab = 0.1, padj_group = "rank", sub_test = TRUE, time_split = 4,  use_cluster = FALSE, max_clust = 9)
 {
   #######------------------
   
@@ -116,6 +135,8 @@ function_lm_per_reactor <- function(chick2, var = "Model2_reactor_treatment_dose
   
   #######------------------
   
+  # The code for `taxatree_models` is quite similar to tax_model. 
+  # However, you might need to run `tax_prepend_ranks` to ensure that each taxon at each rank is always unique. 
   chick2 %>% 
     prune_samples(get_variable(chick2, var) %in% group,
                   .)  %>% 
@@ -192,15 +213,15 @@ function_lm_per_reactor <- function(chick2, var = "Model2_reactor_treatment_dose
   
   #######------------------
   
-  if (use_cluster ==TRUE) {
+  if ( use_cluster ==TRUE) {
     
     
     ps_fil$ps %>% 
       t() %>% 
       otu_table() -> t_otu
     
-    # t_otu %>% 
-    #   Hmisc::rcorr() -> cor_tax
+    t_otu %>% 
+      Hmisc::rcorr() -> cor_tax
     
     #######------------------
     
@@ -435,23 +456,16 @@ function_lm_per_reactor <- function(chick2, var = "Model2_reactor_treatment_dose
 }
 ```
 
-Test for 1 reactor ; id = Chicken2_CR_UNTREATED
 
 ```{r}
-chicks %>%
-  function_lm_per_reactor(var = "Model2_reactor_treatment_dose", group = "Chicken2_CR_UNTREATED",
-                           min_prev = 0.25, adj_pval_cut = 0.05, estimate_cut = 0, min_tot_ab = 0.01,
-                          time_split = 3, rank_glom = "Genus", 
-                          ranks = "Genus", use_cluster = FALSE, max_clust = 6) -> out
+# chicks %>%
+#   function_lm_per_reactor(transform = "compositional", #compositional, 
+#                           time_split = 3, rank_glom = "Genus",
+#                           ranks = "Genus") -> out
+# 
+# out$overall_taxa %>% 
+#   filter(class == "inV")
 ```
-
-Output the taxa for which we detected significant associations overall or withing the first and/ or second periods (time_split):
-
-```{r}
-out$overall_taxa
-```
-
-Apply on all reactors:
 
 ```{r}
 setNames(vector("list", 
@@ -463,7 +477,7 @@ setNames(vector("list",
 for (grp in names(lis)){
   print(grp)
   
-  function_lm_per_reactor(chicks, time_split = 3, rank_glom = "Genus",  
+  function_lm_per_reactor(chicks, time_split = 4, rank_glom = "Genus",  
                           transform = "log", min_prev = 0.25, adj_pval_cut = 0.05, estimate_cut = 0, min_tot_ab = 0.01,
                           ranks = "Genus", group = grp) -> lis[[grp]]
 }
@@ -476,23 +490,30 @@ do.call(rbind, lapply(lis, "[[", "overall_taxa")) %>%
          Model2_reactor_treatment_dose = Group,
          category = class)-> map_class
 
-map_class #%>% 
-  # filter(!category %in% c("V","inV", "dec", "inc"))
+map_class %>% 
+  filter(!category %in% c("V","inV", "dec", "inc"))
 ```
 
 
-Plot:
 
 ```{r}
 chicks %>% 
+  # prune_samples(get_variable(chick2, var) %in% group,
+  #               .)  %>%
   filter_taxa(function(x) sum(x > 0) > 0, TRUE) %>% 
   transform_sample_counts(function(x) x/sum(x) * 100) %>% 
   physeq_glom_rename(taxrank = "Genus", rename_ASV = "Genus") -> ps_filt
 ```
 
-Below NA correspond to taxa falling not consistantly in one of the category within the reactors:
 
 ```{r}
+map_class %>%
+  select(category, Model2_reactor_treatment_dose, everything()) %>%
+  # filter(category %in% c("V"),
+  #        Reactor_Treatment_Dose == "CR_UNTREATED") %>%
+  filter(!is.na(pos) & !is.na(p2_pos)) %>% 
+  distinct(OTU, Model2_reactor_treatment_dose) -> sel
+
 ps_filt %>% 
   speedyseq::psmelt() %>%
   # filter(OTU %in% sel$OTU,
@@ -507,14 +528,7 @@ ps_filt %>%
   facet_grid(category ~  Model2_reactor_treatment_dose, scales = "free") + theme(legend.position = "none")
 ```
 
-# Augmented Dickey–Fuller Test and variations:
-
-
-as in https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-7-r89#Sec7
-or reviewed in https://www.sciencedirect.com/science/article/pii/S1369527415000478#bib0435
-
-preprocessing
-
+same as Hanna but with long df with wide time abundance:
 ```{r}
 var = "Model2_reactor_treatment_dose"
 transform = "log"
@@ -539,13 +553,12 @@ chicks %>%
   physeq_glom_rename(taxrank = rank_glom, rename_ASV = rank_glom) -> ps_filt
 ```
 
-approaches to get count of OTU per reactor and mean abundance per reactor:
 
 ```{r, warning= FALSE}
 ps_filt %>% 
   transform_sample_counts(function(x) x/sum(x) * 100) %>% 
   speedyseq::psmelt() %>% 
-  select(OTU, Abundance, Model2, Day_of_Treatment, Model2_reactor_treatment_dose ,Day_of_Treatment, Treatment, Reactor_Treatment_Dose) %>% 
+  select(OTU, Abundance, Model2, Day_of_Treatment, period, Fermentation, Antibiotic_mg.L ,Model2_reactor_treatment_dose ,Day_of_Treatment, Treatment, Reactor_Treatment_Dose) %>% 
   arrange(Day_of_Treatment)  -> ps_filt2
 
 
@@ -561,16 +574,17 @@ ps_filt2 %>%
   group_by(OTU, Model2_reactor_treatment_dose) %>% 
   summarise(mean_ab = mean(Abundance)) %>% 
   mutate(OTU_Reactor_Treatment_Dose = paste0(OTU,"_",Model2_reactor_treatment_dose))  -> mean_ab_OTU_reactors
-```
 
-running Augmented Dickey–Fuller Test and variations per reactor and taxa:
-
-```{r, warning= FALSE}
 ps_filt %>%
   microbiome::transform(transform = "Z") %>%
   speedyseq::psmelt() %>%
   arrange(Day_of_Treatment) %>%
   group_by(OTU, Model2_reactor_treatment_dose) %>%
+  # do(model = tseries::adf.test(.))
+  # filter(OTU == "Alloprevotella" & Model2_reactor_treatment_dose == "Chicken1_TR1_CTX+HV292.120") %>% #pull(Abundance) -> Abundance
+  
+  # summarise(pval_ur.df2 = ifelse(n() <= 4,NA, urca::ur.df(Abundance, type = "none", selectlags = "AIC")$out)) %>%
+  # summarise(pval_ur.df2_none = ifelse(n() <= 4,NA, erer::ur.df2(Abundance, type = "none", selectlags = "AIC")$out)  %>%
   summarise(pval_ur.df2_none =  ifelse(sum(Abundance > 0, na.rm = FALSE) <= 4,NA,coef(attributes(urca::ur.df(y = Abundance, type = "none", selectlags = "AIC"))$testreg)[1, 4]),
             pval_ur.df2_drift = ifelse(sum(Abundance > 0, na.rm = FALSE) <= 4, NA,coef(attributes(urca::ur.df(y = Abundance, type = "drift", selectlags = "AIC"))$testreg)[1, 4]),
             pval_ur.df2_trend = ifelse(sum(Abundance > 0, na.rm = FALSE)  <= 4,NA,coef(attributes(urca::ur.df(y = Abundance, type = "trend", selectlags = "AIC"))$testreg)[1, 4]),
@@ -579,28 +593,36 @@ ps_filt %>%
             pval_kpss_type2 = ifelse(sum(Abundance > 0, na.rm = FALSE)  <= 4,NA, aTSA::kpss.test(Abundance, lag.short = TRUE, output =FALSE) %>%  data.frame() %>%  rownames_to_column("type") %>% filter(type == "type 2") %>% pull(p.value)),
             pval_kpss_type3 = ifelse(sum(Abundance > 0, na.rm = FALSE)  <= 4,NA, aTSA::kpss.test(Abundance, lag.short = TRUE, output =FALSE) %>%  data.frame() %>%  rownames_to_column("type") %>% filter(type == "type 3") %>% pull(p.value)),
             pval_kpss.test_level = ifelse(sum(Abundance > 0, na.rm = FALSE)  <= 4,NA, tseries::kpss.test(Abundance, null = "Level")$p.value),
-            pval_Box.test = ifelse(sum(Abundance > 0, na.rm = FALSE) <= 4,NA, stats::Box.test(Abundance, lag = 1, type = "Ljung-Box")$p.value) #Here we see a p-value much smaller than .01, thus we can reject the null hypothesis, indicating the 
+            pval_Box.test = ifelse(sum(Abundance > 0, na.rm = FALSE) <= 4,NA, stats::Box.test(Abundance, lag = 1, type = "Ljung-Box")$p.value) #Here we see a p-value much smaller than .01, thus we can reject the null hypothesis, indicating the time series does contain an autocorrelation.
+            
+            
+            # pval_pp.test = ifelse(n() <= 4,NA, aTSA::pp.test (vec, lag.short = TRUE, output =FALSE) %>%  data.frame() %>%  rownames_to_column("type") %>% filter(type == "type 3")
+            # pval_aTSAadf.tes =  ifelse(n() <= 4,NA, aTSA::adf.test())
   ) %>%
-
+  # pval_CADFtest = ifelse(n() <= 12,NA,CADFtest::CADFtest(Abundance ~ 1,x = Abundance, type="trend", criterion = "AIC")$p.value)) %>%  # 0.000
+  # summarise(pval_ur.df2_none = ifelse(n() <= 4,NA, erer::ur.df2(Abundance, type = "none", selectlags = "AIC")$out)) %>%
+  # https://search.r-project.org/CRAN/refmans/erer/html/ur.df2.html
+  # summarise(pval = ifelse(n() <= 4,NA, CADFtest::CADFtest(x = Abundance, type="trend", criterion = "AIC")$p.value)) %>%
+  # group_by(Reactor_Treatment_Dose) %>%
+  # mutate(pval_ur.df2_none = str_replace_all(pval_ur.df2_none, "[^*]", "")) %>%
+  # rstatix::adjust_pvalue(p.col = "pval_ur.df2_none", method = "fdr") %>%
+  # filter(pval.adj <= 0.05) %>%
+  arrange(Model2_reactor_treatment_dose) %>%
   mutate(OTU_Reactor_Treatment_Dose = paste0(OTU,"_",Model2_reactor_treatment_dose)) -> ur.df2
 
 ur.df2
 ```
 
-
-# Augmented Dickey–Fuller Test and variations:
-
-
 ```{r, warning= FALSE}
 library(dplyr)
 #define_groups:
-ps_filt2 %>% 
-  # select(Day_of_Treatment) %>% 
-  distinct(Day_of_Treatment) %>% 
-  mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
-                            Day_of_Treatment > 0 &  Day_of_Treatment <= 5 ~ "t1" ,
-                            Day_of_Treatment > 5 &  Day_of_Treatment <= 10 ~ "t2",
-                            Day_of_Treatment > 10  ~ "t3" )) -> day_period
+# ps_filt2 %>%
+#   # select(Day_of_Treatment) %>%
+#   pull(period) %>%
+# mutate(period = case_when(Day_of_Treatment <= 0 ~ "pret",
+#                           Day_of_Treatment > 0 &  Day_of_Treatment <= 5 ~ "t1" ,
+#                           Day_of_Treatment > 5 &  Day_of_Treatment <= 10 ~ "t2",
+#                           Day_of_Treatment > 10  ~ "t3" )) -> day_period
 
 ps_filt2 %>% 
   mutate(OTU_Reactor_Treatment_Dose = paste0(OTU,"_",Model2_reactor_treatment_dose)) %>% 
@@ -612,8 +634,8 @@ ps_filt2 %>%
             keep = FALSE) %>% 
   # filter(mean_ab > 1 & n > 8)  %>%
   mutate(Day_of_Treatment = as.double(Day_of_Treatment)) %>%
-  left_join(day_period,
-            by = c("Day_of_Treatment" = "Day_of_Treatment")) %>% 
+  # left_join(day_period,
+            # by = c("Day_of_Treatment" = "Day_of_Treatment")) %>% 
   # mutate(period = ifelse(Day_of_Treatment <= 0, "pret",
   #                        ifelse(0 <  Day_of_treatment <= 5, "t1"
   #                        ))
@@ -687,7 +709,7 @@ tmp
 ```{r}
 ps_filt2 %>%
   # filter(Reactor_Treatment_Dose %in% c("TR6_VAN90","TR4_CCUG59168", "TR5_HV292.1", "TR1_CTX+HV292.120")) %>%
-  select(OTU, Abundance, Day_of_Treatment, Model2 ,Model2_reactor_treatment_dose) %>% 
+  select(OTU, Abundance, Day_of_Treatment, Model2 ,Model2_reactor_treatment_dose, Antibiotic_mg.L, Fermentation) %>% 
   left_join(tmp,
             by = c("Model2_reactor_treatment_dose", "OTU")) %>% 
   left_join(mean_ab_OTU_reactors,
@@ -696,59 +718,67 @@ ps_filt2 %>%
   filter(cat_period != "normal") %>%
   # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
   arrange(Model2_reactor_treatment_dose) -> pre_plot
+```
 
+
+```{r}
 # pre_plot %>%
 #   pull(OTU) %>%
 #   unique() %>%
 #   length() %>%
 #   randomcoloR::distinctColorPalette(k = ., runTsne = TRUE) -> col
-
-
+# 
+# 
 # names(col) <- pre_plot %>%
 #   pull(OTU) %>%
-#   unique() 
+#   unique()
+```
 
 
-col <- c(Lachnospira = "#E6BD7F", Negativibacillus = "#3AE6C1", Tyzzerella = "#E071F6", 
-         Blautia = "#568243", `Escherichia-Shigella` = "#B97CE5", `Defluviitaleaceae UCG-011` = "#C7FDC0", 
-         `NK4A214 group` = "#AAEAFD", `Lachnospiraceae UCG-010` = "#F9A5FF", 
-         `[Eubacterium] hallii group` = "#B76D70", Enterococcus = "#8C73EE", 
-         `GCA-900066575` = "#5FE672", Monoglobus = "#99AEE0", Shuttleworthia = "#F8E1C5", 
-         Butyricicoccus = "#B2ED9A", `CAG-56` = "#A7D2FB", Holdemania = "#7295FA", 
-         Gordonibacter = "#EBC5E9", `Lachnospiraceae FCS020 group` = "#CD27CD", 
-         Lactobacillus = "#D6DB8F", Ligilactobacillus = "#BFA6F1", Marvinbryantia = "#A8BF92", 
-         Paludicola = "#EB743D", Pseudoflavonifractor = "#CCAFE1", Pygmaiobacter = "#90F3C8", 
-         UBA1819 = "#D597D2", `UCG-005` = "#58EE4F", Eisenbergiella = "#C7EDD2", 
-         Intestinimonas = "#8848FD", Oscillibacter = "#BBF47B", Erysipelatoclostridium = "#3A8477", 
-         Oscillospira = "#F3F7F7", `[Eubacterium] nodatum group` = "#958CE9", 
-         Pseudomonas = "#F5A75A", Anaerostipes = "#D67764", DTU089 = "#4AA2E4", 
-         Ruminococcus = "#E281E6", Stenotrophomonas = "#EB96A7", Subdoligranulum = "#D844C3", 
-         `[Eubacterium] brachy group` = "#3F88DA", Harryflintia = "#BE4EF0", 
-         Anaerofilum = "#6ECCFD", Bacillus = "#CAEC53", CHKCI001 = "#9EB0FA", 
-         `UC5-1-2E3` = "#B0CEE0", Lachnoclostridium = "#CDFDF1", `[Ruminococcus] torques group` = "#81D7B3", 
-         Sellimonas = "#EBBAC0", Flavonifractor = "#D9C4C4", Colidextribacter = "#D0A893", 
-         CHKCI002 = "#F490B6", Acinetobacter = "#E1D14D", `Family XIII AD3011 group` = "#9D48CC", 
-         `Candidatus Soleaferrea` = "#B89C9B", Aerococcus = "#1CBA6F", 
-         Merdibacter = "#E9BD9C", Parabacteroides = "#A0F789", Streptococcus = "#EF6FC8", 
-         Prevotella_9 = "#5F5AED", Angelakisella = "#C5CBDB", Campylobacter = "#C6CCB8", 
-         Catenibacterium = "#55B7A2", `Christensenellaceae R-7 group` = "#913298", 
-         Cosenzaea = "#07DFA0", `Lachnospiraceae NK3A20 group` = "#EA585E", 
-         Lactiplantibacillus = "#E7B0E1", Latilactobacillus = "#F8E9F8", 
-         Limosilactobacillus = "#D5DE73", Megasphaera = "#F8EBAE", Sutterella = "#81D184", 
-         Proteus = "#63F5F6", Lactococcus = "#FBAE9A", Oceanobacillus = "#8C7085", 
-         Pediococcus = "#EDD484", Staphylococcus = "#60D8E4", Veillonella = "#E34172", 
-         Tuzzerella = "#93EA46", Parasutterella = "#872253", Alistipes = "#CCE98C", 
-         Anaerococcus = "#ACB54A", Collinsella = "#C6F593", Dialister = "#D8DF53", 
-         Dorea = "#83B92D", Leuconostoc = "#7B6392", Roseburia = "#F5F6E3", 
-         Fournierella = "#54B0B8", Anaerofustis = "#5985A1", Coprococcus = "#6F80A4", 
-         Intestinibacter = "#9CE2E3", Peptococcus = "#E0F2C9", Frisingicoccus = "#B8BFE4", 
-         HT002 = "#82E5DD", Methanosphaera = "#CF79BA", Prevotella = "#58F0E3", 
-         `UCG-002` = "#DAE61B", Clostridioides = "#99CEB2", `Clostridium sensu stricto 1` = "#C4B6CC", 
-         Listeria = "#88B9B3", Mogibacterium = "#CAAA33", Salmonella = "#B47EC8", 
-         Megamonas = "#574695", Sarcina = "#C697B4")
+```{r}
+col <- c(Bacteroides = "#A778CE", `Lachnospiraceae NK4A136 group` = "#CCC68E", 
+Faecalibacterium = "#74EF49", Agathobacter = "#4EF0EB", Ruminococcus = "#E4ADCE", 
+Blautia = "#5F4FCF", Dorea = "#D036E6", Pseudomonas = "#9EBAF8", 
+Parabacteroides = "#4CE3BB", Lachnoclostridium = "#A25EDF", Eisenbergiella = "#D8F5B5", 
+Sutterella = "#F1AF47", Fusicatenibacter = "#8EDFAC", Subdoligranulum = "#B9B2FD", 
+Butyricicoccus = "#F1E274", Enterococcus = "#A8BDDD", Bifidobacterium = "#BFD72D", 
+Roseburia = "#F7F457", Morganella = "#B9B8CA", Prevotella_7 = "#5D2DDB", 
+Intestinibacter = "#7F3F84", `[Eubacterium] eligens group` = "#B77ABD", 
+Mogibacterium = "#9AB164", Coprococcus = "#C7893D", `Lachnospiraceae ND3007 group` = "#D06D8E", 
+Erysipelatoclostridium = "#94986F", `Family XIII AD3011 group` = "#EACD3E", 
+Murdochiella = "#93C1D0", `[Clostridium] innocuum group` = "#ADC7C0", 
+Campylobacter = "#DB3D88", `Candidatus Soleaferrea` = "#B1F7AB", 
+Gordonibacter = "#6F9EB7", Lacticaseibacillus = "#DA47B9", Anaeroglobus = "#00B63A", 
+`Escherichia-Shigella` = "#ECFB83", Adlercreutzia = "#66E9D0", 
+`[Ruminococcus] gauvreauii group` = "#FDC087", `Lachnospiraceae UCG-004` = "#C3EAEF", 
+Oscillibacter = "#BBF94B", Colidextribacter = "#E5D5D6", Eggerthella = "#EDF1E4", 
+Lachnospira = "#97E6FE", Anaerococcus = "#DFF7D2", Coprobacter = "#F1DBFA", 
+Holdemania = "#A3DC4F", Phascolarctobacterium = "#E2DBBD", Prevotella = "#EDE3B3", 
+Stenotrophomonas = "#B1549F", Dialister = "#C1DEEF", Monoglobus = "#E3BBFB", 
+Lactiplantibacillus = "#E991E1", Agrilactobacillus = "#EA9DD1", 
+Clostridioides = "#C7FCF8", Marvinbryantia = "#BE75E8", `[Eubacterium] hallii group` = "#578CE6", 
+`[Ruminococcus] torques group` = "#EFA17D", Anaerostipes = "#F541DF", 
+Anaerobacillus = "#ED8F9E", `Burkholderia-Caballeronia-Paraburkholderia` = "#A499F6", 
+Cutibacterium = "#5C9292", Lactobacillus = "#C3F2B7", Megasphaera = "#E977FE", 
+Veillonella = "#C6B59B", `[Ruminococcus] gnavus group` = "#D2B85F", 
+Lactococcus = "#5D8DC8", `UCG-003` = "#85F2E6", Anaerostignum = "#ED8BC3", 
+Flavonifractor = "#F9B2B3", UBA1819 = "#B398AC", Merdibacter = "#4E77EE", 
+`[Eubacterium] nodatum group` = "#67C17D", Harryflintia = "#F75A45", 
+Hungatella = "#FDFDAB", `[Eubacterium] ventriosum group` = "#D98AF3", 
+Janthinobacterium = "#E2E5EF", `Clostridium sensu stricto 1` = "#F161B9", 
+Peptoniphilus = "#C65961", Atopobium = "#5CC2EA", Tyzzerella = "#A7F3CD", 
+`Christensenellaceae R-7 group` = "#BEA0A1", Barnesiella = "#BDEF88", 
+`Lachnospiraceae UCG-010` = "#5CDAE2", Levilactobacillus = "#C5F0DE", 
+Terrisporobacter = "#F0BE9B", `UCG-002` = "#80BEA2", Collinsella = "#C1CB72", 
+Ligilactobacillus = "#3BAC9A", Acinetobacter = "#95E471", Alistipes = "#4D983A", 
+Prevotella_9 = "#2BDE8E", Staphylococcus = "#62F584", `Defluviitaleaceae UCG-011` = "#EFC4D1", 
+Olsenella = "#FAD88C", Streptococcus = "#86F9B8", Bacillus = "#D9C0ED", 
+Anaerofustis = "#9A46E3", Sphingobium = "#A2E2C5", `Lachnospiraceae FCS020 group` = "#D89CDA", 
+Listeria = "#8B6568")
+```
 
 
-
+```{r}
 pre_plot %>% 
   ggplot(data = ., aes_string(color = "OTU", fill = "OTU")) +
   geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
@@ -788,12 +818,13 @@ p_cat_leg %>%
 
 ps_filt2 %>% 
   # filter(Reactor_Treatment_Dose %in% c("TR6_VAN90","TR4_CCUG59168", "TR5_HV292.1", "TR1_CTX+HV292.120")) %>% 
-  select(OTU, Abundance, Day_of_Treatment, Model2 ,Model2_reactor_treatment_dose, Reactor_Treatment_Dose, Treatment, ) %>% 
+  select(OTU, Abundance, Day_of_Treatment, Model2 ,Model2_reactor_treatment_dose, Fermentation, Antibiotic_mg.L,Reactor_Treatment_Dose, Treatment, period) %>% 
   left_join(tmp,
             by = c("Model2_reactor_treatment_dose", "OTU")) %>%  
-  mutate(cat_lm = replace_na(cat_lm, "normal")) %>% 
-  left_join(day_period)  -> tmp_ready 
+  mutate(cat_lm = replace_na(cat_lm, "normal"))   -> tmp_ready 
 
+
+tmp_ready
 ```
 Ljun-Box test is a hypothesis test that checks if a time series contains an autocorrelation. The null Hypothesis H0 is that the residuals are independently distributed. sign -> time pattern
 tseries::adf.test(lc, alternative = "stationary") -> ns -> time pattern
@@ -819,11 +850,11 @@ tmp_ready %>%
   # filter(category %in% c("normal"),
   # filter(category %in% c("normal"),
   # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
-  select(cat_period, Abundance, period, Treatment,Model2,  OTU_Reactor_Treatment_Dose, Model2_reactor_treatment_dose, Reactor_Treatment_Dose, OTU, Day_of_Treatment) %>% 
-  group_by(Model2, Model2_reactor_treatment_dose,Treatment, period, OTU_Reactor_Treatment_Dose, cat_period) %>% 
+  select(cat_period, Abundance, period, Treatment,Model2, Antibiotic_mg.L, Fermentation,  OTU_Reactor_Treatment_Dose, Model2_reactor_treatment_dose, Reactor_Treatment_Dose, OTU, Day_of_Treatment) %>% 
+  group_by(Model2, Model2_reactor_treatment_dose,Treatment, period, OTU_Reactor_Treatment_Dose, cat_period, Fermentation, Antibiotic_mg.L) %>% 
   arrange(Model2, Model2_reactor_treatment_dose, Reactor_Treatment_Dose) %>% 
   summarise(mean_period = mean(Abundance)) %>% 
-  group_by(Model2, Model2_reactor_treatment_dose, Treatment, period, cat_period) %>% 
+  group_by(Model2, Model2_reactor_treatment_dose, Treatment, period, cat_period,  Fermentation, Antibiotic_mg.L) %>% 
   summarise(sum_cat = sum(mean_period)) %>% 
   ggplot(data = ., aes_string(x = "period", y = "sum_cat",  fill = "cat_period")) + #, color = "grey90") +
   geom_bar(position="fill", stat="identity") + 
@@ -833,6 +864,23 @@ tmp_ready %>%
   scale_fill_manual(values = ggpubr::get_palette(palette = "jco", k = 5)) -> p_cat2
 
 p_cat2
+```
+```{r}
+p_cat2 + facet_null() +
+  facet_grid(Model2 + Fermentation ~ Treatment + Antibiotic_mg.L, scales = "free", drop = TRUE, space = "free") + 
+  theme(legend.position = "bottom") + ggpubr::rotate_x_text(45) + xlab(NULL) + ylab(NULL) +
+  scale_fill_manual(values = ggpubr::get_palette(palette = "jco", k = 5)) -> p_cat3
+
+p_cat3
+```
+
+
+```{r}
+p_cat3 %>%
+  export::graph2ppt(append = TRUE, 
+                    width = 317.48031496 * 1.5, 
+                    height = 0.618 * 317.48031496 * 1.25, paper = "A4",  scaling = 2,
+                    file = out_pptx)
 ```
 
 
@@ -854,57 +902,59 @@ tmp_ready %>%
 
 p_cat
 
-p_cat %>%
-  export::graph2ppt(append = TRUE, 
-                    width = 317.48031496 * 1.5, 
-                    height = 0.618 * 317.48031496 * 1.25, paper = "A4",  scaling = 2,
-                    file = out_pptx)
+# 
+# p_cat %>%
+#   export::graph2ppt(append = TRUE, 
+#                     width = 317.48031496 * 1.5, 
+#                     height = 0.618 * 317.48031496 * 1.25, paper = "A4",  scaling = 2,
+#                     file = out_pptx)
 
 tmp_ready %>% 
   # filter(category %in% c("normal"),
   # filter(category %in% c("normal"),
   # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
-  select(cat_period, Abundance, period, Treatment,Model2,  OTU_Reactor_Treatment_Dose, Model2_reactor_treatment_dose, Reactor_Treatment_Dose, OTU, Day_of_Treatment) %>% 
-  group_by(Model2_reactor_treatment_dose, period, OTU_Reactor_Treatment_Dose, cat_period) %>% 
+  select(cat_period, Abundance, period, Treatment,Model2, Antibiotic_mg.L, Fermentation,  OTU_Reactor_Treatment_Dose, Model2_reactor_treatment_dose, Reactor_Treatment_Dose, OTU, Day_of_Treatment) %>% 
+  group_by(Model2, Model2_reactor_treatment_dose,Treatment, period, OTU_Reactor_Treatment_Dose, cat_period, Fermentation, Antibiotic_mg.L) %>% 
+  group_by(Model2_reactor_treatment_dose, period, OTU_Reactor_Treatment_Dose, cat_period, Fermentation, Antibiotic_mg.L) %>% 
   arrange(Model2_reactor_treatment_dose, Reactor_Treatment_Dose) %>% 
   summarise(mean_period = mean(Abundance)) %>% 
-  group_by(Model2_reactor_treatment_dose, period, cat_period) %>% 
+  group_by(Model2_reactor_treatment_dose, period, cat_period,Fermentation, Antibiotic_mg.L) %>% 
   summarise(sum_cat = sum(mean_period)) %>% 
   write_tsv(file = "~/Desktop/16S_fig_cat.tsv")
 ```
 
 ```{r}
 
-# based on cat_lm categories
-tmp_ready %>% 
-  # filter(category %in% c("normal"),
-  # filter(category %in% c("normal"),
-  # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
-  arrange(Model2_reactor_treatment_dose) %>% 
-  ggplot(data = ., aes_string(x = "period", y = "Abundance", fill = "cat_lm")) +
-  geom_bar(position="fill", stat="identity") + 
-  # geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
-  facet_grid(Model2 ~ Treatment, scales = "free", drop = TRUE, space = "free") + 
-  theme(legend.position = "bottom") 
+# # based on cat_lm categories
+# tmp_ready %>% 
+#   # filter(category %in% c("normal"),
+#   # filter(category %in% c("normal"),
+#   # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
+#   arrange(Model2_reactor_treatment_dose) %>% 
+#   ggplot(data = ., aes_string(x = "period", y = "Abundance", fill = "cat_lm")) +
+#   geom_bar(position="fill", stat="identity") + 
+#   # geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
+#   facet_grid(Model2 ~ Treatment, scales = "free", drop = TRUE, space = "free") + 
+#   theme(legend.position = "bottom") 
 
 
 ```
 
 ```{r}
-ps_filt2 %>% 
-  # filter(Reactor_Treatment_Dose %in% c("TR6_VAN90","TR4_CCUG59168", "TR5_HV292.1", "TR1_CTX+HV292.120")) %>% 
-  select(OTU, Abundance, Day_of_Treatment, Model2 ,Model2_reactor_treatment_dose, Treatment) %>% 
-  left_join(classif,
-            by = c("Model2_reactor_treatment_dose", "OTU")) %>% 
-  left_join(day_period) %>%   # filter(category %in% c("normal"),
-  # filter(category %in% c("normal"),
-  # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
-  arrange(Model2_reactor_treatment_dose) %>% 
-  ggplot(data = ., aes_string(x = "interaction(period, category)", y = "Abundance", color = "OTU", fill = "OTU")) +
-  geom_bar(position="fill", stat="identity") + 
-  # geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
-  facet_grid(Model2 ~ Treatment , scales = "free", drop = TRUE, space = "free") + 
-  theme(legend.position = "none") + ggpubr::rotate_x_text(90) 
+# ps_filt2 %>% 
+#   # filter(Reactor_Treatment_Dose %in% c("TR6_VAN90","TR4_CCUG59168", "TR5_HV292.1", "TR1_CTX+HV292.120")) %>% 
+#   select(OTU, Abundance, Day_of_Treatment, Model2 ,Model2_reactor_treatment_dose, Treatment) %>% 
+#   left_join(classif,
+#             by = c("Model2_reactor_treatment_dose", "OTU")) %>% 
+#   left_join(day_period) %>%   # filter(category %in% c("normal"),
+#   # filter(category %in% c("normal"),
+#   # Reactor_Treatment_Dose %in% ("TR4_CCUG59168")) %>% 
+#   arrange(Model2_reactor_treatment_dose) %>% 
+#   ggplot(data = ., aes_string(x = "interaction(period, category)", y = "Abundance", color = "OTU", fill = "OTU")) +
+#   geom_bar(position="fill", stat="identity") + 
+#   # geom_area(aes_string(x = "Day_of_Treatment", y = "Abundance")) + 
+#   facet_grid(Model2 ~ Treatment , scales = "free", drop = TRUE, space = "free") + 
+#   theme(legend.position = "none") + ggpubr::rotate_x_text(90) 
 ```
 
 ```{r}

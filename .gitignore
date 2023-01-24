@@ -97,6 +97,8 @@ vignettes/*.pdf
 *all_splits.tsv
 *plasx-scores.txt
 
+final_collection*tsv
+
 #SQM
 *.cog.funcover
 *.fun3.cog
@@ -118,6 +120,8 @@ vignettes/*.pdf
 20.*.contigtable
 *_anvio_contig_taxonomy.txt
 
+*export_functions.tsv
+Chicken1-2_*.RDS
 
 *_l1000.faa
 *_l1000.fna

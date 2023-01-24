@@ -1,0 +1,181 @@
+bin_name	total_scgs	supporting_scgs	t_domain	t_phylum	t_class	t_order	t_family	t_genus	t_species
+Bin_19	95	24	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-269	None
+Bin_0_1	8	7	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Eubacterium	Eubacterium sp000431535
+Bin_0_3	19	19	Bacteria	Bacteroidota	Bacteroidia	Bacteroidales	Rikenellaceae	Alistipes	Alistipes sp900021155
+Bin_0_4	16	16	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	CAG-180	None
+Bin_0_5	0	0	None	None	None	None	None	None	None
+Bin_0_10	2	2	Bacteria	Cyanobacteria	Vampirovibrionia	Gastranaerophilales	None	None	None
+Bin_0_12	12	7	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	UBA1409	UBA1409 sp002338885
+Bin_0_14	17	17	Bacteria	Firmicutes	Clostridia	Christensenellales	CAG-314	CAG-1435	CAG-1435 sp000433775
+Bin_4_1	21	21	Bacteria	Firmicutes	Bacilli	Lactobacillales	Enterococcaceae	Enterococcus	None
+Bin_4_4	8	8	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-269	None
+Bin_4_5	6	2	Bacteria	Firmicutes	Bacilli	RF39	UBA660	UBA5026	UBA5026 sp900546745
+Bin_4_6	23	15	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus	Lactobacillus crispatus
+Bin_11_2	15	15	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	None	None
+Bin_11_3	20	13	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnoclostridium	Lachnoclostridium sp900543315
+Bin_11_5	15	10	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	Blautia hydrogenotrophica
+Bin_11_6	13	7	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Anaerobutyricum	Anaerobutyricum sp002161065
+Bin_11_11	11	3	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Enterocloster	Enterocloster sp900770345
+Bin_11_12	11	5	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnoclostridium	Lachnoclostridium phocaeensis
+Bin_11_13	22	15	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Ruminococcus	Ruminococcus sp900752625
+Bin_11_14	22	17	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	Blautia sp900765525
+Bin_11_15	10	10	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	None	None
+Bin_17_3	16	7	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	Emergencia	Emergencia sp009935805
+Bin_17_7	18	18	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	UBA1417	None
+Bin_17_8	16	16	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Acutalibacter	Acutalibacter sp000435395
+Bin_3_1	22	21	Bacteria	Proteobacteria	Alphaproteobacteria	Rs-D84	Rs-D84	Rs-D84	Rs-D84 sp900546185
+Bin_13_1	20	9	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Gemmiger	Gemmiger sp900548355
+Bin_13_2	5	5	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	None
+Bin_13_6	16	14	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eisenbergiella	Eisenbergiella sp900544445
+Bin_13_7	18	10	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Flavonifractor	Flavonifractor sp002161215
+Bin_13_8	21	18	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	Rubneribacter	None
+Bin_13_10	11	6	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Dysosmobacter	Dysosmobacter welbionis
+Bin_9_2	19	19	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-273	CAG-273 sp900752335
+Bin_9_4	11	11	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	None
+Bin_9_7	20	17	Bacteria	Firmicutes	Clostridia	Lachnospirales	Anaerotignaceae	UMGS1670	UMGS1670 sp902406135
+Bin_9_8	21	21	Bacteria	Firmicutes	Clostridia	Lachnospirales	UBA1390	UBA1390	UBA1390 sp002305315
+Bin_9_9	17	7	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Clostridium	Clostridium sp003024715
+Bin_9_12	23	23	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	OF09-33XD	OF09-33XD sp003481995
+Bin_9_14	22	21	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	BX12	BX12 sp014333425
+Bin_9_15	6	6	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	None	None
+Bin_9_16	13	6	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Anaerobutyricum	Anaerobutyricum sp900016875
+Bin_9_17	21	19	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-81	CAG-81 sp900541255
+Bin_9_18	22	14	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UC5-1-2E3	UC5-1-2E3 sp001304875
+Bin_9_19	22	20	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Ruthenibacterium	Ruthenibacterium lactatiformans
+Bin_9_20	22	19	Bacteria	Firmicutes	Bacilli	Bacillales	DSM-18226	Cytobacillus	Cytobacillus horneckiae
+Bin_15_1	10	5	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnoclostridium	Lachnoclostridium sp002160985
+Bin_15_2	15	14	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	None
+Bin_15_3	12	12	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	UMGS599	UMGS599 sp900543705
+Bin_15_4	12	5	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Massilimaliae	Massilimaliae sp900752435
+Bin_15_5	13	8	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium	Eubacterium ramulus
+Bin_15_6	12	7	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CHKCI001	CHKCI001 sp900045905
+Bin_15_9	19	6	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Anaerostipes	Anaerostipes sp001940315
+Bin_6_1	17	17	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	None	None
+Bin_6_4	15	9	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Anaerosacchariphilus	Anaerosacchariphilus sp002160765
+Bin_6_5	11	6	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Anaerosacchariphilus	Anaerosacchariphilus sp002160825
+Bin_6_6	9	8	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Intestinimonas	Intestinimonas timonensis
+Bin_6_7	18	14	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eisenbergiella	Eisenbergiella sp003343625
+Bin_6_8	22	22	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Harryflintia	Harryflintia acetispora
+Bin_6_11	5	2	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Anaerotruncus	Anaerotruncus massiliensis
+Bin_6_12	21	21	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Bittarella	Bittarella massiliensis
+Bin_6_13	17	13	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Merdibacter	Merdibacter massiliensis
+Bin_6_14	4	2	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Lawsonibacter	None
+Bin_6_15	15	6	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	OF09-33XD	OF09-33XD sp003481995
+Bin_6_18	11	10	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Lawsonibacter	None
+Bin_6_22	18	17	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	UBA866	UBA866 sp900543295
+Bin_6_23	23	22	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	None	None
+Bin_6_24	22	15	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Ruthenibacterium	Ruthenibacterium sp900546885
+Bin_6_25	20	9	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Lawsonibacter	Lawsonibacter sp002160305
+Bin_6_26	21	19	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Negativibacillus	Negativibacillus sp900547455
+Bin_6_27	5	5	Bacteria	Firmicutes	Clostridia	Oscillospirales	None	None	None
+Bin_7_1	14	9	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Ruthenibacterium	Ruthenibacterium sp002315015
+Bin_7_2	2	2	Bacteria	Firmicutes	Clostridia	None	None	None	None
+Bin_7_3	5	5	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	None	None
+Bin_7_7	19	19	Bacteria	Firmicutes	Clostridia	Christensenellales	Christensenellaceae	UMGS743	UMGS743 sp900545085
+Bin_7_10	15	15	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Acutalibacter	None
+Bin_7_11	21	14	Bacteria	Firmicutes	Clostridia	Christensenellales	Borkfalkiaceae	UMGS1004	UMGS1004 sp900548845
+Bin_7_12	21	19	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Ligilactobacillus	Ligilactobacillus salivarius
+Bin_7_14	19	9	Bacteria	Firmicutes	Clostridia	Christensenellales	Borkfalkiaceae	QALS01	QALS01 sp900555925
+Bin_16_1	12	12	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	None	None
+Bin_16_3	19	19	Bacteria	Firmicutes	Clostridia	Christensenellales	Christensenellaceae	NSJ-63	NSJ-63 sp014384805
+Bin_16_4	21	19	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Anaerofilum	Anaerofilum sp002160015
+Bin_16_5	12	12	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	None	None
+Bin_16_6	19	12	Bacteria	Firmicutes	Clostridia	Oscillospirales	Butyricicoccaceae	Agathobaculum	Agathobaculum sp900555465
+Bin_12_1	7	3	Bacteria	Firmicutes	Clostridia	Monoglobales	UBA1381	HGM11530	HGM11530 sp900751685
+Bin_12_2	12	6	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnoclostridium	Lachnoclostridium sp003464085
+Bin_12_3	9	4	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	UMGS1826	UMGS1826 sp900555435
+Bin_12_5	7	7	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	None	None
+Bin_12_7	19	14	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnoclostridium	Lachnoclostridium sp002160755
+Bin_12_9	14	13	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA7182	UBA7182 sp002160135
+Bin_10_1	10	7	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	BX12	BX12 sp014333425
+Bin_10_2	10	3	Bacteria	Firmicutes	Clostridia	Monoglobales	Monoglobaceae	Monoglobus	Monoglobus sp900554105
+Bin_10_3	21	21	Bacteria	Firmicutes	Bacilli	Paenibacillales	Paenibacillaceae	Paenibacillus	None
+Bin_5_6	9	9	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelotrichaceae	Holdemania	None
+Bin_5_8_CTXM	0	0	None	None	None	None	None	None	None
+Bin_18_2	22	18	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	Fournierella	Fournierella sp004558145
+Bin_18_3	17	3	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UMGS1370	UMGS1370 sp009774615
+Bin_18_12	20	20	Bacteria	Firmicutes	Bacilli	Lactobacillales	Enterococcaceae	Enterococcus	None
+Bin_1_1	22	22	Bacteria	Actinobacteriota	Actinomycetia	Mycobacteriales	Mycobacteriaceae	Rhodococcus	None
+Bin_1_2	9	7	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Intestinimonas	Intestinimonas timonensis
+Bin_14_1	22	13	Bacteria	Firmicutes	Bacilli	Bacillales	Bacillaceae	Siminovitchia	Siminovitchia terrae
+Bin_14_3	8	8	Bacteria	Proteobacteria	Gammaproteobacteria	Pseudomonadales	Pseudomonadaceae	Pseudomonas	None
+Bin_14_4	14	14	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	None
+Bin_14_5	10	7	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	UBA7182	UBA7182 sp002160135
+Bin_14_8	19	19	Bacteria	Firmicutes	Bacilli	Bacillales	Bacillaceae	Bacillus	None
+Bin_0_6_1	4	2	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-269	CAG-269 sp900554565
+Bin_0_7_1	8	4	Bacteria	Firmicutes	Bacilli	RF39	UBA660	CAG-822	CAG-822 sp900546055
+Bin_0_8_1	8	8	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	None	None
+Bin_0_9_1	19	18	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Limosilactobacillus	None
+Bin_0_11_1	9	7	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	An172	An172 sp002160515
+Bin_0_13_1	8	7	Bacteria	Firmicutes	Clostridia	Christensenellales	Borkfalkiaceae	UBA11940	UBA11940 sp900549005
+Bin_4_2_1	19	19	Bacteria	Firmicutes	Bacilli	Lactobacillales	Aerococcaceae	Aerococcus	None
+Bin_4_3_1	18	16	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	CAG-269	None
+Bin_4_7_1	18	10	Bacteria	Firmicutes	Bacilli	Lactobacillales	Lactobacillaceae	Lactobacillus	Lactobacillus johnsonii
+Bin_11_1_1	20	13	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Sellimonas	Sellimonas sp002161525
+Bin_11_4_1	19	11	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Merdimonas	Merdimonas faecis
+Bin_11_7_1	19	17	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-81	None
+Bin_11_8_1	19	18	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	None
+Bin_11_9_1	19	10	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Enterocloster	Enterocloster sp900547035
+Bin_11_10_1	21	11	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	Mediterraneibacter sp900541505
+Bin_11_16_1	22	20	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	None
+Bin_17_1_1	15	15	Bacteria	Firmicutes	Clostridia	Christensenellales	Borkfalkiaceae	Borkfalkia	None
+Bin_17_2_1	16	12	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	NSJ-38	None
+Bin_17_4_1	22	22	Bacteria	Firmicutes	Clostridia	None	None	None	None
+Bin_17_5_1	17	17	Bacteria	Firmicutes	Clostridia	Christensenellales	Borkfalkiaceae	UBA11940	UBA11940 sp900549005
+Bin_17_6_1	19	18	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Fusicatenibacter	Fusicatenibacter sp900543115
+Bin_13_3_1	14	7	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Flavonifractor	Flavonifractor sp002161085
+Bin_13_4_1	21	19	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Flavonifractor	None
+Bin_13_5_1	21	17	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Pseudoflavonifractor	Pseudoflavonifractor capillosus
+Bin_13_9_1	23	18	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	UBA5446	UBA5446 sp900543085
+Bin_9_1_1	22	12	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnospira	Lachnospira sp900316325
+Bin_9_3_1	16	16	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	None	None
+Bin_9_5_1	18	18	Bacteria	Firmicutes	Clostridia	Lachnospirales	CAG-274	UMGS1441	None
+Bin_9_6_1	15	3	Bacteria	Firmicutes	Clostridia	TANB77	CAG-508	UMGS1663	UMGS1663 sp900553405
+Bin_9_10_1	16	16	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	None	None
+Bin_9_11_1	17	10	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Lachnoclostridium	Lachnoclostridium sp002160755
+Bin_9_13_1	3	3	Bacteria	Firmicutes	Bacilli	RF39	UBA660	None	None
+Bin_15_7_1	8	6	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	None
+Bin_15_8_1	18	18	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	None
+Bin_6_2_1	22	20	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	UMGS966	UMGS966 sp900547185
+Bin_6_3_1	22	21	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Dysosmobacter	None
+Bin_6_9_1	22	22	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Marseille-P4683	Marseille-P4683 sp900232885
+Bin_6_10_1	9	9	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	None	None
+Bin_6_16_1	5	5	Bacteria	Firmicutes	Clostridia	Oscillospirales	None	None	None
+Bin_6_17_1	4	4	Bacteria	Firmicutes	Clostridia	Oscillospirales	None	None	None
+Bin_6_19_1	10	10	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	None	None
+Bin_6_20_1	21	21	Bacteria	Firmicutes	Clostridia	Christensenellales	UMGS416	UMGS416	UMGS416 sp900542005
+Bin_6_21_1	21	14	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	CAG-145	CAG-145 sp900542565
+Bin_6_28_1	19	18	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Lawsonibacter	None
+Bin_7_4_1	23	19	Bacteria	Actinobacteriota	Coriobacteriia	Coriobacteriales	Eggerthellaceae	Gordonibacter	None
+Bin_7_5_1	6	4	Bacteria	Firmicutes	Clostridia	Christensenellales	Borkfalkiaceae	Borkfalkia	Borkfalkia sp900761675
+Bin_7_6_1	20	19	Bacteria	Firmicutes	Bacilli	Lactobacillales	Enterococcaceae	Enterococcus	Enterococcus faecalis
+Bin_7_8_1	22	22	Bacteria	Proteobacteria	Gammaproteobacteria	Pseudomonadales	Moraxellaceae	Acinetobacter	None
+Bin_7_9_1	22	21	Bacteria	Proteobacteria	Gammaproteobacteria	Xanthomonadales	Xanthomonadaceae	Stenotrophomonas	None
+Bin_16_2_1	2	2	Bacteria	Firmicutes	Clostridia	Oscillospirales	None	None	None
+Bin_12_4_1	10	4	Bacteria	Firmicutes	Clostridia	Monoglobales	UBA1381	UBA4716	UBA4716 sp900556575
+Bin_12_6_1	18	13	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Anaeromassilibacillus	Anaeromassilibacillus sp002159845
+Bin_12_8_1	13	9	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Eubacterium	Eubacterium ramulus
+Bin_12_10_1	12	10	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	None
+Bin_5_1_1	22	13	Bacteria	Proteobacteria	Gammaproteobacteria	Enterobacterales	Enterobacteriaceae	Proteus	Proteus mirabilis
+Bin_5_2_1	22	22	Bacteria	Proteobacteria	Gammaproteobacteria	Enterobacterales	Enterobacteriaceae	None	None
+Bin_5_3_1	20	11	Bacteria	Firmicutes	Clostridia	Lachnospirales	Anaerotignaceae	Anaerotignum	Anaerotignum lactatifermentans
+Bin_5_4_1	22	21	Bacteria	Firmicutes	Clostridia	Peptostreptococcales	Anaerovoracaceae	CAG-145	CAG-145 sp900540145
+Bin_5_5_1	11	10	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	None	None
+Bin_18_1_1	3	2	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Mediterraneibacter	Mediterraneibacter sp002159505
+Bin_18_4_1	13	5	Bacteria	Firmicutes	Clostridia	Oscillospirales	Oscillospiraceae	Flavonifractor	Flavonifractor sp002161215
+Bin_18_5_1	22	22	Bacteria	Firmicutes	Bacilli	Bacillales	DSM-18226	Niallia	None
+Bin_18_6_1	15	5	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	CAG-81	CAG-81 sp000435795
+Bin_18_7_1	6	6	Bacteria	Firmicutes	Clostridia	Oscillospirales	Acutalibacteraceae	Acutalibacter	Acutalibacter sp900543555
+Bin_18_8_1	12	11	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Sellimonas	Sellimonas intestinalis
+Bin_18_9_1	12	6	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	GCA-900066135	GCA-900066135 sp900066135
+Bin_18_10_1	14	9	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	Blautia sp900542045
+Bin_18_11_1	9	9	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	None	None
+Bin_14_2_1	20	20	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Enterocloster	None
+Bin_14_7_1	9	9	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Blautia	None
+Bin_2_1_1	2	2	Bacteria	Proteobacteria	Gammaproteobacteria	Pseudomonadales	Pseudomonadaceae	Pseudomonas	None
+Bin_8_1_1	21	14	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelatoclostridiaceae	Massiliomicrobiota	Massiliomicrobiota sp002160815
+Bin_8_2_1	22	21	Bacteria	Firmicutes	Bacilli	Erysipelotrichales	Erysipelatoclostridiaceae	Erysipelatoclostridium	Erysipelatoclostridium spiroforme
+Bin_8_3_1	16	10	Bacteria	Firmicutes	Clostridia	Oscillospirales	Ruminococcaceae	UMGS599	UMGS599 sp900543705
+Bin_8_4_1	15	7	Bacteria	Firmicutes	Clostridia	Christensenellales	Borkfalkiaceae	Borkfalkia	Borkfalkia sp900761675
+Bin_8_5_1	17	12	Bacteria	Firmicutes	Clostridia	Lachnospirales	Lachnospiraceae	Butyrivibrio	Butyrivibrio sp000431815
+Bin_8_6_1	15	6	Bacteria	Firmicutes	Clostridia	Christensenellales	Borkfalkiaceae	Borkfalkia	Borkfalkia sp900761675

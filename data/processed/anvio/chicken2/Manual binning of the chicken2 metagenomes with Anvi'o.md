@@ -156,51 +156,121 @@ We then summarise the new collection before a second run of refinement:
 	                    -b ${bin}
 	done
 
+Bin_13 - Bin_18 - Bin_4_4 - Bin_4_0 - Bin_4_2 - only in donor chicken - nothing to do ...
+
+	anvi-export-collection -C concoct_20_Bin_4_concoct_5 \
+	    -p ${PROF}  \
+	    -O concoct_20_Bin_4_concoct_5_refined2
 
 
+    anvi-summarize \
+       -p ${PROF}  \
+       -c ${CONT_DB}  \
+       --quick-summary \
+       -C concoct_20_Bin_4_concoct_5 -o SUMMARY/concoct_20_Bin_4_concoct_5_refined2
 
+
+	anvi-export-functions -c CONTIGS.db -o chicken2_export_functions.tsv
+
+Works but gene caller id so not sure how to link with contig + gene coordinates...
+
+	anvi-estimate-genome-completeness \
+	       -p ${PROF}  \
+	       -c ${CONT_DB}  \
+	       -C concoct_20_Bin_4_concoct_5 \
+	       -o chicken2_concoct_20_Bin_4_concoct_5_completeness.tsv
+	       
+	       
+  
+	anvi-estimate-scg-taxonomy \
+	       -p ${PROF}  \
+	       -c ${CONT_DB}  \
+	       -C concoct_20_Bin_4_concoct_5 \
+	       -o chicken2_concoct_20_Bin_4_concoct_5_scg_tax.tsv
+	       
+based on the chicken2_concoct_20_Bin_4_concoct_5_completeness.tsv file we can remove.
+
+	awk '{ if(($5 <= 10) && ($4 >= 50))  { print }}' chicken2_concoct_20_Bin_4_concoct_5_completeness.tsv |  cut -f1  | uniq > good_qual_bins.tsv
+
+	#grep -w  -f good_qual_bins.tsv concoct_20_Bin_4_concoct_5_refined2.txt| cut -f2 | uniq > test.tsv 
+
+	grep -w -f good_qual_bins.tsv concoct_20_Bin_4_concoct_5_refined2.txt > final_collection_chick2.tsv
+
+
+	anvi-import-collection  -c ${CONT_DB} -p ${PROF} -C final_chick2 final_collection_chick2.tsv
+
+
+	anvi-estimate-genome-completeness \
+	       -p ${PROF}  \
+	       -c ${CONT_DB}  \
+	       -C final_chick2 \
+	       -o final_chick2_completeness.tsv
+	       
+	anvi-estimate-scg-taxonomy \
+	       -p ${PROF}  \
+	       -c ${CONT_DB}  \
+	       -C final_chick2 \
+	       -o final_chick2_scg_tax.tsv
+
+ 	anvi-summarize -c ${CONT_DB} -p ${PROF} -C final_chick2 -o SUMMARY/final_chick2
+
+todo: 
+-creat all anvio maping / function
+
+# chicken1 cleaning stuff
+
+PROF=PROFILE.db
+CONT_DB=CONTIGS.db
+
+	cd /Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken1
+
+	anvi-summarize  -c ${CONT_DB} -p ${PROF} --list-collections 
+	
+		anvi-estimate-genome-completeness \
+	       -p ${PROF}  \
+	       -c ${CONT_DB}  \
+	       -C concoct_20 \
+	       -o concoct_20_chik1_completeness.tsv
+	       
+	anvi-estimate-scg-taxonomy \
+	       -p ${PROF}  \
+	       -c ${CONT_DB}  \
+	       -C concoct_20 \
+	       -o concoct_20_chik1_scg_tax.tsv
+	       
 	anvi-export-collection -C concoct_20 \
-	-p ${PROF} \
-	-O manual_binning/concoct_20_collection_refined
+	    -p ${PROF}  \
+	    -O concoct_20
+
+
+	awk '{ if(($5 <= 10) && ($4 >= 50)) { print }}' concoct_20_chik1_completeness.tsv |  cut -f1  | uniq > good_qual_bins.tsv
 	
-	anvi-import-collection  -c ${CONT_DB} -p ${PROF} -C concoct_20_raw manual_binning/concoct_20_collection.txt.txt 
-
-	anvi-summarize -c ${CONT_DB} -p ${PROF} -C concoct_20 -o manual_binning/SUMMARY/concoct_20_refined
-
-Start diff coverage and seq composition in detection - bin - adapt with only diff coverage and some times then only seq composition - when coverage in only one sample.
-
-We now go for a second run of binning: refinement!
-
-	for bin in `cut -f2  manual_binning/concoct_20_collection_refined.txt| uniq`
-	do
-	echo "### Refining bin" ${bin} "Start###"
 	
-	        anvi-refine -c ${CONT_DB} \
-	                    -p ${PROF}  \
-	                    -C concoct_20 \
-	                    -b ${bin}
-	done
-	
-	anvi-export-collection -C concoct_20 \
-	-p ${PROF} \
-	-O manual_binning/concoct_20_collection_refined_2
-
-	anvi-summarize -c ${CONT_DB} -p ${PROF} -C concoct_20 -o SUMMARY/concoct_20_refined_2
+	grep -w -f good_qual_bins.tsv concoct_20.txt > final_collection_chick1.tsv
 
 
+	anvi-import-collection  -c ${CONT_DB} -p ${PROF} -C final_chick1 final_collection_chick1.tsv
 
-Export the DAS collection summary including genomes as well as refined2:
 
-	conda activate anvio-7.1
-	DB_dir=/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken/
-	cd ${DB_dir}
-	PROF=PROFILE.db
-	CONT_DB=CONTIGS.db
-	
-	anvi-summarize -c ${CONT_DB} -p ${PROF} --list-collections
+	anvi-estimate-genome-completeness \
+	       -p ${PROF}  \
+	       -c ${CONT_DB}  \
+	       -C final_chick1 \
+	       -o final_chick1_completeness.tsv
+	       
+	anvi-estimate-scg-taxonomy \
+	       -p ${PROF}  \
+	       -c ${CONT_DB}  \
+	       -C final_chick1 \
+	       -o final_chick1_scg_tax.tsv
 
-	anvi-summarize -c ${CONT_DB} -p ${PROF} -C DAS -o SUMMARY/DAS/
-	
-	anvi-summarize -c ${CONT_DB} -p ${PROF} -C concoct_20 -o SUMMARY/concoct_20_refined_2
-	
-`
+	anvi-summarize -c ${CONT_DB} -p ${PROF} -C final_chick1 -o SUMMARY/final_chick1
+
+
+... work to remove plasmid and phage contigs.
+
+cd /Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken2/SUMMARY/final_chick2_noplas_nophage/bin_by_bin
+
+tar -czvf final_chick2_noplas_nophage-genomes.tar.gz */*-contigs.fa
+
+--> GTDB

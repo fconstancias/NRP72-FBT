@@ -1,0 +1,1373 @@
+---
+title: "Merge chicken1-2 - human1-2 gene catalogue + quantification + CARD + MGE "
+author: "Florentin Constancias "
+date: " `r format(Sys.time(), '%B %d, %Y')` "
+output: 
+  html_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+rm(list= ls())
+gc()
+
+# memory.limit(size=100000)
+
+library('dplyr')
+library("tidyverse")
+library('here')
+# library("SQMtools")
+library("phyloseq")
+library("readxl")
+
+
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
+#source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_taxa_tests.R")
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_normalisation.R")
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_alpha.R")
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_beta.R")
+# source("https://raw.githubusercontent.com/fconstancias/DivComAnalyses/master/R/phyloseq_heatmap.R")
+```
+
+# preliminary:
+
+anvio no bin: **TO be considered**
+
+```{r}
+# cd /Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken1
+# anvi-get-split-coverages -p PROFILE.db  -c CONTIGS.db --list-splits  > all_splits.tsv
+# "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken1/all_splits.tsv" %>%
+#   read_tsv(col_names = c("split", "bin")) %>%
+#   mutate(bin = "all") %>%
+#   data.frame() ->  Manual_bins_tmp
+# 
+# Manual_bins_tmp %>%
+#   write_tsv(here::here("data/processed/anvio/chicken1/collection_all_splits.tsv"), col_names = FALSE)
+
+
+# anvi-import-collection -p PROFILE.db  -c CONTIGS.db  -C all_splits collection_all_splits.tsv
+# anvi-summarize  -p PROFILE.db  -c CONTIGS.db  --list-collections
+# anvi-summarize  -p PROFILE.db  -c CONTIGS.db  -C all_splits -o summary_no_bins
+
+#anvi-summarize  -p PROFILE.db  -c CONTIGS.db  -C concoct_10_raw -o summary_no_bins # **actually this is al the splits : NOT SURE**
+```
+
+
+# Define inputs:
+
+## tables/ data:
+
+
+```{r}
+"data/raw/25.12.2022_metadata_all_merged.xlsx" %>% 
+  here::here() %>% 
+  xlsx::read.xlsx(sheetIndex = 1) %>% 
+  # read_tsv(show_col_types = FALSE) %>% 
+  data.frame() %>% 
+  na_if(., "NA") %>% 
+  dplyr::filter(!is.na(metagenomic_sample_name), Model %in% c("Human", "Chicken")) -> meta
+
+meta %>% 
+  dplyr::filter(Model == "Chicken") %>% 
+  distinct(metagenomic_sample_name) %>% 
+  pull() %>% 
+  sort()
+```
+
+Modify metadata: **this should be done once on the metadata**
+
+```{r}
+# # create Period column
+# meta %>%
+#   mutate(Treatment2 = factor(Treatment2, levels = c("DONOR", "UNTREATED", "AB+E. coli", "AB", "E. coli", "AB+E. faecium", "E. faecium")),
+#          Reactor_Treatment = base::replace(Reactor_Treatment, Reactor_Treatment == "TR_2CTX", "TR2_CTX"),
+#          Phase = factor(Phase, levels = c("Stab", "Treat")),
+#          Model = factor(Model, levels = c("Chicken", "Human")),
+#          Fermentation = factor(Fermentation, levels = c("1", "2")),
+#          # Period = case_when( # if chicken we have period if human
+#          #   Day_of_Treatment == -2 | Day_of_Treatment == -3 | Day_of_Treatment == -6 | Day_of_Treatment == -7 ~ "pret",
+#          #   Day_of_Treatment < 10 & Day_of_Treatment >= 0 ~ "t1",
+#          #   Day_of_Treatment < 20 & Day_of_Treatment >= 10 ~ "t2",
+#          #   Day_of_Treatment < 30 & Day_of_Treatment >= 20 ~ "t3",
+#          #   Day_of_Treatment < 40 & Day_of_Treatment >= 30 ~ "t4",
+#          #   Day_of_Treatment < 50 & Day_of_Treatment >= 40 ~ "t5"),
+#          # Period = factor(Period, levels = c("pret", "t1", "t2", "t3", "t4", "t5")),
+#          Reactor_Treatment_Dose = if_else(!is.na(`Antibiotic_mg.L`), paste0(Reactor_Treatment, `Antibiotic_mg.L`), Reactor_Treatment),
+#          Treatment_Dose = if_else(!is.na(`Antibiotic_mg.L`), paste0(Treatment, `Antibiotic_mg.L`), Treatment),
+#          Treatment = base::replace(Treatment, Experiment == "Cecum", "DONOR"),
+#          Treatment = factor(Treatment, levels = c("negative","positive","STRAIN", "DONOR", "UNTREATED", "CTX", "CTX+HV292.1", "HV292.1", "VAN", "VAN+CCUG59168", "CCUG59168")),
+#          # Reactor = factor(Reactor, levels = c("negative","positive","STRAIN", "DONOR", "IR1", "IR2", "CR", "TR1", "TR2", "TR3", "TR4", "TR5", "TR6","Batch3","Batch4")),
+#          Experiment = factor(Experiment, levels = c( "NTC","Mock", "HV292.1", "CCUG59168", "Cecum","Continuous","Batch")),
+#          
+#          # mutate( Treatment  = case_when(Experiment == "Cecum" ~ "DONOR",
+#          #                               TRUE ~ Treatment)) %>% 
+#          # mutate(Treatment = ifelse(Experiment == "Cecum", "Donor", Treatment)) %>% 
+#          
+#   ) %>% 
+#   # mutate(Day_of_Treatment = addNA(Day_of_Treatment)) %>%
+#   column_to_rownames("metagenomic_sample_name") %>% 
+#   select(-id:-index2) -> meta
+# 
+# #human_meta$Treatment_Dose <- factor(human_meta$Treatment_Dose, ordered = TRUE, 
+# #                                 levels = c("DONOR", "UNTREATED", "CTX+HV292.120", "CTX+HV292.1200",
+# #                                            "CTX20", "CTX200", "HV292.1", "VAN+CCUG5916890", "VAN+CCUG59168600",
+# #                                            "VAN90", "VAN600", "CCUG59168"))
+# meta
+```
+
+```{r}
+combine_data <- function(orftable = "~/Documents/NRP-72/13.chicken2.orftable", 
+                         pathofact = "~/Documents/NRP-72/AMR_MGE_prediction_chicken2_l1000_report.tsv",
+                         genomad_plas = "~/Documents/NRP-72/01.chicken2_plasmid_summary.tsv",
+                         genomad_phage = "~/Documents/NRP-72/01.chicken2_virus_summary.tsv",
+                         mobilog_summary = "~/Documents/NRP-72/03.chicken2.summary.csv",
+                         anvio_MAGs = "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken2/final_collection_chick2.tsv",
+                         scg_tax = "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken2/final_chick2_scg_tax.tsv",
+                         anvio_comp = "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken2/final_chick2_completeness.tsv",
+                         contig_pre = "c2_",
+                         n_max = Inf)
+{
+  
+  ####---------------------- Load orf table
+  
+  orftable %>% 
+    read_tsv(skip = 1, n_max = n_max, show_col_types = FALSE) %>% 
+    select(-Method) %>% 
+    dplyr::rename(orf_length_nt = `Length NT`,
+           orf_length_aa = `Length AA`,
+           orf_gc_perc = `GC perc`,
+           orf_tax = Tax) -> SQM_orf
+  
+  ####---------------------- Load Pathofact
+  
+  pathofact %>% 
+    read_tsv(n_max = n_max, show_col_types = FALSE) %>% 
+    select(-ORF_ID, -Contig_ID) %>% 
+    dplyr::rename(`Contig ID` = Contig,
+           `ORF ID`= ORF) %>% 
+    na_if(., "-") -> pathofact
+  
+  ####---------------------- Load genomad_plas
+  
+  genomad_plas %>% 
+    read_tsv(n_max = n_max, show_col_types = FALSE) %>% 
+    dplyr::rename(`Contig ID` = seq_name,
+           topology_plas = topology) %>% 
+    select(`Contig ID`, topology_plas,plasmid_score, conjugation_genes) -> genomad_plas
+  
+  ####---------------------- Load genomad_phage
+  
+  genomad_phage %>% 
+    read_tsv(n_max = n_max, show_col_types = FALSE) %>% 
+    dplyr::rename(`Contig ID` = seq_name,
+           topology_phage = topology) %>% 
+    select(`Contig ID`, topology_phage,coordinates, virus_score, taxonomy) -> genomad_phage
+  
+  ####---------------------- Load mobilog_summary
+  
+  mobilog_summary %>% 
+    read_csv(n_max = n_max, show_col_types = FALSE) %>% 
+    dplyr::rename(`Contig ID` = `Specific Contig`) %>%
+    select(`Contig ID`, `Percent Bacteriophages`,`Percent Integrative elements`,`Percent Integrative elements`,`Percent Plasmids`) %>% 
+    dplyr::rename(`Bacteriophages_mobilog_pc` = `Percent Bacteriophages`,
+           `IntegrativeEle_mobilog_pc`= `Percent Integrative elements`,
+           `plasmids_mobilog_pc` = `Percent Plasmids`) -> mobilog_summary
+  
+  
+  ####---------------------- Load anvio stuff
+  
+  anvio_MAGs %>% 
+    read_tsv(n_max = n_max, show_col_types = FALSE, col_names = c("ContigID", "bin_name")) -> anvio_tmp
+  
+  anvio_tmp %>% 
+    group_by(bin_name) %>% 
+    summarise("nsplit" =  n_distinct(ContigID)) -> nsplit
+  
+  anvio_tmp %>% 
+    separate(ContigID, into = c("megahit", "cont_id", "split", "split_id"),
+             remove = FALSE) %>% 
+    dplyr::rename(SplitID = ContigID) %>% # when we wanted to keep split info as the same time but doesn't make sense here
+    mutate(`Contig ID` = paste0(megahit, "_", cont_id)) %>%
+        # select(SplitID, `Contig ID`, `bin_name`) %>% # when we wanted to keep split info as the same time but doesn't make sense here
+    # distinct(SplitID, .keep_all = TRUE) -> anvio_MAGs #,
+    select(`Contig ID`, `bin_name`) %>%  # current version
+    distinct(`Contig ID`, .keep_all = TRUE) -> anvio_MAGs #,
+
+  anvio_MAGs %>% 
+    group_by(bin_name) %>% 
+    summarise("ncontigs" =  n_distinct(`Contig ID`)) -> ncontigs
+  
+  scg_tax %>% 
+    read_tsv(n_max = n_max, show_col_types = FALSE) %>% 
+    left_join(.,
+              anvio_comp %>% read_tsv(n_max = n_max, show_col_types = FALSE) %>% 
+                dplyr::rename(bin_name = `bin name`)) %>% 
+    select(-domain, -confidence) %>% 
+    right_join(anvio_MAGs) %>% 
+    left_join(ncontigs) %>% 
+    left_join(nsplit) %>% 
+    select(`Contig ID`, bin_name, everything()) -> anvio_all
+  
+  
+  ####---------------------- combine and add contig / orf prefix
+  
+  merged = NULL
+  
+  SQM_orf %>% 
+    left_join(pathofact) %>%  #, 
+                # by = c("ORF ID" = "ORF ID")) %>% 
+                # distinct(`Contig ID`, .keep_all = TRUE)) %>% 
+    left_join(genomad_plas,
+               by = c("Contig ID" = "Contig ID")) %>% 
+    left_join(genomad_phage,
+               by = c("Contig ID" = "Contig ID")) %>% 
+    left_join(mobilog_summary,
+                             by = c("Contig ID" = "Contig ID")) %>% 
+        left_join(anvio_all,
+              by = c("Contig ID" = "Contig ID"))  %>% # select(`Contig ID`, SplitID,  bin_name)
+    mutate(bin_name =  ifelse(!is.na(bin_name), paste0(contig_pre, bin_name), bin_name),
+           `ORF ID` = paste0(contig_pre, `ORF ID`),
+           `Contig ID` = paste0(contig_pre, `Contig ID`)) -> merged$merged
+  
+  #  merged$merged %>%
+  # select(`Contig ID`,SplitID, bin_name, MGE_prediction, ARG, ncontigs, nsplit, num_splits, `total length`, t_family ) %>% 
+  # filter(bin_name == "c2_Bin_19_24") %>% 
+  # distinct(SplitID, .keep_all = TRUE) %>% 
+  # arrange(MGE_prediction)
+
+print(paste0("orfs in the gene catalogue = ",nrow(SQM_orf), " | orfs in the merged = ", nrow(merged$merged)))
+  
+  
+  merged$merged %>% 
+    select(-(starts_with(c("TPM ","Raw base count ","Coverage", "Raw read count")))) -> merged$orfs
+  
+  
+  merged$merged %>% 
+    select((starts_with(c("ORF ID", "Contig ID", "TPM ","Raw base count ","Coverage", "Raw read count")))) -> merged$quant
+  
+  
+  
+  return(merged)
+}
+```
+
+```{r}
+combine_data(orftable = "~/Documents/NRP-72/13.chicken2.orftable", 
+             pathofact = "~/Documents/NRP-72/AMR_MGE_prediction_chicken2_l1000_report.tsv",
+             genomad_plas = "~/Documents/NRP-72/01.chicken2_plasmid_summary.tsv",
+             genomad_phage = "~/Documents/NRP-72/01.chicken2_virus_summary.tsv",
+             mobilog_summary = "~/Documents/NRP-72/03.chicken2.summary.csv",
+             anvio_MAGs = "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken2/final_collection_chick2.tsv",
+             scg_tax = "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken2/final_chick2_scg_tax.tsv",
+             anvio_comp = "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken2/final_chick2_completeness.tsv",
+             contig_pre = "c2_") -> merged_chick2
+```
+
+
+```{r}
+# merged_chick2$merged %>% 
+#   distinct(bin_name, ncontigs) %>% 
+#   arrange(bin_name)
+```
+
+```{r}
+# merged_chick2$merged %>% 
+#   filter(bin_name == "Bin_0_10_1") %>% 
+#   distinct(`Contig ID`)
+```
+
+
+```{r}
+combine_data(orftable = "~/Documents/NRP-72/13.chicken.orftable", 
+             pathofact = "~/Documents/NRP-72/AMR_MGE_prediction_chicken_l1000_report.tsv",
+             genomad_plas = "~/Documents/NRP-72/01.chicken_plasmid_summary.tsv",
+             genomad_phage = "~/Documents/NRP-72/01.chicken_virus_summary.tsv",
+             mobilog_summary = "~/Documents/NRP-72/03.chicken1.summary.csv",
+             anvio_MAGs = "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken1/final_collection_chick1.tsv",
+             scg_tax = "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken1/final_chick1_scg_tax.tsv",
+             anvio_comp = "/Users/fconstan/Documents/GitHub/NRP72-FBT/data/processed/anvio/chicken1/final_chick1_completeness.tsv",
+             contig_pre = "c1_") -> merged_chick1
+```
+
+```{r}
+# combine_data(orftable = "~/Documents/NRP-72/13.SqueezeHuman.orftable", 
+#              pathofact = "~/Documents/NRP-72/AMR_MGE_prediction_sample_l1000_report.tsv",
+#              genomad_plas = "~/Documents/NRP-72/01.SqueezeHuman_plasmid_summary.tsv",
+#              genomad_phage = "~/Documents/NRP-72/01.SqueezeHuman_virus_summary.tsv",
+#              mobilog_summary = "~/Documents/NRP-72/03.SqueezeHuman.summary.csv",
+#              contig_pre = "h1_") -> merged_human1
+```
+
+```{r}
+# combine_data(orftable = "~/Documents/NRP-72/13.human2.orftable", 
+#              pathofact = "~/Documents/NRP-72/AMR_MGE_prediction_humann2_l1000_report.tsv",
+#              genomad_plas = "~/Documents/NRP-72/01.human2_plasmid_summary.tsv",
+#              genomad_phage = "~/Documents/NRP-72/01.human2_virus_summary.tsv",
+#              mobilog_summary = "~/Documents/NRP-72/03.human2.summary.csv",
+#              contig_pre = "h2_") -> merged_human2
+```
+
+
+combine the merged:
+
+```{r}
+# rbind(
+#   merged_human1$orfs,
+#   merged_human2$orfs,
+#   merged_chick1$orfs,
+#   merged_chick2$orfs) -> merged_all
+
+# full_join(
+# merged_human1$quant,
+# merged_human2$quant) %>%
+# full_join(merged_chick1$quant) %>% 
+#   full_join(merged_chick2$quant) -> quant_all
+
+rbind(
+  merged_chick1$orfs,
+  merged_chick2$orfs) -> merged_all
+
+
+merged_chick1$quant %>% 
+  full_join(merged_chick2$quant) -> quant_all
+
+
+left_join(merged_all,
+          quant_all) -> full_data
+
+rm(list=setdiff(ls(), c("full_data","meta")))
+
+meta %>% 
+  select(-I7_Index_ID:-Experiment) -> meta
+```
+
+
+
+```{r}
+full_data %>% 
+  # head(n = 1000) %>%
+  select(`ORF ID`, orf_length_nt, starts_with("Raw read count ")) %>%
+  pivot_longer(cols = starts_with("Raw read count "),
+               values_to = "read_counts", 
+               names_to = "sample") %>% 
+  mutate(Num_Gi = read_counts / orf_length_nt) %>% 
+  select(-read_counts) %>% 
+  pivot_wider(names_from =  sample,
+              values_from = Num_Gi) %>% 
+  replace(is.na(.), 0) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("Raw read count "))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "Raw read count ", "ORF_Num_Gi "))) %>% 
+  select(-orf_length_nt) -> full_gene_catalogue_orf_Num_Gi
+
+# full_gene_catalogue_orf_Num_Gi %>%  
+#   head() %>% 
+#   DT::datatable()
+```
+
+```{r}
+full_gene_catalogue_orf_Num_Gi %>% 
+  pivot_longer(cols = starts_with("ORF_Num_Gi"),
+               values_to = "Num_Gi", 
+               names_to = "sample") %>% 
+  group_by(sample) %>%
+  mutate(Num_Gi_pc = Num_Gi / sum(Num_Gi)) %>% 
+  ungroup() %>% 
+  select(-Num_Gi) %>% 
+  pivot_wider(names_from =  sample,
+              values_from = Num_Gi_pc) %>% 
+  replace(is.na(.), 0) %>% 
+  rename_at(
+    # select all variables with "factor.sample" in the name
+    vars(contains("ORF_Num_Gi"))
+    # use stringr::str_replace to remove factor.sample.
+    #   you could do the same with base::gsub()
+    , funs(str_replace(., "ORF_Num_Gi", "ORF_Num_Gi_pc "))) -> full_gene_catalogue_orf_Num_Gi_pc
+
+# full_gene_catalogue_orf_Num_Gi_pc %>%  
+#   head() %>% 
+#   DT::datatable()
+```
+
+```{r}
+full_data %>%
+  left_join(full_gene_catalogue_orf_Num_Gi_pc) -> full_gene_catalogue_orf_quant_all_metrics
+
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  dim()
+```
+
+Generate phyloseq objects:
+
+sample_data:
+
+```{r}
+meta
+```
+
+
+
+TPM:
+
+```{r}
+prepare_orf_phyloseq <- function(full_gene_catalogue_orf_quant_all_metrics, 
+                                 feat_id = "ORF ID",
+                                 last_tax_column = "nsplit",
+                                 vars_contains = "TPM ",
+                                 metadata = meta %>% column_to_rownames("metagenomic_sample_name"),
+                                 n_max = 100)
+{
+  ####---------------------- tax
+  
+  full_gene_catalogue_orf_quant_all_metrics %>% 
+    head(n_max) %>% 
+    select(UQ(feat_id):UQ(last_tax_column)) %>% 
+    column_to_rownames("ORF ID") %>% 
+    na_if("-") %>% 
+    na_if("n/a") %>%
+    as.matrix() %>% 
+    tax_table() -> tax
+  
+  ####---------------------- otu
+  
+  full_gene_catalogue_orf_quant_all_metrics %>% 
+    head(n_max) %>% 
+    column_to_rownames(feat_id) %>%
+    select(contains(UQ(vars_contains))) %>% 
+    rename_at(
+      # select all variables with "factor.sample" in the name
+      vars(contains(UQ(vars_contains)))
+      # use stringr::str_replace to remove factor.sample.
+      #   you could do the same with base::gsub()
+      , funs(str_replace(., vars_contains, ""))) %>% 
+    replace(is.na(.), 0) %>%   # stringr::str_replace_all("\\s","_")
+    # rename_at(
+    #   # select all variables with "factor.sample" in the name
+    #   vars(contains("."))
+    #   , funs(str_replace_all(., "\\.", "_")))  %>% 
+    as.matrix() %>% 
+    otu_table(taxa_are_rows = TRUE) -> tpm
+  
+  ####---------------------- combine phyloseq
+  
+  physeq <- phyloseq(tpm,
+                     tax,
+                     metadata %>% sample_data())
+  
+  return(physeq)   
+}
+```
+
+
+```{r}
+meta %>% 
+  # dplyr::filter(Model == "Chicken") %>% 
+  distinct(metagenomic_sample_name) %>% 
+  pull() %>% 
+  sort()
+```
+
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  head(10) %>% 
+  column_to_rownames("ORF ID") %>%
+  # select(contains(UQ(vars_contains))) %>% 
+  colnames() %>% 
+  # distinct(vars_contains) %>%
+  # pull() %>%
+  sort()
+```
+
+# tpm
+
+```{r}
+# full_gene_catalogue_orf_quant_all_metrics %>% 
+#   prepare_orf_phyloseq(., 
+#                        feat_id = "ORF ID",
+#                        vars_contains = "TPM ",
+#                        n_max = Inf) -> otu_tpm
+# 
+# 
+# otu_tpm
+```
+
+# Num_Gi_pc
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  prepare_orf_phyloseq(., 
+                       feat_id = "ORF ID",
+                       vars_contains = "ORF_Num_Gi_pc  ",
+                       n_max = Inf) -> otu_Num_Gi_pc
+
+otu_Num_Gi_pc
+```
+
+# Raw read count 
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>%
+  prepare_orf_phyloseq(.,
+                       feat_id = "ORF ID",
+                       vars_contains = "Raw read count ",
+                       n_max = Inf) -> otu_raw_read_count
+
+otu_raw_read_count
+```
+
+# coverage
+
+```{r}
+full_gene_catalogue_orf_quant_all_metrics %>% 
+  prepare_orf_phyloseq(., 
+                       feat_id = "ORF ID",
+                       vars_contains = "Coverage ",
+                       n_max = Inf) -> otu_coverage
+
+otu_coverage
+```
+
+
+
+
+```{r}
+# phyloseq_list_out = list("read_count" = otu_raw_read_count,
+#                          "Num_Gi_pc" = otu_Num_Gi_pc,
+#                          "cov" = otu_coverage,
+#                          "tpm" = otu_tpm)
+
+phyloseq_list_out = list("read_count" = otu_raw_read_count,
+                         "Num_Gi_pc" = otu_Num_Gi_pc,
+                         "cov" = otu_coverage)
+```
+
+
+Check:
+
+```{r}
+# as(tax_table(otu_Num_Gi_pc), "matrix") %>%
+#   data.frame() %>% 
+#   rownames_to_column("feature") -> tmp
+# 
+# # tmp %>% 
+# #   write_tsv("~/Desktop/otu_Num_Gi_pc_tax.tsv")
+# 
+# tmp %>% 
+#   distinct(MGE_prediction)
+# 
+# tmp %>% 
+#   distinct(bin_name) %>% 
+#   pull()
+```
+
+
+Export outputs:
+
+```{r}
+phyloseq_list_out %>% 
+  saveRDS(here::here("data/processed/chicken1-2_anvio-bin-full_gene_catalog_phyloseq.RDS"))
+
+# full_gene_catalogue_orf_quant_all_metrics %>% 
+#   saveRDS(here::here("data/processed/chicken1_full_gene_catalog_full_metrics_table.RDS"))
+
+# full_gene_catalogue_orf_quant_all_metrics %>% 
+#   write_tsv(here::here("data/processed/chicken1_full_gene_catalog_full_metrics_table.tsv.gz"))
+```
+
+
+
+
+```{r}
+# as(tax_table(otu_Num_Gi_pc %>%    subset_taxa(!is.na(ARG) ) ), "matrix") %>%
+#   as.data.frame() %>%
+#   rownames_to_column('ASV') -> tax_table
+# 
+# as(otu_table(otu_Num_Gi_pc %>%   subset_taxa(!is.na(ARG) ) ), "matrix") %>%
+#   as.data.frame() %>%
+#   rownames_to_column('ASV') -> otu_table
+# 
+# otu_table %>%
+#   left_join(tax_table, by = c("ASV" = "ASV")) %>%
+#   # tax_table %>%
+#   write_tsv("~/Desktop/ps_otu_Num_Gi_pc_chicks.tsv")
+
+```
+
+## Test anvio no bin:
+
+** TODO: make sure all splits are there... **
+
+```{r}
+# anvio_nobin_summary %>% 
+#   here::here() %>%  
+#   read_tsv() -> anvi_no_bin_annot
+```
+
+Link anvio gene id with SQM gene id:
+
+```{r}
+# anvi_no_bin_annot %>% 
+#   mutate(orf_id = paste0(contig, "_", start+1, "-", stop)) %>% 
+#   select(-gene_callers_id) -> anvi_no_bin_annot
+# 
+# colnames(anvi_no_bin_annot) <- paste0("anvio_", colnames(anvi_no_bin_annot))
+# 
+# anvi_no_bin_annot %>% 
+#   select(anvio_orf_id, everything()) %>% 
+#   select(-anvio_contig, -anvio_start, -anvio_stop, -anvio_direction ,-anvio_dna_sequence) -> anvi_no_bin_annot
+```
+
+
+```{r}
+# orf_contig %>% 
+#   left_join(anvi_no_bin_annot,
+#             by = c("ORF_ID" = "anvio_orf_id")) -> orf_contig
+```
+
+
+```{r}
+# orf_contig %>%
+#   filter(anvio_contig == "megahit_37")
+```
+
+```{r}
+# orf_contig %>% 
+#   dim()
+```
+
+## MAG informations:
+
+### Collections:
+
+#### SQM DAS collection:
+
+```{r}
+# DAS_collection %>% 
+#   here::here() %>% 
+#   read_tsv(col_names = c("split", "DAS_bin")) %>% 
+#   separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
+#   mutate(Contig_ID = paste0(cont,"_", cont_num)) %>% 
+#   distinct(Contig_ID, .keep_all = TRUE) %>% 
+#   select(Contig_ID, DAS_bin) -> DAS
+# 
+# DAS %>% 
+#   head() %>% 
+#   DT::datatable()
+```
+
+#### Manual MAGs CONCOCT:
+
+```{r}
+# Manual_bins %>% 
+#   read_tsv(col_names = c("split", "CONCOCT_bin")) %>% 
+#   separate(split, into = c("cont", "cont_num", "split", "split_id"), sep = "_", remove = FALSE) %>% 
+#   mutate(Contig_ID = paste0(cont,"_", cont_num)) %>% 
+#   distinct(Contig_ID, .keep_all = TRUE) %>% 
+#   select(Contig_ID, CONCOCT_bin) -> CONCOCT
+# 
+# CONCOCT  %>% 
+#   head() %>% 
+#   DT::datatable()
+```
+
+Generate fake bin for all contigs -> export kegg annotations from anvio?
+
+```{r}
+# Manual_bins %>%
+#   read_tsv(col_names = c("split", "bin")) %>%
+#   mutate(bin = "all") %>% 
+#   data.frame() ->  Manual_bins_tmp
+# 
+# # names(Manual_bins_tmp) <- NULL
+# 
+# Manual_bins_tmp %>% 
+#   write_tsv(here::here("data/processed/anvio/human1/collection_all_splits.tsv"), col_names = FALSE)
+```
+
+Let's add the contig <-> bin to the merged data:
+
+```{r}
+# orf_contig %>% 
+#   left_join(CONCOCT) %>% 
+#   left_join(DAS) -> orf_contig_2
+```
+
+
+```{r}
+# orf_contig_2 %>% dim()
+```
+
+### MAGs summary:
+
+#### MAGs GDTB taxonomy:
+
+```{r}
+# GTDB_tax %>%
+#   read_excel() %>%
+#   filter(dataset == "chicken1") %>%
+#   mutate(user_genome = str_remove_all(user_genome, c("chicken1_|-contigs|refined_2_"))) %>%
+#   filter(str_detect(user_genome, c("DAS|concoct"))) %>%
+#   select(user_genome, classification) %>%
+#   # separate(classification, 
+#   #          into = c("domain", "phylum", "class", "order", "family", "genus", "species"), 
+#   #          sep = ";", 
+#   #          fill = "right") %>% 
+#   rename(GTDB_tax = classification) %>% 
+#   mutate(user_genome = str_remove_all(user_genome, "concoct_20_")) %>% 
+#   mutate(user_genome = str_remove_all(user_genome, "DAS_")) -> GTDB_tax
+# 
+# # TODO clean taxonomy and add highest resolution.
+# 
+# GTDB_tax %>% 
+#   head() %>% 
+#   DT::datatable()
+```
+
+```{r}
+# orf_contig_2 %>% 
+#   left_join(GTDB_tax,
+#             by = c("CONCOCT_bin" = "user_genome")) %>%  #,
+#   # suffix = c("", "CONCOCT")) %>% 
+#   rename(GTDB_tax_CONCOCT = GTDB_tax) %>% 
+#   left_join(GTDB_tax,
+#             by = c("DAS_bin" = "user_genome")) %>% #,
+#   # suffix = c("", "_DAS")) %>% 
+#   rename(GTDB_tax_DAS = GTDB_tax) -> orf_contig_3
+```
+
+
+
+```{r}
+# orf_contig_3 %>% 
+#   dim()
+```
+
+```{r}
+## CONCOCT tax info
+
+# GTDB_tax %>%
+#   filter(str_detect(user_genome, "concoct")) %>%
+#   mutate(user_genome = str_remove_all(user_genome, "concoct_10_")) -> CONCOCT_tax
+# 
+# colnames(CONCOCT_tax) <- paste0("CONCOCT_", colnames(CONCOCT_tax))
+
+```
+
+#### SQM DAS info:
+
+```{r}
+# SQM_DAS %>% 
+#   read_tsv(skip = 1) -> SQM_DAS
+# 
+# colnames(SQM_DAS) <- paste0("SQM_DAS_", colnames(SQM_DAS))
+# 
+# SQM_DAS %>%
+#   mutate(SQM_DAS_HQ = ifelse(SQM_DAS_Completeness >= 80 & SQM_DAS_Contamination <= 10, "HQ", NA)) %>% 
+#   select(-SQM_DAS_Method, -`SQM_DAS_Coverage C1`:-`SQM_DAS_TPM D9`) -> SQM_DAS_HQ
+# 
+# # filter(SQM_DAS_Completeness >= 80,
+# #        SQM_DAS_Contamination <= 10) %>% 
+# # mutate(SQM_DAS_bins_HQ = `SQM_DAS_Bin ID`) -> SQM_DAS_HQ
+# 
+# SQM_DAS_HQ %>% 
+#   head() %>% 
+#   DT::datatable()
+```
+
+```{r}
+# orf_contig_3 %>% 
+#   left_join(SQM_DAS_HQ,
+#             by = c("DAS_bin" = "SQM_DAS_Bin ID")) -> orf_contig_3
+```
+
+
+
+```{r}
+# orf_contig_3 %>% 
+#   dim()
+```
+
+
+#### ANVIO DAS info:
+
+```{r}
+# ANVIO_SUMMARY_DAS %>% 
+#   here::here() %>% 
+#   read_tsv() %>% 
+#   select(-t_domain:-t_species) -> ANVIO_SUMMARY_DAS
+# 
+# colnames(ANVIO_SUMMARY_DAS) <- paste0("ANVIO_SUMMARY_DAS_", colnames(ANVIO_SUMMARY_DAS))
+# 
+# ANVIO_SUMMARY_DAS %>%
+#   # filter(ANVIO_SUMMARY_DAS_percent_completion >= 80,
+#   #        ANVIO_SUMMARY_DAS_percent_redundancy <= 10) %>% 
+#   mutate(ANVIO_DAS_HQ = ifelse(ANVIO_SUMMARY_DAS_percent_completion >= 80 & ANVIO_SUMMARY_DAS_percent_redundancy <= 10, "HQ", NA)) -> ANVIO_SUMMARY_DAS
+# 
+# ANVIO_SUMMARY_DAS %>% 
+#   head() %>% 
+#   DT::datatable()
+```
+
+```{r}
+# orf_contig_3 %>% 
+#   left_join(ANVIO_SUMMARY_DAS,
+#             by = c("DAS_bin" = "ANVIO_SUMMARY_DAS_bins")) -> orf_contig_3
+```
+
+
+```{r}
+# orf_contig_3 %>% 
+#   dim()
+```
+
+#### ANVIO CONCOCT info:
+
+```{r}
+# ANVIO_SUMMARY_CONCOCT %>% 
+#   here::here() %>% 
+#   read_tsv() %>% 
+#   select(-t_domain:-t_species) -> ANVIO_SUMMARY_CONCOCT
+# 
+# colnames(ANVIO_SUMMARY_CONCOCT) <- paste0("ANVIO_SUMMARY_CONCOCT_", colnames(ANVIO_SUMMARY_CONCOCT))
+# 
+# ANVIO_SUMMARY_CONCOCT %>% 
+#   mutate(ANVIO_CONCOCT_HQ = ifelse(ANVIO_SUMMARY_CONCOCT_percent_completion >= 80 & ANVIO_SUMMARY_CONCOCT_percent_redundancy <= 10, "HQ", NA)) -> ANVIO_SUMMARY_CONCOCT
+# 
+# ANVIO_SUMMARY_CONCOCT %>% 
+#   head() %>% 
+#   DT::datatable()
+```
+
+```{r}
+# orf_contig_3 %>% 
+#   left_join(ANVIO_SUMMARY_CONCOCT,
+#             by = c("CONCOCT_bin" = "ANVIO_SUMMARY_CONCOCT_bins")) -> orf_contig_3
+```
+
+
+```{r}
+# orf_contig_3 %>% 
+#   dim()
+```
+
+
+Rename ORF and contig ID:
+```{r}
+# orf_contig_3 %>% 
+#   mutate(ORF_ID = paste0("c1_", ORF_ID),
+#          Contig_ID = paste0("c1_", Contig_ID)) -> full_gene_catalogue
+```
+
+```{r}
+# full_gene_catalogue %>% 
+#   dim()
+```
+
+```{r}
+# full_gene_catalogue %>% 
+#   filter(PathoFact_AMR_MGE_prediction %in% c("plasmid", "ambiguous (plasmid/phage)") &
+#            viralverify_Prediction %in% c("Uncertain - too short", "Plamid", "Uncertain - plasmid or chromosomal", "Plasmid")  ) %>% 
+#   filter(!is.na(PathoFact_AMR_AMR_category)) %>% 
+#   # filter(PathoFact_AMR_MGE_prediction %in% c("plasmid", "ambiguous (plasmid/phage)", "phage","ambiguous (phage/chromosome)" )) %>% 
+#   select(ORF_ID, PathoFact_AMR_ARG, PathoFact_AMR_AMR_category, viralverify_Prediction,PathoFact_AMR_MGE_prediction,  DAS_bin, CONCOCT_bin) %>% 
+#   DT::datatable()
+
+```
+
+**We have to clarify some cases before saving: e.g.: plasmid but in MAG... it should be plasmid and not MAG -> need to update anvio collection and summarise again to get genomes without plamid contigs... Would like to include plasX as well: https://github.com/michaelkyu/PlasX and build consensus prediction, plasmids are key here.**
+
+**If per sample assembly is retained it is gonna be a huge amount of work. Let's keep all this in mind**
+
+
+```{r}
+# full_gene_catalogue %>% 
+#   mutate(Classification_mobilome_DAS = case_when(
+#     PathoFact_AMR_MGE_prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(DAS_bin) ~ "MAG", Would like to include
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_DAS_HQ = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(DAS_bins_HQ) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_CONCOCT = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(CONCOCT_bin) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_CONCOCT_HQ = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(CONCOCT_bins_HQ) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   as.matrix(rownames = TRUE)
+```
+
+
+```{r}
+# 
+# 
+# left_join(card, by = "ORF_ID") %>%
+#   left_join(hgt_events, by = c("Contig" = "CONTIG_NAME")) %>%
+#   left_join(viralverify, by = c("Contig" = "Contig name")) %>%
+#   left_join(top_isescan, by = c("Contig" = "seqID")) %>%
+#   left_join(DAS, by = c("Contig" = "cont_id")) %>%
+#   left_join(DAS_tax, by = c("DAS_bin" ="DAS_user_genome")) %>%
+#   left_join(DAS_HQ, by = c("DAS_bin" = "DAS_bins_HQ"), keep = TRUE) %>%
+#   left_join(CONCOCT, by = c("Contig" = "cont_id")) %>%
+#   left_join(CONCOCT_tax, by = c("CONCOCT_bin" ="CONCOCT_user_genome")) %>%
+#   left_join(CONCOCT_HQ, by = c("CONCOCT_bin" = "CONCOCT_bins_HQ"), keep = TRUE) %>%
+#   select(-c(Megahit, Range)) %>%
+#   column_to_rownames("ORF_ID") %>%
+#   mutate(Classification_mobilome_DAS = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(DAS_bin) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_DAS_HQ = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(DAS_bins_HQ) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_CONCOCT = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(CONCOCT_bin) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   mutate(Classification_mobilome_CONCOCT_HQ = case_when(
+#     Prediction == "Plasmid" ~ "Plasmid",
+#     !is.na(CONCOCT_bins_HQ) ~ "MAG",
+#     TRUE ~ Prediction)) %>%
+#   as.matrix(rownames = TRUE) -> human_tax
+# 
+# 
+# rownames(human_tax) <- paste0("h_",rownames(human_tax))
+# 
+# # Check for hgt events in resistome
+# human_tax %>% as.data.frame() %>% filter(!is.na(ARO), CALL == "lgt")
+
+
+```
+
+
+
+
+##  Extract quantitative information from SQM:
+
+### ORFs:
+
+
+```{r}
+# human$orfs$table %>%
+#   rownames_to_column("ORF_ID") %>% 
+#   data.frame() %>% 
+#   select(ORF_ID, starts_with(c("TPM", "Coverage", "Raw.base.count", "Raw.read.count."))) %>% 
+#   # select(starts_with("TPM"), "ORF_ID") %>% 
+#   column_to_rownames("ORF_ID") -> quant_orfs
+# 
+# # colnames(quant) <- colnames(quant) %>% 
+# #   str_replace_all("//.", "//_")
+# 
+# rownames(quant_orfs) <- paste0("c1_",
+#                                rownames(quant_orfs))
+# 
+# quant_orfs %>% 
+#   rownames_to_column("ORF_ID") -> quant_orfs
+# 
+# quant_orfs %>% 
+#   head() %>% 
+#   DT::datatable()
+# 
+
+```
+
+### contigs:
+
+```{r}
+# human$contigs$table %>%
+#   rownames_to_column("Contig_ID") %>% 
+#   data.frame() %>% 
+#   select(Contig_ID, starts_with(c("TPM", "Coverage", "Raw.base.count", "Raw.read.count."))) %>% 
+#   # select(Contig_ID, Coverage.C1:Raw.read.count.D9) %>% 
+#   # select(starts_with("TPM"), "ORF_ID") %>% 
+#   column_to_rownames("Contig_ID") -> quant_contigs
+# 
+# # colnames(quant_contigs) <- colnames(quant_contigs) %>% 
+# #   str_replace_all("//.", "//_")
+# 
+# rownames(quant_contigs) <- paste0("c1_",
+#                                   rownames(quant_contigs))
+# 
+# quant_contigs %>% 
+#   rownames_to_column("Contig_ID") -> quant_contigs
+# 
+# 
+# 
+# 
+# quant_contigs %>% 
+#   head() %>% 
+#   DT::datatable()
+
+```
+
+Combine quantification data with annotations:
+
+```{r}
+# colnames(quant_orfs) <- paste0("ORF_" ,colnames(quant_orfs))
+# 
+# colnames(quant_contigs) <- paste0("contig_" ,colnames(quant_contigs))
+```
+
+
+```{r}
+# full_gene_catalogue %>% 
+#   distinct(ORF_ID, .keep_all = TRUE) %>% # see chucnk below
+#   left_join(quant_orfs,
+#             by = c("ORF_ID" = "ORF_ORF_ID")) -> full_gene_catalogue_orf_quant
+# 
+# full_gene_catalogue_orf_quant %>% 
+#   distinct(ORF_ID, .keep_all = TRUE) %>% # see chucnk below
+#   
+#   left_join(quant_contigs,
+#             by = c("Contig_ID" = "contig_Contig_ID")) -> full_quant_full_gene_catalogue
+```
+
+
+```{r}
+# rm(list=setdiff(ls(), c("full_gene_catalogue_orf_quant", "human_meta")))
+```
+
+
+```{r}
+# gc()
+```
+
+
+```{r}
+# full_gene_catalogue_orf_quant %>% 
+#   distinct(ORF_ID, .keep_all = TRUE) %>% # see chucnk below
+#   dplyr::select(ORF_ID, SQM_Length.NT, starts_with("ORF_Raw.read.count.")) %>% 
+#   pivot_longer(cols = starts_with("ORF_Raw.read.count."),
+#                values_to = "read_counts", 
+#                names_to = "sample")  -> test
+
+# dim(test)
+```
+
+
+
+```{r}
+# full_gene_catalogue_orf_quant %>% 
+#   dplyr::select(ORF_ID, SQM_Length.NT, starts_with("ORF_Raw.read.count.")) %>% group_by(ORF_ID, SQM_Length.NT) %>% dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%  dplyr::filter(n > 1L)   
+#   ORF_ID                   SQM_Length.NT     n
+#   <chr>                            <int> <int>
+# 1 c1_megahit_288931_1-1971          1971     2
+```
+
+```{r}
+# test %>% 
+#   head() 
+```
+
+```{r}
+# test %>% 
+#   group_by(sample, SQM_Length.NT, ORF_ID) %>% 
+#   dplyr::summarise(n = dplyr::n(), .groups = "drop") %>% 
+#   dplyr::filter(n > 1L) -> test_test 
+```
+
+
+```{r}
+# gc()
+```
+
+
+```{r}
+# test %>% # -> test  test %>% %>%  arrange(count)
+#   ## group_by(sample) %>% 
+#   mutate(Num_Gi = read_counts / SQM_Length.NT) %>% 
+#   ## ungroup() %>% 
+#   select(-read_counts) %>%
+#   #  dplyr::group_by(ORF_ID, SQM_Length.NT, sample) %>%
+#   # dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
+#   # dplyr::filter(n > 1L)
+#   pivot_wider(names_from =  sample,
+#               values_from = Num_Gi) %>% 
+#   replace(is.na(.), 0) %>% 
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("ORF_Raw.read.count."))
+#     # use stringr::str_replace to remove factor.sample.
+#     #   you could do the same with base::gsub()
+#     , funs(str_replace(., "ORF_Raw.read.count.", "ORF_Num_Gi."))) %>% 
+#   select(-SQM_Length.NT) -> full_gene_catalogue_orf_Num_Gi
+# 
+# full_gene_catalogue_orf_Num_Gi %>%  
+#   head() %>% 
+#   DT::datatable()
+```
+
+```{r}
+# full_gene_catalogue_orf_Num_Gi %>% 
+#   pivot_longer(cols = starts_with("ORF_Num_Gi"),
+#                values_to = "Num_Gi", 
+#                names_to = "sample") %>% 
+#   group_by(sample) %>% 
+#   mutate(Num_Gi_pc = Num_Gi / sum(Num_Gi)) %>% 
+#   ungroup() %>% 
+#   select(-Num_Gi) %>% 
+#   pivot_wider(names_from =  sample,
+#               values_from = Num_Gi_pc) %>% 
+#   replace(is.na(.), 0) %>% 
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("ORF_Num_Gi."))
+#     # use stringr::str_replace to remove factor.sample.
+#     #   you could do the same with base::gsub()
+#     , funs(str_replace(., "ORF_Num_Gi.", "ORF_Num_Gi_pc."))) -> full_gene_catalogue_orf_Num_Gi_pc
+# 
+# full_gene_catalogue_orf_Num_Gi_pc %>%  
+#   head() %>% 
+#   DT::datatable()
+```
+
+```{r}
+# full_gene_catalogue_orf_quant %>% 
+#   left_join(full_gene_catalogue_orf_Num_Gi_pc,
+#             by = c("ORF_ID" = "ORF_ID")) %>% 
+#   left_join(full_gene_catalogue_orf_Num_Gi,
+#             by = c("ORF_ID" = "ORF_ID")) -> full_gene_catalogue_orf_quant_all_metrics
+
+```
+
+
+Generate phyloseq objects:
+
+
+sample_data:
+
+```{r}
+# human_meta %>% 
+#   select(-sample:-index2) -> human_meta
+```
+```{r}
+# human_meta %>%  rownames()
+```
+
+```{r}
+# rownames(human_meta) <- str_replace(rownames(human_meta),
+#                                     "_", "")
+```
+
+tax_table:
+
+```{r}
+# full_gene_catalogue_orf_quant_all_metrics %>% 
+#   column_to_rownames("ORF_ID") %>% 
+#   select(Contig_ID:ANVIO_CONCOCT_HQ) %>% 
+#   as.matrix() %>% 
+#   tax_table() -> tax
+```
+
+
+ORFs:
+
+TPM:
+
+
+```{r}
+# full_gene_catalogue_orf_quant_all_metrics %>% 
+#   column_to_rownames("ORF_ID") %>% 
+#   select(starts_with("ORF_TPM.")) %>% 
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("ORF_TPM."))
+#     # use stringr::str_replace to remove factor.sample.
+#     #   you could do the same with base::gsub()
+#     , funs(str_replace(., "ORF_TPM.", ""))) %>% 
+#   # stringr::str_replace_all("\\s","_")
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("."))
+#     , funs(str_replace_all(., "\\.", "_")))  %>% 
+#   as.matrix() %>% 
+#   otu_table(taxa_are_rows = TRUE) -> tpm
+```
+
+
+Num_Gi_pc
+
+```{r}
+# full_gene_catalogue_orf_quant_all_metrics %>% 
+#   column_to_rownames("ORF_ID") %>% 
+#   select(starts_with("ORF_Num_Gi_pc.")) %>% 
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("ORF_Num_Gi_pc."))
+#     # use stringr::str_replace to remove factor.sample.
+#     #   you could do the same with base::gsub()
+#     , funs(str_replace(., "ORF_Num_Gi_pc.", ""))) %>% 
+#   # stringr::str_replace_all("\\s","_")
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("."))
+#     , funs(str_replace_all(., "\\.", "_")))  %>% 
+#   as.matrix() %>% 
+#   otu_table(taxa_are_rows = TRUE) -> Num_Gi_pc
+```
+
+Num_Gi
+
+```{r}
+# full_gene_catalogue_orf_quant_all_metrics %>% 
+#   column_to_rownames("ORF_ID") %>% 
+#   select(starts_with("ORF_Num_Gi.")) %>% 
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("ORF_Num_Gi."))
+#     # use stringr::str_replace to remove factor.sample.
+#     #   you could do the same with base::gsub()
+#     , funs(str_replace(., "ORF_Num_Gi.", ""))) %>% 
+#   # stringr::str_replace_all("\\s","_")
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("."))
+#     , funs(str_replace_all(., "\\.", "_")))  %>% 
+#   as.matrix() %>% 
+#   otu_table(taxa_are_rows = TRUE) -> Num_Gi
+```
+
+Coverage
+
+```{r}
+# full_gene_catalogue_orf_quant_all_metrics %>% 
+#   column_to_rownames("ORF_ID") %>% 
+#   select(starts_with("ORF_Coverage.")) %>% 
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("ORF_Coverage."))
+#     # use stringr::str_replace to remove factor.sample.
+#     #   you could do the same with base::gsub()
+#     , funs(str_replace(., "ORF_Coverage.", ""))) %>% 
+#   # stringr::str_replace_all("\\s","_")
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("."))
+#     , funs(str_replace_all(., "\\.", "_")))  %>% 
+#   as.matrix() %>% 
+#   otu_table(taxa_are_rows = TRUE) -> cov
+```
+
+ORF_Raw.read
+
+```{r}
+# full_gene_catalogue_orf_quant_all_metrics %>% 
+#   column_to_rownames("ORF_ID") %>% 
+#   select(starts_with("ORF_Raw.read.count.")) %>% 
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("ORF_Raw.read.count."))
+#     # use stringr::str_replace to remove factor.sample.
+#     #   you could do the same with base::gsub()
+#     , funs(str_replace(., "ORF_Raw.read.count.", ""))) %>% 
+#   # stringr::str_replace_all("\\s","_")
+#   rename_at(
+#     # select all variables with "factor.sample" in the name
+#     vars(contains("."))
+#     , funs(str_replace_all(., "\\.", "_")))  %>% 
+#   as.matrix() %>% 
+#   otu_table(taxa_are_rows = TRUE) -> read_count
+```
+
+
+
+Create phyloseq objects and tsv files:
+
+```{r}
+# dim(tpm)
+# 
+# physeq_tpm <- phyloseq(tpm,
+#                        tax,
+#                        human_meta %>% sample_data())
+# 
+# 
+# physeq_tpm
+```
+
+```{r}
+# dim(cov)
+# 
+# physeq_cov <- phyloseq(cov,
+#                        tax,
+#                        human_meta %>% sample_data())
+# 
+# physeq_cov
+```
+
+
+```{r}
+# dim(Num_Gi_pc)
+# 
+# physeq_Num_Gi_pc <- phyloseq(Num_Gi_pc,
+#                              tax,
+#                              human_meta %>% sample_data())
+# 
+# physeq_Num_Gi_pc
+```
+
+```{r}
+# dim(Num_Gi)
+# 
+# physeq_Num_Gi<- phyloseq(Num_Gi,
+#                          tax,
+#                          human_meta %>% sample_data())
+# 
+# physeq_Num_Gi
+```
+
+
+```{r}
+# dim(read_count)
+# 
+# physeq_read_count <- phyloseq(read_count,
+#                               tax,
+#                               human_meta %>% sample_data())
+# 
+# physeq_read_count
+```
+
+
+<!-- ```{r} -->
+<!-- phyloseq_list_out = list("read_count" = physeq_read_count, -->
+<!--                          "Num_Gi" = physeq_Num_Gi, -->
+<!--                          "Num_Gi_pc" = physeq_Num_Gi_pc, -->
+<!--                          "cov" = physeq_cov, -->
+<!--                          "tpm" = physeq_tpm) -->
+
+<!-- ``` -->
+
+
+<!-- Export outputs: -->
+
+<!-- ```{r} -->
+
+<!-- phyloseq_list_out %>%  -->
+<!--   saveRDS(here::here("data/processed/chicken1_full_gene_catalog_phyloseq.RDS")) -->
+
+<!-- full_gene_catalogue_orf_quant_all_metrics %>%  -->
+<!--   saveRDS(here::here("data/processed/chicken1_full_gene_catalog_full_metrics_table.RDS")) -->
+
+<!-- full_gene_catalogue_orf_quant_all_metrics %>%  -->
+<!--   write_tsv(here::here("data/processed/chicken1_full_gene_catalog_full_metrics_table.tsv.gz")) -->
+<!-- ``` -->
+
+
+```{r}
+devtools::session_info()
+```
+
